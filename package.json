@@ -1,5 +1,5 @@
 {
-	"name": "pythonjs",
+	"name": "pybuiltins",
 	"version": "1.0.0",
 	"description": "Python built-ins in Javascript.",
 	"main": "dist/index.js",
