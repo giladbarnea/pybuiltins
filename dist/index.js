@@ -30,9 +30,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function any(collection) {
     return collection.some(function (item) { return bool(item); });
 }
+exports.any = any;
 function all(collection) {
     return collection.every(function (item) { return bool(item); });
 }
+exports.all = all;
 function bool(val) {
     /*
     |               | o instanceof Object   | typeof o == 'object'  |  !!o  |

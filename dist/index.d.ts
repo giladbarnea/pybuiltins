@@ -1,3 +1,9 @@
+export declare function any(collection: {
+    some: (arg0: (item: any) => boolean) => boolean;
+}): boolean;
+export declare function all(collection: {
+    every: (arg0: (item: any) => boolean) => void;
+}): boolean;
 export declare function bool(val: any): boolean;
 export declare function enumerate<T>(collection: T[] | T): [string[] | number[] | T[]];
 export declare function float(str: string): number;
