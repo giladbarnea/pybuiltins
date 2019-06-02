@@ -71,6 +71,20 @@ function int(num) {
     return Math.floor(num);
 }
 exports.int = int;
+function sum(arr) {
+    var sum = 0;
+    var dirty = false;
+    for (var _i = 0, arr_1 = arr; _i < arr_1.length; _i++) {
+        var v = arr_1[_i];
+        var number = float(v);
+        if (!isNaN(number)) {
+            dirty = true;
+            sum += number;
+        }
+    }
+    return !dirty ? null : sum;
+}
+exports.sum = sum;
 function max() {
     var values = [];
     for (var _i = 0; _i < arguments.length; _i++) {

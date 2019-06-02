@@ -45,6 +45,19 @@ export function int(num: string | number): number {
     return Math.floor(num);
 }
 
+export function sum(arr: any[]): number {
+    let sum = 0;
+    let dirty = false;
+    for (let v of arr) {
+        let number = float(v);
+        if (!isNaN(number)) {
+            dirty = true;
+            sum += number;
+        }
+        
+    }
+    return !dirty ? null : sum;
+}
 
 export function max(...values: number[]): number {
     return Math.max(...values);
