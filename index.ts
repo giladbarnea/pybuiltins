@@ -1,3 +1,12 @@
+function any(collection: { some: (arg0: (item: any) => boolean) => boolean; }): boolean {
+    return collection.some(item => bool(item));
+}
+
+
+function all(collection: { every: (arg0: (item: any) => boolean) => void; }): boolean {
+    return collection.every(item => bool(item));
+}
+
 export function bool(val: any): boolean {
     /*
     |               | o instanceof Object   | typeof o == 'object'  |  !!o  |
