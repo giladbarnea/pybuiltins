@@ -1,0 +1,27 @@
+{
+	"name": "pythonjs",
+	"version": "1.0.0",
+	"description": "Python built-ins in Javascript.",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/giladbarnea/pythonjs.git"
+	},
+	"author": "Gilad Barnea",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/giladbarnea/pythonjs/issues"
+	},
+	"homepage": "https://github.com/giladbarnea/pythonjs#readme",
+	"devDependencies": {
+		"@types/pluralize": "0.0.29",
+		"typescript": "^3.5.1"
+	},
+	"dependencies": {
+		"pluralize": "^8.0.0"
+	}
+}
