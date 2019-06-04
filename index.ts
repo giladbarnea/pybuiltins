@@ -2,7 +2,6 @@ export function any(collection: { some: (arg0: (item: any) => boolean) => boolea
     return collection.some(item => bool(item));
 }
 
-
 export function all(collection: { every: (arg0: (item: any) => boolean) => void; }): boolean {
     return collection.every(item => bool(item));
 }
