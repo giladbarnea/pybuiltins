@@ -5,7 +5,9 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "tsc"
+		"build": "tsc",
+		"test": "jest --watch",
+		"coverage": "jest --coverage"
 	},
 	"repository": {
 		"type": "git",
