@@ -1,8 +1,8 @@
-export function any(collection: { some: (arg0: (item: any) => boolean) => boolean; }): boolean {
+export function any(collection): boolean {
     return collection.some(item => bool(item));
 }
 
-export function all(collection: { every: (arg0: (item: any) => boolean) => void; }): boolean {
+export function all(collection): boolean {
     return collection.every(item => bool(item));
 }
 
@@ -32,15 +32,17 @@ export function bool(val: any): boolean {
         else
             return !!val;
     }
-    return !val.isEmpty();
+    return Object.keys(val).length != 0;
     
 }
 
 export function enumerate<T>(collection: T[] | T): [string[] | number[] | T[]] {
     let entries = Object.entries(collection);
+    // @ts-ignore
     entries.map(entry => entry[0] = entry[0].isdigit()
         ? int(entry[0])
         : entry[0]);
+    // @ts-ignore
     return entries;
 }
 
@@ -49,7 +51,7 @@ export function float(str: string): number {
 }
 
 
-export function int(num: string | number): number {
+export function int(num): number {
     return Math.floor(num);
 }
 
@@ -64,6 +66,7 @@ export function sum(arr: any[]): number {
         }
         
     }
+    // @ts-ignore
     return !dirty ? null : sum;
 }
 
@@ -87,7 +90,7 @@ export function round(n: number, d: number = 0): number {
     return int(n * fr) / fr;
 }
 
-export function str(val: { toString: () => void; }): void | "" {
+export function str(val): void | "" {
     return val ? val.toString() : "";
 }
 

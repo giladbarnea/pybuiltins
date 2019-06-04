@@ -33,14 +33,16 @@ function bool(val) {
         else
             return !!val;
     }
-    return !val.isEmpty();
+    return Object.keys(val).length != 0;
 }
 exports.bool = bool;
 function enumerate(collection) {
     let entries = Object.entries(collection);
+    // @ts-ignore
     entries.map(entry => entry[0] = entry[0].isdigit()
         ? int(entry[0])
         : entry[0]);
+    // @ts-ignore
     return entries;
 }
 exports.enumerate = enumerate;
@@ -62,6 +64,7 @@ function sum(arr) {
             sum += number;
         }
     }
+    // @ts-ignore
     return !dirty ? null : sum;
 }
 exports.sum = sum;
