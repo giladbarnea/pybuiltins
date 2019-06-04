@@ -1,4 +1,4 @@
-import {any} from '../index'
+import {any} from "../any";
 
 
 describe('any', () => {

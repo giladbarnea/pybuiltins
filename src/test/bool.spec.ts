@@ -1,4 +1,4 @@
-import {bool} from '../index'
+import {bool} from "../bool";
 
 describe('empty list', () => {
     it('should be falsey when passed an empty list', () => {
