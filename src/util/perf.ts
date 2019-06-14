@@ -8,7 +8,7 @@
  const measures = perf.getMeasures('start', 'end');
  console.log(measures.name, measures.avg());
  > start -> end 48.01234567891011127*/
-import {performance, PerformanceEntry} from "perf_hooks";
+import {performance, PerformanceEntry,PerformanceObserver} from "perf_hooks";
 
 export function mark(markName: string) {
     performance.mark(markName);
@@ -23,10 +23,19 @@ export function measureMany(...startEndPairs: string[][]) {
         measure(start, end);
 }
 
-export function getMeasures(startMark: string, endMark: string): PerformanceEntry[] {
+type ExtendedPerformanceEntryList = PerformanceEntry[] & { name: string, avg: () => number };
+
+export function getMeasures(startMark: string, endMark: string): ExtendedPerformanceEntryList {
     const name = `${startMark} -> ${endMark}`;
-    const measures = performance.getEntriesByName(name, 'measure');
-    Object.defineProperties(measures, {
+    
+    const measures = <ExtendedPerformanceEntryList>performance.getEntriesByName(name, 'measure');
+    measures.name = name;
+    measures.avg = (): number => {
+        const durations = measures.map(m => m.duration);
+        return durations.reduce((a, b) => a + b) / durations.length;
+    };
+    
+    /*Object.defineProperties(measures, {
         avg: {
             value(): number {
                 const durations = measures.map(m => m.duration);
@@ -39,10 +48,11 @@ export function getMeasures(startMark: string, endMark: string): PerformanceEntr
             }
         }
     });
-    return measures;
+    */
+    return <ExtendedPerformanceEntryList>measures;
 }
 
-export function getManyMeasures(...startEndPairs: string[][]): PerformanceEntry[] {
+export function getManyMeasures(...startEndPairs: string[][]): ExtendedPerformanceEntryList[] {
     const manyMeasures = [];
     for (let [start, end] of startEndPairs)
         manyMeasures.push(getMeasures(start, end));

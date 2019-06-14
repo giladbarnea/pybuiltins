@@ -8,8 +8,9 @@
  These are exactly the valid indices for a list of 4 elements.
  When step is given, it specifies the increment (or decrement).
  */
-export function* range(arg: any, ...args: any[]): IterableIterator<any> {
+export function* range(arg: number, ...args: number[]): IterableIterator<any> {
     const argsLen = args.length;
+    
     let start;
     let stop;
     let step = 1;
