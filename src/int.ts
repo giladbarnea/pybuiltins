@@ -18,7 +18,10 @@
 class Int extends Number {
     constructor(x, base = 10) {
         if (x % 1 != 0)
-            super(Math.floor(x));
+            if (x < 0)
+                super(Math.ceil(x));
+            else
+                super(Math.floor(x));
         else
             super(x);
     }
