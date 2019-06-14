@@ -1,6 +1,6 @@
 {
-	"name": "pybuiltins",
-	"version": "1.0.7",
+	"name": "pythonlang",
+	"version": "1.0.1",
 	"description": "Python built-ins in Javascript.",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
