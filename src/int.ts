@@ -17,7 +17,7 @@
  */
 class Int extends Number {
     constructor(x, base = 10) {
-        super(x)
+        super(Math.floor(x))
     }
 }
 
