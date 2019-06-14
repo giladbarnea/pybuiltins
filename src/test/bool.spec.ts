@@ -2,11 +2,12 @@ import {bool} from "../bool";
 import {int} from "../int";
 
 test('subclass', () => {
+    // /Lib/test/test_bool.py.test_subclass
     expect(() => {
         class C extends bool {
             pass
         }
-    }).toThrow(TypeError)
+    }).toThrowError()
 });
 test('math', () => {
     // /Lib/test/test_bool.py.test_math:106

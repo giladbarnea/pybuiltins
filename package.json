@@ -10,6 +10,18 @@
 		"coverage": "jest --coverage",
 		"foo": "node scripts/foo.ts"
 	},
+	"jest": {
+		"//": "https://jestjs.io/docs/en/configuration",
+		"verbose": true,
+		"preset": "ts-jest",
+		"testEnvironment": "node",
+		"globals": {
+			"ts-jest": {
+				"//": "https://kulshekhar.github.io/ts-jest/user/config/#options",
+				"diagnostics": false
+			}
+		}
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/giladbarnea/pythonjs.git"
