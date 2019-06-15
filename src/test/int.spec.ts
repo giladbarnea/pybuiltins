@@ -63,29 +63,24 @@ describe('basic', () => {
     });
     test('operands', () => {
         
-        let int1 = chance.integer();
-        let int2 = chance.integer();
-        expect(int(int1) + int(int2)).toEqual(int1 + int2);
-        /*expect(int("01") + int("02")).toEqual(3);
-        expect(int(1) + int("02")).toEqual(3);
-        expect(int(1) + int(2)).toEqual(3);
-        expect(int("01") + int(2)).toEqual(3);
+        let n1 = chance.integer();
+        let n2 = chance.integer();
+        let int1 = int(n1);
+        let int2 = int(n2);
+        expect(-int1).toEqual(-n1);
+        expect(-1 * int1).toEqual(-int1);
+        expect(int1 + int2).toEqual(n1 + n2);
+        expect(int1 - int2).toEqual(n1 - n2);
+        expect(int1 * int2).toEqual(n1 * n2);
+        expect(int1 / int2).toEqual(n1 / n2);
         
-        expect(int("01") - int("02")).toEqual(-1);
-        expect(int(1) - int("02")).toEqual(-1);
-        expect(int(1) - int(2)).toEqual(-1);
-        expect(int("01") - int(2)).toEqual(-1);
+        expect(int1 ** int2).toEqual(n1 ** n2);
+        expect(int1 ** -int2).toEqual(n1 ** -n2);
+        expect((-int1) ** int2).toEqual((-n1) ** n2);
+        expect((-int1) ** -int2).toEqual((-n1) ** -n2);
+        expect(Math.atan2(int1, int2)).toEqual(Math.atan2(n1, n2));
         
-        expect(int("01") * int("02")).toEqual(2);
-        expect(int(1) * int("02")).toEqual(2);
-        expect(int(1) * int(2)).toEqual(2);
-        expect(int("01") * int(2)).toEqual(2);
         
-        expect(int("01") * int("02")).toEqual(2);
-        expect(int(1) * int("02")).toEqual(2);
-        expect(int(1) * int(2)).toEqual(2);
-        expect(int("01") * int(2)).toEqual(2);
-        */
     });
     
     
