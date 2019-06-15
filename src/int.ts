@@ -20,16 +20,13 @@ import {StringOrNumber} from "./typings";
  
  */
 
-/*const oldProto = Boolean.prototype;
+const _Boolean = Boolean;
 Boolean = (val) => {
-    console.log('Boolean', {
-        val,
-        '+val': +val,
-    });
-    return !!(+val);
+    if (val instanceof Int)
+        val = +val;
+    
+    return _Boolean(val);
 };
-Boolean.prototype = oldProto;
-*/
 
 
 class Int extends Number {
@@ -45,6 +42,7 @@ class Int extends Number {
     */
     
     divide(y: Int | number) {
+        
         if (y == 0) {
             throw new ZeroDivisionError("division by zero")
         } else {
