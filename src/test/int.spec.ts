@@ -56,10 +56,47 @@ test('test_basic', () => {
         }
     }
     
-    // \pypy\objspace\std\test\test_intobject.py test_leading_zero_literal()
-    expect(int("00", 0)).toEqual(0);
-    expect(int("07", 10)).toEqual(7);
-    expect(int("07", 8)).toEqual(7);
+    
+});
+describe('literal_tricky_bases', () => {
+    test('return normal value', () => {
+        
+        expect(int("00", 0)).toEqual(0);
+        expect(int("07", 10)).toEqual(7);
+        expect(int("07", 8)).toEqual(7);
+        expect(int("016", 7)).toEqual(13);
+        expect(int("02", 3)).toEqual(2);
+        expect(int("33", 4)).toEqual(15);
+        expect(int("033", 4)).toEqual(15);
+    });
+    test('throw ValueError', () => {
+        expect(() => int("07", 5)) // parseInt("07", 5) => 0
+            .toThrow(new ValueError(`invalid literal for int() with base 5: '07'`));
+        expect(() => int("07", 0))
+            .toThrow(new ValueError(`invalid literal for int() with base 0: '07'`));
+        
+        
+        expect(() => int("016", 6)) // parseInt("016", 6) => 1
+            .toThrow(new ValueError(`invalid literal for int() with base 6: '016'`));
+        
+        
+        expect(() => int("02", 2)) // parseInt("02", 2) => 0
+            .toThrow(new ValueError(`invalid literal for int() with base 2: '02'`));
+        
+        expect(() => int("033", 2))
+            .toThrow(new ValueError(`invalid literal for int() with base 2: '033'`));
+        expect(() => int("33", 2))
+            .toThrow(new ValueError(`invalid literal for int() with base 2: '33'`));
+        
+        expect(() => int("034", 4)).toThrow(new ValueError(`invalid literal for int() with base 4: '034'`));
+        
+        expect(() => int("01", 0)) // parseInt("01", 0) => 1
+            .toThrow(new ValueError(`invalid literal for int() with base 0: '01'`));
+        expect(() => int("-01", 0)) // parseInt("-01", 0) => -1
+            .toThrow(new ValueError(`invalid literal for int() with base 0: '-01'`));
+    });
+    
+    
 });
 describe('test_ValueError', () => {
     // \pypy\objspace\std\test\test_intobject.py test_leading_zero_literal()
@@ -68,10 +105,6 @@ describe('test_ValueError', () => {
             ["07777777777777777777777777777777777777", 0],
             ["00000000000000000000000000000000000007", 0],
             ["00000000000000000077777777777777777777", 0],
-            ["07", 0],
-            ["007", 5],
-            ["-01", 0],
-            ["01", 0],
         ];
         for (let [val, base] of invalids) {
             expect(() => int(val, base))
@@ -80,6 +113,7 @@ describe('test_ValueError', () => {
         
         
     });
+    
     test('invalid literal', () => {
         // TODO:
         //  ['  1\02  ', ValueError],

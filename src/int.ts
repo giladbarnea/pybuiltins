@@ -46,6 +46,10 @@ class Int extends Number {
         const mod = x % 1;
         if (isNaN(mod))
             throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+        if (typeofx === 'string') {
+        
+        }
+        
         if (mod != 0)
             if (x < 0)
                 super(Math.ceil(x));
