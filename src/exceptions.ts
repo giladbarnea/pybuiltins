@@ -19,4 +19,16 @@ export class ValueError extends Exception {
     }
 }
 
+/**Base class for arithmetic errors.*/
+export class ArithmeticError extends Exception {
+    constructor(...args) {
+        super(...args)
+    }
+}
 
+/**Second argument to a division or modulo operation was zero*/
+export class ZeroDivisionError extends ArithmeticError {
+    constructor(...args) {
+        super(...args)
+    }
+}
