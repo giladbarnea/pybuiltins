@@ -80,7 +80,6 @@
 	},
 	"exclude": [
 		"src/test/*",
-		"src/mytypes",
 		"dist/*",
 		"scripts"
 	]
