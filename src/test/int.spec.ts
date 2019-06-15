@@ -55,7 +55,8 @@ test('test_basic', () => {
             }
         }
     }
-    
+    // @ts-ignore
+    expect(int("01") + int("02")).toEqual(3)
     
 });
 describe('literal_tricky_bases', () => {

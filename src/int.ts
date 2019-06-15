@@ -21,6 +21,8 @@ import {StringOrNumber} from "./typings";
  */
 
 class Int extends Number {
+    
+    
     constructor(x, base?: StringOrNumber | Function) {
         /**Lib\test\test_int.py test_error_message().check()
          Objects\longobject.c:4818*/
