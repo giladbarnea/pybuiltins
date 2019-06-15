@@ -79,6 +79,8 @@ describe('basic', () => {
         expect(int1 * int2).toEqual(n1 * n2);
         expect(int1 / int2).toEqual(n1 / n2);
         
+        expect(int1 % int2).toEqual(n1 % n2);
+        
         expect(int1 ** int2).toEqual(n1 ** n2);
         expect(int1 ** -int2).toEqual(n1 ** -n2);
         expect((-int1) ** int2).toEqual((-n1) ** n2);
