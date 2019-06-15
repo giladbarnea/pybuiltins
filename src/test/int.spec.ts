@@ -100,7 +100,7 @@ describe('literal_tricky_bases', () => {
 });
 describe('test_ValueError', () => {
     // \pypy\objspace\std\test\test_intobject.py test_leading_zero_literal()
-    test.skip('pypy/objspace/std/test/test_intobject.py test_leading_zero_literal()', () => {
+    test('pypy/objspace/std/test/test_intobject.py test_leading_zero_literal()', () => {
         const invalids = [
             ["07777777777777777777777777777777777777", 0],
             ["00000000000000000000000000000000000007", 0],

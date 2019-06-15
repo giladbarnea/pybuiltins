@@ -43,11 +43,16 @@ class Int extends Number {
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
         if (!RegExp(/\d/).test(x))
             throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+        
         const mod = x % 1;
         if (isNaN(mod))
             throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
         if (typeofx === 'string') {
-        
+            for (let c of x) {
+                if (c >= base && c != 0) {
+                    throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+                }
+            }
         }
         
         if (mod != 0)
