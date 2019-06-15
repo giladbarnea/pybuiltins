@@ -24,8 +24,15 @@ class Int extends Number {
     constructor(x, base: StringOrNumber | Function = 10) {
         /**Lib\test\test_int.py test_error_message().check()
          Objects\longobject.c:4818*/
+        const typeofbase = typeof base;
+        console.log({base, typeofbase});
+        if (base === null)
+            throw new TypeError(`'null' object cannot be interpreted as an integer`);
         if ((base < 2 || base > 36) && base != 0)
             throw new ValueError("int() base must be >= 2 and <= 36, or 0");
+        const typeofx = typeof x;
+        if (typeofx != 'number' && typeofx != 'string')
+            throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
         if (!RegExp(/\d/).test(x))
             throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
         const mod = x % 1;
