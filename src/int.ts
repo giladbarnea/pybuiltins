@@ -1,6 +1,5 @@
 import {ValueError} from "./exceptions"
-import {StringOrNumber} from "./types";
-
+import {StringOrNumber} from "./mytypes/typemy";
 
 /**
  int([x]) -> integer
