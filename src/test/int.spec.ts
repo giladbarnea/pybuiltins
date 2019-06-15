@@ -1,6 +1,7 @@
 import {int} from "../int";
 import {performance} from "perf_hooks"
 import {range} from "../range"
+import {ValueError} from "../exceptions"
 
 const L = [
     ['0', 0],
@@ -17,9 +18,9 @@ const L = [
     // ['  1x', ValueError],
     ['  1  ', 1],
     // ['  1\02  ', ValueError],
-    // ['', ValueError],
-    // [' ', ValueError],
-    // ['  \t\t  ', ValueError],
+    ['', ValueError],
+    [' ', ValueError],
+    ['  \t\t  ', ValueError],
     // ["\u0200", ValueError]
 ];
 /**\Lib\test\test_int.py*/
@@ -42,16 +43,26 @@ test('test_basic', () => {
             for (let prefix of ["", " ", "\t", "  \t\t  "]) {
                 let ss = prefix + sign + s;
                 let vv = v;
-                if (sign == "-"
-                    // && v !== ValueError
-                ) {
+                if (sign == "-" && v !== ValueError) {
                     vv = -v
                 }
+                let actual = int(ss);
                 try {
-                    expect(int(ss)).toEqual(vv)
+                    expect(actual).toEqual(vv);
+                    /*console.log('passed:', {
+                        'int(ss)': actual,
+                        vv, prefix, sign, s, v, ss
+                    })
+                    */
                 } catch (e) {
-                    // if (!(e instanceof ValueError)) {
-                    // }
+                    if (!(e instanceof ValueError)) {
+                        console.log('failed toEqual, actual:', actual,
+                            'expected:', vv,
+                            'vars:', {prefix, sign, s, v, ss});
+                        throw e
+                    } else {
+                    
+                    }
                     
                 }
             }
@@ -59,6 +70,17 @@ test('test_basic', () => {
     }
     
 });
+test('test_ValueError', () => {
+    expect(() => int("+ 314", 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0"))
+});
+/** TODO this
+ int("+ 314") => ValueError("invalid literal for int() with base 10: '+ 314'")
+ int("+ 314", 7) => ValueError("invalid literal for int() with base 42: '+ 314'")
+ int("+ 314", 1) => ValueError("int() base must be >= 2 and <= 36, or 0")
+ int("+ 314", 37) => ValueError("int() base must be >= 2 and <= 36, or 0")
+ int("+ 314", 0) => ValueError("invalid literal for int() with base 0: '+ 314'")
+ 
+ */
 /*const start = performance.now();
 console.log({start});
 for (let i of range(1000000)) {
