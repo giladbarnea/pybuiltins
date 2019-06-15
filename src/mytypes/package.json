@@ -1,5 +1,0 @@
-{
-	"name":"mytypes",
-	"main":"typemy.d.ts",
-	"types": "typemy.d.ts"
-}

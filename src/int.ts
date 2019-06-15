@@ -1,5 +1,5 @@
 import {ValueError} from "./exceptions"
-import {StringOrNumber} from "./mytypes";
+import {StringOrNumber} from "./typings";
 
 
 /**
