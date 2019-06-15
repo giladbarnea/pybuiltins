@@ -1,5 +1,5 @@
 import {int} from "../int";
-import {ValueError} from "../exceptions"
+import {ValueError, ZeroDivisionError} from "../exceptions"
 import {Chance} from 'chance';
 
 const chance = new Chance();
@@ -67,6 +67,11 @@ describe('basic', () => {
         let n2 = chance.integer();
         let int1 = int(n1);
         let int2 = int(n2);
+        let int0 = int(0);
+        
+        expect(() => int1.divide(0)).toThrow(ZeroDivisionError);
+        expect(() => int1.divide("0")).toThrow(ZeroDivisionError);
+        expect(() => int1.divide(int0)).toThrow(ZeroDivisionError);
         expect(-int1).toEqual(-n1);
         expect(-1 * int1).toEqual(-int1);
         expect(int1 + int2).toEqual(n1 + n2);

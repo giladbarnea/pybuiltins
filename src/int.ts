@@ -1,4 +1,4 @@
-import {ValueError} from "./exceptions"
+import {ZeroDivisionError, ValueError} from "./exceptions"
 import {StringOrNumber} from "./typings";
 
 
@@ -20,8 +20,16 @@ import {StringOrNumber} from "./typings";
  
  */
 
+
 class Int extends Number {
     
+    divide(y: Int | number) {
+        if (y == 0) {
+            throw new ZeroDivisionError("division by zero")
+        } else {
+            return this / y;
+        }
+    }
     
     constructor(x, base?: StringOrNumber | Function) {
         /**Lib\test\test_int.py test_error_message().check()
