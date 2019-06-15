@@ -153,7 +153,15 @@ describe('basic', () => {
         expect(!boolintneg).toBe(true);
         
         
-    })
+    });
+    test('inplace', () => {
+        let eight = int(8);
+        eight--;
+        expect(eight).toEqual(7);
+        let seven = int(7);
+        seven++;
+        expect(seven).toEqual(8);
+    });
     
 });
 describe('literal_tricky_bases', () => {
