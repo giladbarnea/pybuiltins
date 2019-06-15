@@ -56,6 +56,7 @@ test('test_basic', () => {
         }
     }
     // @ts-ignore
+    expect(int("01") + int("02")).toEqual(3);
     expect(int("01") + int("02")).toEqual(3)
     
 });
