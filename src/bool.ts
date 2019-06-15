@@ -18,6 +18,7 @@ export function bool(val: any): boolean {
     if (val == null)
         return false;
     const valType = typeof val;
+    console.log({valType});
     if (valType != 'object') {
         if (valType == 'function')
             return true;

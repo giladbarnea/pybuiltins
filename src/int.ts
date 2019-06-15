@@ -20,8 +20,29 @@ import {StringOrNumber} from "./typings";
  
  */
 
+/*const oldProto = Boolean.prototype;
+Boolean = (val) => {
+    console.log('Boolean', {
+        val,
+        '+val': +val,
+    });
+    return !!(+val);
+};
+Boolean.prototype = oldProto;
+*/
+
 
 class Int extends Number {
+    
+    
+    /*valueOf(): number {
+        console.log('Int valueOf', {
+            this: this,
+            'super.valueOf()': super.valueOf()
+        });
+        return +super.valueOf()
+    }
+    */
     
     divide(y: Int | number) {
         if (y == 0) {

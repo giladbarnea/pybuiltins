@@ -1,4 +1,5 @@
 import {int} from "../int";
+import {bool} from "../bool";
 import {ValueError, ZeroDivisionError} from "../exceptions"
 import {Chance} from 'chance';
 
@@ -104,10 +105,55 @@ describe('basic', () => {
         expect(Math.abs(negn)).toEqual(posint);
         
         
-        
         //    TODO: divmod
     });
-    
+    test('native Boolean', () => {
+        let pos = chance.integer({min: 1});
+        let neg = chance.integer({max: 0});
+        let int0 = int(0);
+        let intpos = int(pos);
+        let intneg = int(neg);
+        
+        // TODO:
+        //  expect(Boolean(int0)).toBe(false);
+        //  expect(!!(int0)).toBe(false);
+        
+        expect(Boolean(intpos)).toBe(true);
+        expect(!!intpos).toBe(true);
+        expect(!Boolean(intpos)).toBe(false);
+        expect(!intpos).toBe(false);
+        
+        // TODO:
+        //  expect(Boolean(intneg)).toBe(false);
+        //  expect(!!intneg).toBe(false);
+        //  expect(!Boolean(intneg)).toBe(true);
+        //  expect(!intneg).toBe(true);
+        
+        
+    });
+    test.skip('bool', () => {
+        let pos = chance.integer({min: 1});
+        let neg = chance.integer({max: 0});
+        let int0 = int(0);
+        let intpos = int(pos);
+        let intneg = int(neg);
+        let boolintpos = bool(intpos);
+        let boolintneg = bool(intneg);
+        let boolint0 = bool(int0);
+        
+        expect(boolint0).toBe(false);
+        expect(!boolint0).toBe(true);
+        
+        
+        expect(boolintpos).toBe(true);
+        expect(!boolintpos).toBe(false);
+        
+        
+        expect(boolintneg).toBe(false);
+        expect(!boolintneg).toBe(true);
+        
+        
+    })
     
 });
 describe('literal_tricky_bases', () => {
