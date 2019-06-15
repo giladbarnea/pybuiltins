@@ -65,15 +65,26 @@ describe('basic', () => {
         
         let n1 = chance.integer();
         let n2 = chance.integer();
+        let n0 = 0;
+        let posn = chance.integer({min: 1});
+        let negn = -posn;
         let int1 = int(n1);
         let int2 = int(n2);
         let int0 = int(0);
-        
-        expect(() => int1.divide(0)).toThrow(ZeroDivisionError);
+        let posint = int(posn);
+        let negint = int(negn);
+        console.log({n1, n2, int1, int2, int0});
+        expect(() => int1.divide(n0)).toThrow(ZeroDivisionError);
         expect(() => int1.divide("0")).toThrow(ZeroDivisionError);
         expect(() => int1.divide(int0)).toThrow(ZeroDivisionError);
+        
         expect(-int1).toEqual(-n1);
         expect(-1 * int1).toEqual(-int1);
+        
+        expect(+int1).toEqual(+n1);
+        expect(+int1).toEqual(n1);
+        expect(1 * int1).toEqual(+int1);
+        
         expect(int1 + int2).toEqual(n1 + n2);
         expect(int1 - int2).toEqual(n1 - n2);
         expect(int1 * int2).toEqual(n1 * n2);
@@ -85,9 +96,16 @@ describe('basic', () => {
         expect(int1 ** -int2).toEqual(n1 ** -n2);
         expect((-int1) ** int2).toEqual((-n1) ** n2);
         expect((-int1) ** -int2).toEqual((-n1) ** -n2);
+        
         expect(Math.atan2(int1, int2)).toEqual(Math.atan2(n1, n2));
+        expect(Math.abs(int1)).toEqual(Math.abs(n1));
+        expect(Math.abs(-int1)).toEqual(Math.abs(n1));
+        expect(Math.abs(negint)).toEqual(posint);
+        expect(Math.abs(negn)).toEqual(posint);
         
         
+        
+        //    TODO: divmod
     });
     
     
