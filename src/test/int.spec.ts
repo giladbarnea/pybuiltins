@@ -61,6 +61,9 @@ test('test_basic', () => {
 });
 describe('test_ValueError', () => {
     test('invalid literal', () => {
+        // TODO:
+        //  ['  1\02  ', ValueError],
+        //  ["\u0200", ValueError]
         const invalids = [
             [""],
             [''],
@@ -85,9 +88,40 @@ describe('test_ValueError', () => {
             expect(() => int(val, base)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0"));
         }
     });
-    // TODO:
-    //  ['  1\02  ', ValueError],
-    //  ["\u0200", ValueError]
+    
+    
+});
+
+describe('test_TypeError', () => {
+    test('argument must be', () => {
+        const badargs = [
+            [int],
+            [null],
+        ];
+        for (let [val, base] of badargs) {
+            expect(() => int(val, base))
+                .toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeof val}'`));
+        }
+    });
+    test('cannot be interpreted', () => {
+        const badargs = [
+            ["+ 314", null],
+        ];
+        for (let [val, base] of badargs) {
+            expect(() => int(val, base))
+                .toThrow(new TypeError(`'${typeof base}' object cannot be interpreted as an integer`));
+        }
+    });
+    test(`can't convert`, () => {
+        const badargs = [
+            [5, 5],
+        ];
+        for (let [val, base] of badargs) {
+            expect(() => int(val, base))
+                .toThrow(new TypeError(`int() can't convert non-string with explicit base`));
+        }
+    });
+    
     
 });
 

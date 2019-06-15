@@ -8,7 +8,7 @@
  const measures = perf.getMeasures('start', 'end');
  console.log(measures.name, measures.avg());
  > start -> end 48.01234567891011127*/
-import {performance, PerformanceEntry,PerformanceObserver} from "perf_hooks";
+import {performance, PerformanceEntry} from "perf_hooks";
 
 export function mark(markName: string) {
     performance.mark(markName);

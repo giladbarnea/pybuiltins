@@ -1,4 +1,6 @@
 import {ValueError} from "./exceptions"
+import {StringOrNumber} from "./types";
+
 
 /**
  int([x]) -> integer
@@ -17,8 +19,9 @@ import {ValueError} from "./exceptions"
  4
  
  */
+
 class Int extends Number {
-    constructor(x, base: string | number = 10) {
+    constructor(x, base: StringOrNumber | Function = 10) {
         /**Lib\test\test_int.py test_error_message().check()
          Objects\longobject.c:4818*/
         if ((base < 2 || base > 36) && base != 0)
@@ -40,6 +43,6 @@ class Int extends Number {
     }
 }
 
-export function int(x, base: string | number = 10): Int {
+export function int(x, base: StringOrNumber | Function = 10): Int {
     return new Int(x, base)
 }
