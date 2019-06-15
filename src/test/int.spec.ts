@@ -1,6 +1,6 @@
 import {int} from "../int";
 import {ValueError} from "../exceptions"
-import Chance from 'chance';
+import {Chance} from 'chance';
 
 const chance = new Chance();
 
@@ -62,9 +62,10 @@ describe('basic', () => {
         }
     });
     test('operands', () => {
-        let float1 = chance.floating();
-        let float2 = chance.floating();
-        expect(int(float1) + int(float2)).toEqual(float1 + float2);
+        
+        let int1 = chance.integer();
+        let int2 = chance.integer();
+        expect(int(int1) + int(int2)).toEqual(int1 + int2);
         /*expect(int("01") + int("02")).toEqual(3);
         expect(int(1) + int("02")).toEqual(3);
         expect(int(1) + int(2)).toEqual(3);
