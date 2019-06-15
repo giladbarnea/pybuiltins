@@ -16,10 +16,7 @@ const L = [
     [false, 0],
     ['  \t\t  314  \t\t  ', 314],
     // [repr(sys.maxsize), sys.maxsize],
-    // ['  1x', ValueError],
     ['  1  ', 1],
-    // ['  1\02  ', ValueError],
-    // ["\u0200", ValueError]
 ];
 /**\Lib\test\test_int.py*/
 test('test_basic', () => {
@@ -47,11 +44,6 @@ test('test_basic', () => {
                 try {
                     let actual = int(ss);
                     expect(actual).toEqual(vv);
-                    /*console.log('passed:', {
-                        'int(ss)': actual,
-                        vv, prefix, sign, s, v, ss
-                    })
-                    */
                 } catch (e) {
                     let isValueError = e instanceof ValueError;
                     if (!(isValueError)) {
@@ -80,7 +72,8 @@ describe('test_ValueError', () => {
             ["+ 314", undefined],
             ["+ 314", 25],
             ["+ 314", 10],
-            ["+ 314", 0]
+            ["+ 314", 0],
+            ['  1x']
         ];
         for (let [val, base] of invalids) {
             expect(() => int(val, base))
@@ -93,7 +86,6 @@ describe('test_ValueError', () => {
         }
     });
     // TODO:
-    //  ['  1x', ValueError],
     //  ['  1\02  ', ValueError],
     //  ["\u0200", ValueError]
     
@@ -105,14 +97,6 @@ describe('test_ValueError', () => {
  int(int) => TypeError("int() argument must be a string, a bytes-like object or a number, not 'type'")
  int("+ 314", null) => TypeError("'NoneType' object cannot be interpreted as an integer")
  */
-/*const start = performance.now();
-console.log({start});
-for (let i of range(1000000)) {
-    int(i)
-}
-const end = performance.now();
-console.log({end});
-console.log('end - start', end - start);
-*/
+
 
 
