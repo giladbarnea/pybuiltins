@@ -1,5 +1,8 @@
 import {int} from "../int";
 import {ValueError} from "../exceptions"
+import Chance from 'chance';
+
+const chance = new Chance();
 
 const L = [
     ['0', 0],
@@ -17,47 +20,73 @@ const L = [
     ['  1  ', 1],
 ];
 /**\Lib\test\test_int.py*/
-test('test_basic', () => {
-    expect(int(314)).toEqual(314);
-    expect(int(3.14)).toEqual(3);
-    // Check that conversion from float truncates towards zero
-    expect(int(-3.14)).toEqual(-3);
-    expect(int(3.9)).toEqual(3);
-    expect(int(-3.9)).toEqual(-3);
-    expect(int(3.5)).toEqual(3);
-    expect(int(-3.5)).toEqual(-3);
-    expect(int("-3")).toEqual(-3);
-    expect(int(" -3 ")).toEqual(-3);
-    // Different base:
-    expect(int("10", 16)).toEqual(16);
-    // Test conversion from strings and various anomalies
-    for (let [s, v] of L) {
-        for (let sign of ["", "+", "-"]) {
-            for (let prefix of ["", " ", "\t", "  \t\t  "]) {
-                let ss = prefix + sign + s;
-                let vv = v;
-                if (sign == "-") {
-                    vv = -v
-                }
-                try {
-                    let actual = int(ss);
-                    expect(actual).toEqual(vv);
-                } catch (e) {
-                    let isValueError = e instanceof ValueError;
-                    if (!(isValueError)) {
-                        console.log('failed toEqual.\nexpected:', vv, {prefix, sign, s, v, ss, e});
-                        throw e
-                    } else {
-                    
+describe('basic', () => {
+    test('numbers', () => {
+        
+        expect(int(314)).toEqual(314);
+        expect(int(3.14)).toEqual(3);
+        // Check that conversion from float truncates towards zero
+        expect(int(-3.14)).toEqual(-3);
+        expect(int(3.9)).toEqual(3);
+        expect(int(-3.9)).toEqual(-3);
+        expect(int(3.5)).toEqual(3);
+        expect(int(-3.5)).toEqual(-3);
+        expect(int("-3")).toEqual(-3);
+        expect(int(" -3 ")).toEqual(-3);
+        expect(int("10", 16)).toEqual(16);
+    });
+    test('string conversion and various anomalies', () => {
+        for (let [s, v] of L) {
+            for (let sign of ["", "+", "-"]) {
+                for (let prefix of ["", " ", "\t", "  \t\t  "]) {
+                    let ss = prefix + sign + s;
+                    let vv = v;
+                    if (sign == "-") {
+                        vv = -v
                     }
-                    
+                    try {
+                        let actual = int(ss);
+                        expect(actual).toEqual(vv);
+                    } catch (e) {
+                        let isValueError = e instanceof ValueError;
+                        if (!(isValueError)) {
+                            console.log('failed toEqual.\nexpected:', vv, {prefix, sign, s, v, ss, e});
+                            throw e
+                        } else {
+                        
+                        }
+                        
+                    }
                 }
             }
         }
-    }
-    // @ts-ignore
-    expect(int("01") + int("02")).toEqual(3);
-    expect(int("01") + int("02")).toEqual(3)
+    });
+    test('operands', () => {
+        let float1 = chance.floating();
+        let float2 = chance.floating();
+        expect(int(float1) + int(float2)).toEqual(float1 + float2);
+        /*expect(int("01") + int("02")).toEqual(3);
+        expect(int(1) + int("02")).toEqual(3);
+        expect(int(1) + int(2)).toEqual(3);
+        expect(int("01") + int(2)).toEqual(3);
+        
+        expect(int("01") - int("02")).toEqual(-1);
+        expect(int(1) - int("02")).toEqual(-1);
+        expect(int(1) - int(2)).toEqual(-1);
+        expect(int("01") - int(2)).toEqual(-1);
+        
+        expect(int("01") * int("02")).toEqual(2);
+        expect(int(1) * int("02")).toEqual(2);
+        expect(int(1) * int(2)).toEqual(2);
+        expect(int("01") * int(2)).toEqual(2);
+        
+        expect(int("01") * int("02")).toEqual(2);
+        expect(int(1) * int("02")).toEqual(2);
+        expect(int(1) * int(2)).toEqual(2);
+        expect(int("01") * int(2)).toEqual(2);
+        */
+    });
+    
     
 });
 describe('literal_tricky_bases', () => {
