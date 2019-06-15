@@ -106,7 +106,7 @@ describe('test_TypeError', () => {
             .toThrow(new TypeError(`'null' object cannot be interpreted as an integer`));
         
     });
-    test.skip(`can't convert`, () => {
+    test(`can't convert`, () => {
         const badargs = [
             [5, 5],
         ];
