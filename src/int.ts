@@ -18,22 +18,28 @@ import {ValueError} from "./exceptions"
  
  */
 class Int extends Number {
-    constructor(x, base = 10) {
-        /**Lib\test\test_int.py.test_error_message().check()*/
+    constructor(x, base: string | number = 10) {
+        /**Lib\test\test_int.py test_error_message().check()
+         Objects\longobject.c:4818*/
         if ((base < 2 || base > 36) && base != 0)
             throw new ValueError("int() base must be >= 2 and <= 36, or 0");
-        if (x % 1 != 0)
+        if (!RegExp(/\d/).test(x))
+            throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+        const mod = x % 1;
+        if (isNaN(mod))
+            throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+        if (mod != 0)
             if (x < 0)
                 super(Math.ceil(x));
             else
                 super(Math.floor(x));
         else if (base != 10)
-            super(parseInt(x, base));
+            super(parseInt(x, <number>base));
         else
             super(x);
     }
 }
 
-export function int(x, base = 10): Int {
+export function int(x, base: string | number = 10): Int {
     return new Int(x, base)
 }

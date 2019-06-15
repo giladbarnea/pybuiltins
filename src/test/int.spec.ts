@@ -13,14 +13,12 @@ const L = [
     ['314', 314],
     [' 314', 314],
     ['314 ', 314],
+    [false, 0],
     ['  \t\t  314  \t\t  ', 314],
     // [repr(sys.maxsize), sys.maxsize],
     // ['  1x', ValueError],
     ['  1  ', 1],
     // ['  1\02  ', ValueError],
-    ['', ValueError],
-    [' ', ValueError],
-    ['  \t\t  ', ValueError],
     // ["\u0200", ValueError]
 ];
 /**\Lib\test\test_int.py*/
@@ -43,11 +41,11 @@ test('test_basic', () => {
             for (let prefix of ["", " ", "\t", "  \t\t  "]) {
                 let ss = prefix + sign + s;
                 let vv = v;
-                if (sign == "-" && v !== ValueError) {
+                if (sign == "-") {
                     vv = -v
                 }
-                let actual = int(ss);
                 try {
+                    let actual = int(ss);
                     expect(actual).toEqual(vv);
                     /*console.log('passed:', {
                         'int(ss)': actual,
@@ -55,10 +53,9 @@ test('test_basic', () => {
                     })
                     */
                 } catch (e) {
-                    if (!(e instanceof ValueError)) {
-                        console.log('failed toEqual, actual:', actual,
-                            'expected:', vv,
-                            'vars:', {prefix, sign, s, v, ss});
+                    let isValueError = e instanceof ValueError;
+                    if (!(isValueError)) {
+                        console.log('failed toEqual.\nexpected:', vv, {prefix, sign, s, v, ss, e});
                         throw e
                     } else {
                     
@@ -70,16 +67,43 @@ test('test_basic', () => {
     }
     
 });
-test('test_ValueError', () => {
-    expect(() => int("+ 314", 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0"))
+describe('test_ValueError', () => {
+    test('invalid literal', () => {
+        const invalids = [
+            [""],
+            [''],
+            [' '],
+            [' '],
+            ['  \t\t  '],
+            ["+ 314",],
+            ["+ 314"],
+            ["+ 314", undefined],
+            ["+ 314", 25],
+            ["+ 314", 10],
+            ["+ 314", 0]
+        ];
+        for (let [val, base] of invalids) {
+            expect(() => int(val, base))
+                .toThrow(new ValueError(`invalid literal for int() with base ${base === undefined ? 10 : base}: '${val}'`));
+        }
+    });
+    test('base out of range', () => {
+        for (let [val, base] of [["+ 314", 1], ["+ 314", 37]]) {
+            expect(() => int(val, base)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0"));
+        }
+    });
+    // TODO:
+    //  ['  1x', ValueError],
+    //  ['  1\02  ', ValueError],
+    //  ["\u0200", ValueError]
+    
 });
-/** TODO this
- int("+ 314") => ValueError("invalid literal for int() with base 10: '+ 314'")
- int("+ 314", 7) => ValueError("invalid literal for int() with base 42: '+ 314'")
- int("+ 314", 1) => ValueError("int() base must be >= 2 and <= 36, or 0")
- int("+ 314", 37) => ValueError("int() base must be >= 2 and <= 36, or 0")
- int("+ 314", 0) => ValueError("invalid literal for int() with base 0: '+ 314'")
- 
+
+/** TODO
+ int(5, 5) => TypeError("int() can't convert non-stirng with explicit base")
+ int(null) => TypeError("int() argument must be a string, a bytes-like object or a number, not 'NoneType'")
+ int(int) => TypeError("int() argument must be a string, a bytes-like object or a number, not 'type'")
+ int("+ 314", null) => TypeError("'NoneType' object cannot be interpreted as an integer")
  */
 /*const start = performance.now();
 console.log({start});
