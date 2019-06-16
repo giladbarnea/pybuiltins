@@ -114,7 +114,7 @@ describe('basic', () => {
         let intpos = int(pos);
         let intneg = int(neg);
         
-        // expect(!int0).toBe(true); // TODO: fails
+        expect(!int0).toBe(true); // TODO: fails
         
         expect(Boolean(int0)).toBe(false);
         // expect(!!int0).toBe(false); // TODO: fails

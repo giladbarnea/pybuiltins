@@ -20,26 +20,37 @@ import {StringOrNumber} from "./typings";
  
  */
 
-const _Boolean = Boolean;
+/*const _Boolean = Boolean;
 Boolean = (val) => {
     if (val instanceof Int)
         val = +val;
     
     return _Boolean(val);
 };
+*/
+
+/*const oldProto = Number.prototype;
+Number = (val) => {
+    console.log({val});
+    return parseInt(val);
+};
+Number.prototype = oldProto;
+*/
+
+/*Object.defineProperty(Number.prototype, "valueOf", {
+    value() {
+        if (this instanceof Int) {
+            console.log({'this': this});
+            return this;
+        }
+        return this;
+    }
+});
+*/
 
 
 class Int extends Number {
     
-    
-    /*valueOf(): number {
-        console.log('Int valueOf', {
-            this: this,
-            'super.valueOf()': super.valueOf()
-        });
-        return +super.valueOf()
-    }
-    */
     
     divide(y: Int | number) {
         
@@ -50,9 +61,10 @@ class Int extends Number {
         }
     }
     
+    
     constructor(x, base?: StringOrNumber | Function) {
-        /**Lib\test\test_int.py test_error_message().check()
-         Objects\longobject.c:4818*/
+        
+        
         const typeofx = typeof x;
         if (base === undefined) {
             base = 10;
@@ -78,7 +90,7 @@ class Int extends Number {
             throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
         if (typeofx === 'string') {
             for (let c of x) {
-                if (c >= base && c != 0) {
+                if (c >= base && c != '0') {
                     throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
                 }
             }
@@ -94,6 +106,8 @@ class Int extends Number {
         else
             super(x);
     }
+    
+    
 }
 
 export function int(x, base?: StringOrNumber | Function): Int {
