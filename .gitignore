@@ -1,6 +1,7 @@
 # Python
 python/python3.7.3_source
 pypy/
+mypy/
 dist
 BigInteger
 
