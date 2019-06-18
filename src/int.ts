@@ -20,15 +20,16 @@ import {StringOrNumber} from "./typings";
  
  */
 
-/*const _Boolean = Boolean;
+const oldProto = Boolean.prototype;
 Boolean = (val) => {
-    if (val instanceof Int)
-        val = +val;
+    console.log({val, 'val.valueOf()': val.valueOf()});
+    if (val instanceof Int) {
+        val = val.valueOf();
+    }
     
-    return _Boolean(val);
+    return !!(val);
 };
-*/
-
+Boolean.prototype = oldProto;
 /*const oldProto = Number.prototype;
 Number = (val) => {
     console.log({val});
