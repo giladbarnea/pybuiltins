@@ -1,7 +1,11 @@
-const clone = (func => obj => {
-    func.prototype = obj;
-    return new func;
-})(function () {
+const clone = function (func) {
+    console.log({func});
+    return function (obj) {
+        console.log({obj});
+        func.prototype = obj;
+        return new func;
+    };
+}(function () {
 });
 
 function extend(A, B) {
@@ -10,16 +14,17 @@ function extend(A, B) {
     return A;
 }
 
-let Person = function (first, last) {
+function Person(first, last) {
     this.firstName = first;
     this.lastName = last;
-};
+}
 
 Person.prototype.getFullName = function () {
     return this.firstName + ' ' + this.lastName;
 };
 
 const p1 = new Person('FN_1', 'LN_1');
+console.log({p1});
 
 function onPersonCreate() {
     console.log('Person called ' + this.getFullName() + ' created.');
