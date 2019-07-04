@@ -128,4 +128,4 @@ export function int(x, base?: StringOrNumber | Function): Int {
 
 let n1 = int(5);
 let n2 = int(10);
-console.log(n1 / n2);
+console.log('HI!!');
