@@ -58,10 +58,15 @@ Number.prototype = oldProto;
 */
 
 class Int extends Number {
+    toString(radix?: number): string {
+        return super.toString(radix)
+    }
     
-    // valueOf(): number {
-    //     console.log({arguments, 'this': this});
-    // }
+    
+    valueOf(): number {
+        return super.valueOf();
+    }
+    
     
     divide(y: Int | number) {
         
@@ -128,4 +133,7 @@ export function int(x, base?: StringOrNumber | Function): Int {
 
 let n1 = int(5);
 let n2 = int(10);
-console.log('HI!');
+let n0 = int(0);
+console.log('n0.valueOf(): ', n0.valueOf());
+console.log('n0.toString(): ', n0.toString());
+console.log('Boolean(n0): ', Boolean(n0));
