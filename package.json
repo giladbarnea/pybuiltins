@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "npm run build:live",
 		"build": "tsc -p .",
-		"test": "jest --watch",
+		"test": "jest --watchAll --bail=10",
 		"coverage": "jest --coverage",
 		"foo": "node scripts/foo.ts",
 		"build:live": "nodemon --watch src/int.ts --exec ts-node -T src/int.ts"
