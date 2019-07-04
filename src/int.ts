@@ -20,7 +20,7 @@ import {StringOrNumber} from "./typings";
  
  */
 
-const oldProto = Boolean.prototype;
+/*const oldProto = Boolean.prototype;
 Boolean = (val) => {
     console.log({val, 'val.valueOf()': val.valueOf()});
     if (val instanceof Int) {
@@ -30,6 +30,7 @@ Boolean = (val) => {
     return !!(val);
 };
 Boolean.prototype = oldProto;
+*/
 /*const oldProto = Number.prototype;
 Number = (val) => {
     console.log({val});
@@ -49,9 +50,18 @@ Number.prototype = oldProto;
 });
 */
 
+/*Object.defineProperty(Boolean.prototype, "valueOf", {
+    value(arg, ...args) {
+        console.log({arg, args});
+    }
+});
+*/
 
 class Int extends Number {
     
+    // valueOf(): number {
+    //     console.log({arguments, 'this': this});
+    // }
     
     divide(y: Int | number) {
         
@@ -114,3 +124,8 @@ class Int extends Number {
 export function int(x, base?: StringOrNumber | Function): Int {
     return new Int(x, base)
 }
+
+
+let n1 = int(5);
+let n2 = int(10);
+console.log(n1 / n2);

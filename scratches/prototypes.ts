@@ -1,4 +1,6 @@
 const clone = function (func) {
+    // func.prototype.getFullName()
+    // func.prototype.constructor is Person(first, last)
     console.log({func});
     return function (obj) {
         console.log({obj});
@@ -30,9 +32,14 @@ function onPersonCreate() {
     console.log('Person called ' + this.getFullName() + ' created.');
 }
 
-Person = (Person => extend(function () {
-    Person.apply(this, arguments);
-    onPersonCreate.call(this);
-}, Person))(Person);
+Person = function (Person) {
+    // Person is Person(first, last)
+    console.log({Person});
+    return extend(function () {
+        Person.apply(this, arguments);
+        onPersonCreate.call(this);
+    }, Person);
+}(Person);
 
 const p2 = new Person('FN_2', 'LN_2');
+console.log({p2});
