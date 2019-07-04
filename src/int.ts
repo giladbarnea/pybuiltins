@@ -112,15 +112,16 @@ export class Int extends Number {
             }
         }
         
-        if (mod != 0)
+        if (mod != 0) {
             if (x < 0)
                 super(Math.ceil(x));
             else
                 super(Math.floor(x));
-        else if (base != 10)
+        } else if (base != 10) {
             super(parseInt(x, <number>base));
-        else
+        } else {
             super(x);
+        }
     }
     
     
