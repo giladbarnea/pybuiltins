@@ -21,7 +21,7 @@ describe('CPython Tests', () => {
         // [repr(sys.maxsize), sys.maxsize],
         ['  1  ', 1],
     ];
-    describe('test_basic', () => {
+    test('test_basic', () => {
         expect(int(314)).toEqual(314);
         expect(int(3.14)).toEqual(3);
         // Check that conversion from float truncates towards zero
@@ -81,8 +81,12 @@ describe('CPython Tests', () => {
         expect(() => int(1, 12)).toThrow(TypeError);
         
         // TODO: fails
-        expect(int('0o123', 0)).toEqual(83);
         expect(int('0x123', 16)).toEqual(291);
+        expect(int('0x123', 0)).toEqual(291); // mine
+        expect(int('0x123', 16) === int('0x123', 0)).toBe(true); // mine
+        expect(int('0x123', 16)).toBe(int('0x123', 0)); // mine
+        expect(int('0o123', 0)).toEqual(83);
+        expect(int('0o123', 0)).toEqual(int('0o123', 8)); // mine
         
         const shouldThrow = [
             () => int('0x', 16),

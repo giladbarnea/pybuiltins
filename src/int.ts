@@ -137,4 +137,5 @@ let n0 = int(0);
 console.log('n0.valueOf(): ', n0.valueOf());
 console.log('n0.toString(): ', n0.toString());
 console.log('Boolean(n0): ', Boolean(n0));
+console.log("int('0x123', 16) ", int('0x123', 16));
 // console.log("int('0x', 16) ", int('0x', 16));

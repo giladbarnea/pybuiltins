@@ -7,7 +7,9 @@
 	"scripts": {
 		"start": "npm run build:live",
 		"build": "tsc -p .",
-		"test": "jest --watchAll --bail=10",
+		"testWatch": "jest --watchAll --bail=10",
+		"test": "jest",
+		"testInt": "jest src/test/int.spec.ts",
 		"coverage": "jest --coverage",
 		"foo": "node scripts/foo.ts",
 		"build:live": "nodemon --watch src/int.ts --exec ts-node -T src/int.ts"
@@ -15,6 +17,7 @@
 	"jest": {
 		"//": "https://jestjs.io/docs/en/configuration",
 		"verbose": true,
+		"bail": false,
 		"preset": "ts-jest",
 		"testEnvironment": "node",
 		"globals": {
