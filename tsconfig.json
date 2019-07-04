@@ -82,6 +82,7 @@
 	"exclude": [
 		"src/test/*",
 		"dist/*",
-		"scripts"
-	]
+		"scripts",
+		"scratches"
+		]
 }
