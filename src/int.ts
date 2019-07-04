@@ -57,7 +57,7 @@ Number.prototype = oldProto;
 });
 */
 
-class Int extends Number {
+export class Int extends Number {
     toString(radix?: number): string {
         return super.toString(radix)
     }
@@ -137,3 +137,4 @@ let n0 = int(0);
 console.log('n0.valueOf(): ', n0.valueOf());
 console.log('n0.toString(): ', n0.toString());
 console.log('Boolean(n0): ', Boolean(n0));
+// console.log("int('0x', 16) ", int('0x', 16));
