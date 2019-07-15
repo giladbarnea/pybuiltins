@@ -117,6 +117,7 @@ export class Int extends Number {
             console.bgcyan(`constructor, x: ${x}, base: ${base}`)
         }
         const orig = x;
+        let sign = 1;
         if (x === undefined || x === false) {
             if (log) console.log('x is undefined or false, super(0) return');
             super(0);
@@ -125,14 +126,14 @@ export class Int extends Number {
         const typeofx = typeof x;
         let errorIfNonZero = false;
         if (base === undefined) {
-            if (log) console.log('base undefined, base=10');
+            if (log) console.log('base === undefined, base=10');
             base = 10;
         } else {
             if (base === null) {
-                if (log) console.log('base null, TypeError');
+                if (log) console.log('base ===, TypeError');
                 throw new TypeError(`'null' object cannot be interpreted as an integer`);
             }
-            if (base != 0 && base < 2 || base > 36) {
+            if (base !== 0 && base < 2 || base > 36) {
                 if (log) console.log('base out of range, ValueError');
                 throw new ValueError("int() base must be >= 2 and <= 36, or 0");
             }
@@ -152,7 +153,8 @@ export class Int extends Number {
         }
         try {
             x = x.trim(); // "  +314 " => "+314"
-            if (log && orig !== x) console.log(`after x.trim(): ${x}`);
+            if (log && orig !== x) console.log(`after x.trim(): '${x}'`);
+            
         } catch (e) {
             // may not be string
         }
@@ -169,17 +171,23 @@ export class Int extends Number {
                 if (log) console.log('x is float or RegExp or mod isNan, ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
-            if (isBinary && base === 0) {
-                base = 2;
-            }
-            let slicedX = x;
-            if (log && slicedX !== x) console.log(`trimmed x ('${x}') to: '${slicedX}'`);
-            if (slicedX[0] === '-' || slicedX[0] === '+') {
-                if (log) console.log(`slicedX[0] is '${slicedX[0]}', slicing to ${slicedX.slice(1)}`);
-                slicedX = slicedX.slice(1); // "+314" => "314"
+            if (isBinary) {
+                if (log) console.log('isBinary');
+                if (base === 0) {
+                    if (log) console.log('base === 0, base=2');
+                    base = 2;
+                } else {
+                    if (log) console.log('base !== 0');
+                }
             }
             
-            for (let c of slicedX) {
+            // if (x[0] === '-' || x[0] === '+') {
+            //     if (x[0] === '-')
+            //         sign = -1;
+            //     if (log) console.log(`x[0] is '${x[0]}', slicing to '${x.slice(1)}'`);
+            //     x = x.slice(1); // "+314" => "314"
+            // }
+            for (let c of x) {
                 let convertedC;
                 if (RegExp(/[a-z][A-Z]/).test(c)) {
                     convertedC = parseInt(c, 36);

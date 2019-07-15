@@ -359,50 +359,50 @@ describe('Bitwise', () => {
     });
     describe('binary numbers', () => {
         // TODO: int('1b111101',2) etc. should fail
-        test('number, no base', () => expect(int(0b111101)).toEqual(61));
-        test('number, base 0', () => expect(() => int(0b111101, 0)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
-        test('number, base 1', () => expect(() => int(0b111101, 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0")));
+        
+        test('number, no base', () => expect(int(0b11)).toEqual(3));
+        test('number, base 0', () => expect(() => int(0b11, 0)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
+        test('number, base 1', () => expect(() => int(0b11, 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0")));
         
         for (let i = 2; i <= 36; i++)
-            test(`number, base ${i}`, () => expect(() => int(0b111101, i)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
+            test(`number, base ${i}`, () => expect(() => int(0b11, i)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
         
-        //int('07111101', 0) throws, int('0b111101', 0) doesn't. int('0c111101', 0) throws, int('7111101', 0) doesn't.
-        test('string literal, base 0', () => expect(int('0b111101', 0)).toEqual(61));
-        test('string literal, base 1', () => expect(() => int('0b111101', 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0")));
-        test('string literal, base 1 with spaces', () => expect(() => int('  0b111101', 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0")));
-        test('string literal with 0b, base 2', () => expect(int('0b111101', 2, true)).toEqual(61));
-        test('string literal with 0b, base 2 with spaces', () => expect(int('  0b111101', 2, true)).toEqual(61));
-        test('string literal without 0b, base 2', () => expect(int('111101', 2, true)).toEqual(61));
-        test('string literal without 0b, base 2 with spaces', () => expect(int('  111101', 2, true)).toEqual(61));
+        //int('07111101', 0) throws, int('0b11', 0) doesn't. int('0c111101', 0) throws, int('7111101', 0) doesn't.
+        test('string literal, base 0', () => expect(int('0b11', 0)).toEqual(3));
+        test('string literal, base 1', () => expect(() => int('0b11', 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0")));
+        test('string literal, base 1 with spaces', () => expect(() => int('  0b11', 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0")));
+        test('string literal with 0b, base 2', () => expect(int('0b11', 2, true)).toEqual(3));
+        test('string literal with 0b, base 2 with spaces', () => expect(int('  0b11', 2, true)).toEqual(3));
+        test('string literal without 0b, base 2', () => expect(int('11', 2, true)).toEqual(3));
+        test('string literal without 0b, base 2 with spaces', () => expect(int('  11', 2, true)).toEqual(3));
         for (let i = 3; i <= 11; i++)
-            test(`string literal, base: ${i}`, () => expect(() => int('0b111101', i)).toThrow(new ValueError(`invalid literal for int() with base ${i}: '0b111101'`)));
-        test('string literal, base 12', () => expect(int('0b111101', 12)).toEqual(33117265));
-        test('string literal, base 13', () => expect(int('0b111101', 13)).toEqual(53497120));
-        test('string literal, base 14', () => expect(int('0b111101', 14)).toEqual(83404077));
-        test('string literal, base 15', () => expect(int('0b111101', 15)).toEqual(126110476));
-        test('string literal, base 16', () => expect(int('0b111101', 16)).toEqual(185667841));
-        test('string literal, base 17', () => expect(int('0b111101', 17)).toEqual(267021840));
-        test('string literal, base 18', () => expect(int('0b111101', 18)).toEqual(376135165));
-        test('string literal, base 19', () => expect(int('0b111101', 19)).toEqual(520118332));
-        test('string literal, base 20', () => expect(int('0b111101', 20)).toEqual(707368401));
-        test('string literal, base 21', () => expect(int('0b111101', 21)).toEqual(947715616));
-        test('string literal, base 22', () => expect(int('0b111101', 22)).toEqual(1252577965));
-        test('string literal, base 23', () => expect(int('0b111101', 23)).toEqual(1635123660));
-        test('string literal, base 24', () => expect(int('0b111101', 24)).toEqual(2110441537));
-        test('string literal, base 25', () => expect(int('0b111101', 25)).toEqual(2695719376));
-        test('string literal, base 26', () => expect(int('0b111101', 26)).toEqual(3410430141));
-        test('string literal, base 27', () => expect(int('0b111101', 27)).toEqual(4276526140));
-        test('string literal, base 28', () => expect(int('0b111101', 28)).toEqual(5318641105));
-        test('string literal, base 29', () => expect(int('0b111101', 29)).toEqual(6564300192));
-        test('string literal, base 30', () => expect(int('0b111101', 30)).toEqual(8044137901));
-        test('string literal, base 31', () => expect(int('0b111101', 31)).toEqual(9792123916));
-        test('string literal, base 32', () => expect(int('0b111101', 32)).toEqual(11845796865));
-        test('string literal, base 33', () => expect(int('0b111101', 33)).toEqual(14246506000));
-        test('string literal, base 34', () => expect(int('0b111101', 34)).toEqual(17039660797));
-        test('string literal, base 35', () => expect(int('0b111101', 35)).toEqual(20274988476));
-        test('string literal, base 36', () => expect(int('0b111101', 36)).toEqual(24006799441));
+            test(`string literal, base: ${i}`, () => expect(() => int('0b11', i)).toThrow(new ValueError(`invalid literal for int() with base ${i}: '0b11'`)));
+        test('string literal, base 12', () => expect(int('0b11', 12)).toEqual(1597));
+        test('string literal, base 13', () => expect(int('0b11', 13)).toEqual(1873));
+        test('string literal, base 14', () => expect(int('0b11', 14)).toEqual(2171));
+        test('string literal, base 15', () => expect(int('0b11', 15)).toEqual(2491));
+        test('string literal, base 16', () => expect(int('0b11', 16)).toEqual(2833));
+        test('string literal, base 17', () => expect(int('0b11', 17)).toEqual(3197));
+        test('string literal, base 18', () => expect(int('0b11', 18)).toEqual(3583));
+        test('string literal, base 19', () => expect(int('0b11', 19)).toEqual(3991));
+        test('string literal, base 20', () => expect(int('0b11', 20)).toEqual(4421));
+        test('string literal, base 21', () => expect(int('0b11', 21)).toEqual(4873));
+        test('string literal, base 22', () => expect(int('0b11', 22)).toEqual(5347));
+        test('string literal, base 23', () => expect(int('0b11', 23)).toEqual(5843));
+        test('string literal, base 24', () => expect(int('0b11', 24)).toEqual(6361));
+        test('string literal, base 25', () => expect(int('0b11', 25)).toEqual(6901));
+        test('string literal, base 26', () => expect(int('0b11', 26)).toEqual(7463));
+        test('string literal, base 27', () => expect(int('0b11', 27)).toEqual(8047));
+        test('string literal, base 28', () => expect(int('0b11', 28)).toEqual(8653));
+        test('string literal, base 29', () => expect(int('0b11', 29)).toEqual(9281));
+        test('string literal, base 30', () => expect(int('0b11', 30)).toEqual(9931));
+        test('string literal, base 31', () => expect(int('0b11', 31)).toEqual(10603));
+        test('string literal, base 32', () => expect(int('0b11', 32)).toEqual(11297));
+        test('string literal, base 33', () => expect(int('0b11', 33)).toEqual(12013));
+        test('string literal, base 34', () => expect(int('0b11', 34)).toEqual(12751));
+        test('string literal, base 35', () => expect(int('0b11', 35)).toEqual(13511));
         
-        test('string literal, no base, throws', () => expect(() => int('0b111101')).toThrow(new ValueError(`invalid literal for int() with base 10: '0b111101'`)));
+        test('string literal, no base, throws', () => expect(() => int('0b11', undefined, true)).toThrow(new ValueError(`invalid literal for int() with base 10: '0b11'`)));
         
     });
     describe.skip('hexadecimal numbers', () => {
