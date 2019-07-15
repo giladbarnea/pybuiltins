@@ -81,22 +81,29 @@ export class Int extends Number {
     }
     
     
-    constructor(x = undefined, base?: string | number | Function) {
+    constructor(x = undefined, base?: string | number | Function, log?: boolean) {
         if (x === undefined || x === false) {
+            if (log) console.log('x is undefined or false, super(0) return');
             super(0);
             return
         }
         const typeofx = typeof x;
         let errorIfNonZero = false;
         if (base === undefined) {
+            if (log) console.log('base undefined, base=10');
             base = 10;
         } else {
-            if (base === null)
+            if (base === null) {
+                if (log) console.log('base null, TypeError');
                 throw new TypeError(`'null' object cannot be interpreted as an integer`);
-            if (base != 0 && base < 2 || base > 36)
+            }
+            if (base != 0 && base < 2 || base > 36) {
+                if (log) console.log('base out of range, ValueError');
                 throw new ValueError("int() base must be >= 2 and <= 36, or 0");
+            }
             // base was passed explicitly
             if (typeofx === 'number') {
+                if (log) console.log('x is number, TypeError');
                 throw new TypeError(`int() can't convert non-string with explicit base`)
             }
         }
@@ -104,8 +111,10 @@ export class Int extends Number {
         const typeofbase = typeof base;
         
         
-        if (typeofx !== 'number' && typeofx !== 'string')
+        if (typeofx !== 'number' && typeofx !== 'string') {
+            if (log) console.log('typeof x isnt number or string, TypeError');
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
+        }
         const isHexaDecimal = x[1] === 'x' || x[1] === 'X';
         const isOctal = x[1] === 'o' || x[1] === 'O';
         const isBinary = x[1] === 'b' || x[1] === 'B';
@@ -114,39 +123,50 @@ export class Int extends Number {
         if (typeofx === 'string') {
             if (isFloat || // int('1.5')
                 !RegExp(/\d/).test(x) || // int("")
-                isNaN(mod)) // int("+ 314")
+                isNaN(mod)) { // int("+ 314")
+                if (log) console.log('typeof x string and x is float or RegExp or mod isNan, ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
-        }
-        
-        
-        if (typeofx === 'string') {
+            }
             for (let c of x) {
                 if (c >= base && c != '0') { // int("07", 5)
+                    if (log) console.log(`char ${c} bigger than base ${base}, ValueError`);
                     throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
                 }
             }
         }
         
+        
         if (isFloat) {
-            if (x < 0)
+            if (x < 0) {
+                if (log) console.log(`x < 0, super(Math.ceil(x)) return`);
                 super(Math.ceil(x));
-            else
+            } else {
+                if (log) console.log(`x >= 0, super(Math.floor(x)) return`);
                 super(Math.floor(x));
+            }
             return
         }
         if (base === 0) {
+            if (log) console.log(`base === 0`);
             // CPython Objects\longobject.c.PyLong_FromString (lineno 2144)
             if (x[0] !== '0') {
+                if (log) console.log(`0th digit not '0', base = 10`);
                 base = 10;
             } else {
+                if (log) console.log(`0th digit is '0'`);
                 if (isHexaDecimal) {
+                    if (log) console.log(`isHexaDecimal, base = 16`);
                     base = 16;
                 } else {
+                    if (log) console.log(`not isHexaDecimal`);
                     if (isOctal) {
+                        if (log) console.log(`isOctal, base = 8`);
                         base = 8;
                     } else if (isBinary) {
+                        if (log) console.log(`isBinary, base = 2`);
                         base = 2;
                     } else {
+                        if (log) console.log(`not isHexaDecimal or isOctal or isBinary, base = 10`);
                         /* "old" (C-style) octal literal, now invalid.
                         it might still be zero though */
                         errorIfNonZero = true;
@@ -159,12 +179,15 @@ export class Int extends Number {
             (base === 16 && isHexaDecimal) ||
             (base === 8 && isOctal) ||
             (base === 2 && isBinary))) {
+            if (log) console.log(`0th digit is 0 and either isHexaDecimal or isOctal or isBinary with matching base, x.slice(2)`);
             x = x.slice(2);
             
         }
         if (base !== 10) {
+            if (log) console.log(`base !== 10, super(parseInt(x, <number>base)) return`);
             super(parseInt(x, <number>base));
         } else {
+            if (log) console.log(`base === 10, super(x) return`);
             super(x);
         }
     }
@@ -172,8 +195,8 @@ export class Int extends Number {
     
 }
 
-export function int(x = undefined, base?: string | number | Function): Int {
-    return new Int(x, base)
+export function int(x = undefined, base?: string | number | Function, log?: boolean): Int {
+    return new Int(x, base, log)
 }
 
 // int('_1');
