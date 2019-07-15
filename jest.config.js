@@ -1,7 +1,6 @@
 module.exports = {
 	"//": "https://jestjs.io/docs/en/configuration",
 	"verbose": true,
-	"bail": false,
 	"preset": "ts-jest",
 	"testEnvironment": "node",
 	"globals": {

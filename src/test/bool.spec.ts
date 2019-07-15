@@ -1,7 +1,7 @@
 import {bool} from "../bool";
 import {int} from "../int";
 
-test('subclass', () => {
+test.skip('subclass', () => {
     // /Lib/test/test_bool.py.test_subclass
     expect(() => {
         class C extends bool {
@@ -9,7 +9,7 @@ test('subclass', () => {
         }
     }).toThrowError()
 });
-test('math', () => {
+test.skip('math', () => {
     // /Lib/test/test_bool.py.test_math:106
     for (let b of [bool(false), bool(true)]) {
         for (let i of [0, 1, 2]) {
@@ -20,20 +20,20 @@ test('math', () => {
     
 });
 describe('empty list', () => {
-    it('should be falsey when passed an empty list', () => {
+    it.skip('should be falsey when passed an empty list', () => {
         const actual = bool([]);
         expect(actual).toEqual(false)
     });
 });
 
 describe('false', () => {
-    it('should be falsey when passed false', () => {
+    it.skip('should be falsey when passed false', () => {
         const actual = bool(false);
         expect(actual).toEqual(false)
     });
 });
 describe('empty object', () => {
-    it('should be falsey when passed empty object', () => {
+    it.skip('should be falsey when passed empty object', () => {
         expect(bool({})).toEqual(false);
     });
 });

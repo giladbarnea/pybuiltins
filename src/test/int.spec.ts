@@ -22,6 +22,7 @@ describe('CPython Tests', () => {
         ['  1  ', 1],
     ];
     test('test_basic', () => {
+        expect(int()).toEqual(0);
         expect(int(314)).toEqual(314);
         expect(int(3.14)).toEqual(3);
         // Check that conversion from float truncates towards zero

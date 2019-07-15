@@ -67,7 +67,7 @@ export class Int extends Number {
     
     valueOf(): number {
         let ret = super.valueOf();
-        console.log('valueOf, returning: ', ret);
+        // console.log('valueOf, returning: ', ret);
         return ret;
     }
     
@@ -82,8 +82,11 @@ export class Int extends Number {
     }
     
     
-    constructor(x, base?: StringOrNumber | Function) {
-        
+    constructor(x = undefined, base?: StringOrNumber | Function) {
+        if (x === undefined) {
+            super(0);
+            return
+        }
         const typeofx = typeof x;
         let errorIfNonZero = false;
         if (base === undefined) {
@@ -94,6 +97,7 @@ export class Int extends Number {
                 throw new TypeError(`int() can't convert non-string with explicit base`)
             }
         }
+        
         const typeofbase = typeof base;
         if (base === null)
             throw new TypeError(`'null' object cannot be interpreted as an integer`);
@@ -102,15 +106,15 @@ export class Int extends Number {
         
         if (typeofx !== 'number' && typeofx !== 'string')
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
-        if (!RegExp(/\d/).test(x))
+        if (!RegExp(/\d/).test(x)) // int("")
             throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
         
         const mod = x % 1;
-        if (isNaN(mod)) // TODO: does this ever happen?
+        if (isNaN(mod)) // int("+ 314")
             throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
         if (typeofx === 'string') {
             for (let c of x) {
-                if (c >= base && c != '0') {
+                if (c >= base && c != '0') { // int("07", 5)
                     throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
                 }
             }
@@ -157,12 +161,12 @@ export class Int extends Number {
     
 }
 
-export function int(x, base?: StringOrNumber | Function): Int {
-    if(x==='1.5')debugger;
+export function int(x = undefined, base?: StringOrNumber | Function): Int {
+    if (x === '1.5') debugger;
     return new Int(x, base)
 }
 
-
+// int('_1');
 // let n1 = int(5);
 // let n2 = int(10);
 // let n0 = int(0);
