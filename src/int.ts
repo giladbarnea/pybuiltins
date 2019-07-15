@@ -1,5 +1,4 @@
 import {ZeroDivisionError, ValueError} from "./exceptions"
-import {StringOrNumber} from "./typings";
 
 
 /**
@@ -82,8 +81,8 @@ export class Int extends Number {
     }
     
     
-    constructor(x = undefined, base?: StringOrNumber | Function) {
-        if (x === undefined) {
+    constructor(x = undefined, base?: string | number | Function) {
+        if (x === undefined || x === false) {
             super(0);
             return
         }
@@ -106,8 +105,10 @@ export class Int extends Number {
         
         if (typeofx !== 'number' && typeofx !== 'string')
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
-        if (!RegExp(/\d/).test(x)) // int("")
-            throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+        if (typeofx === 'string') {
+            if (x % 1 !== 0 || !RegExp(/\d/).test(x)) // int("")
+                throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+        }
         
         const mod = x % 1;
         if (isNaN(mod)) // int("+ 314")
@@ -161,7 +162,7 @@ export class Int extends Number {
     
 }
 
-export function int(x = undefined, base?: StringOrNumber | Function): Int {
+export function int(x = undefined, base?: string | number | Function): Int {
     if (x === '1.5') debugger;
     return new Int(x, base)
 }

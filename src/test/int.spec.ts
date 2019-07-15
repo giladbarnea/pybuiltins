@@ -23,6 +23,7 @@ describe('CPython Tests', () => {
     ];
     test('test_basic', () => {
         expect(int()).toEqual(0);
+        expect(int(false)).toEqual(0);
         expect(int(314)).toEqual(314);
         expect(int(3.14)).toEqual(3);
         // Check that conversion from float truncates towards zero
@@ -323,6 +324,12 @@ describe('Int vs pure JS', () => {
     
 });
 describe.skip('Int vs pythonlang', () => {
+    test('TypeError', () => {
+        expect(() => int(list()))
+            .toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not 'list'`));
+        expect(() => int(dict()))
+            .toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not 'dict'`));
+    });
     test('bool', () => {
         let pos = chance.integer({min: 1});
         let neg = chance.integer({max: 0});
@@ -437,6 +444,7 @@ describe('test_TypeError', () => {
         const badargs = [
             [int],
             [null],
+            [[]],
         ];
         for (let [val, base] of badargs) {
             expect(() => int(val, base))
