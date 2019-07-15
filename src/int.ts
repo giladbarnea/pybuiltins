@@ -59,12 +59,16 @@ Number.prototype = oldProto;
 
 export class Int extends Number {
     toString(radix?: number): string {
-        return super.toString(radix)
+        let ret = super.toString(radix);
+        console.log('toString, returning: ', ret);
+        return ret
     }
     
     
     valueOf(): number {
-        return super.valueOf();
+        let ret = super.valueOf();
+        console.log('valueOf, returning: ', ret);
+        return ret;
     }
     
     
@@ -80,8 +84,8 @@ export class Int extends Number {
     
     constructor(x, base?: StringOrNumber | Function) {
         
-        
         const typeofx = typeof x;
+        let errorIfNonZero = false;
         if (base === undefined) {
             base = 10;
         } else {
@@ -93,7 +97,7 @@ export class Int extends Number {
         const typeofbase = typeof base;
         if (base === null)
             throw new TypeError(`'null' object cannot be interpreted as an integer`);
-        if ((base < 2 || base > 36) && base != 0)
+        if ((base != 0 && base < 2) || base > 36)
             throw new ValueError("int() base must be >= 2 and <= 36, or 0");
         
         if (typeofx !== 'number' && typeofx !== 'string')
@@ -102,7 +106,7 @@ export class Int extends Number {
             throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
         
         const mod = x % 1;
-        if (isNaN(mod))
+        if (isNaN(mod)) // TODO: does this ever happen?
             throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
         if (typeofx === 'string') {
             for (let c of x) {
@@ -117,10 +121,36 @@ export class Int extends Number {
                 super(Math.ceil(x));
             else
                 super(Math.floor(x));
-        } else if (base != 10) {
-            super(parseInt(x, <number>base));
         } else {
-            super(x);
+            if (base === 0) {
+                // CPython Objects\longobject.c.PyLong_FromString (lineno 2144)
+                if (x[0] != '0') {
+                    base = 10;
+                } else if (x[1] === 'x' || x[1] === 'X') {
+                    base = 16;
+                } else if (x[1] === 'o' || x[1] === 'O') {
+                    base = 8;
+                } else if (x[1] === 'b' || x[1] === 'B') {
+                    base = 2;
+                } else {
+                    /* "old" (C-style) octal literal, now invalid.
+                    it might still be zero though */
+                    errorIfNonZero = true;
+                    base = 10;
+                }
+            }
+            if (x[0] == '0' &&
+                ((base == 16 && (x[1] == 'x' || x[1] == 'X')) ||
+                    (base == 8 && (x[1] == 'o' || x[1] == 'O')) ||
+                    (base == 2 && (x[1] == 'b' || x[1] == 'B')))) {
+                x = x.slice(2);
+                
+            }
+            if (base != 10) {
+                super(parseInt(x, <number>base));
+            } else {
+                super(x);
+            }
         }
     }
     
@@ -128,15 +158,16 @@ export class Int extends Number {
 }
 
 export function int(x, base?: StringOrNumber | Function): Int {
+    if(x==='1.5')debugger;
     return new Int(x, base)
 }
 
 
-let n1 = int(5);
-let n2 = int(10);
-let n0 = int(0);
-console.log('n0.valueOf(): ', n0.valueOf());
-console.log('n0.toString(): ', n0.toString());
-console.log('Boolean(n0): ', Boolean(n0));
-console.log("int('0x123', 16) ", int('0x123', 16));
+// let n1 = int(5);
+// let n2 = int(10);
+// let n0 = int(0);
+// console.log('n0.valueOf(): ', n0.valueOf());
+// console.log('n0.toString(): ', n0.toString());
+// console.log('Boolean(n0): ', Boolean(n0));
+// console.log("int('0x123', 16) ", int('0x123', 16));
 // console.log("int('0x', 16) ", int('0x', 16));

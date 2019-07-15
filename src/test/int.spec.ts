@@ -74,10 +74,11 @@ describe('CPython Tests', () => {
         
         
         /*x = -1-sys.maxsize
-        self.assertEqual(x >> 1, x//2)
         */
+        let x = int('1' * 600);
+        expect(x >> 1).toEqual(x / 2);
         
-        expect(int('1' * 600)).toBeInstanceOf(Int);
+        expect(x).toBeInstanceOf(Int);
         expect(() => int(1, 12)).toThrow(TypeError);
         
         expect(int('0x123', 16)).toEqual(291);
@@ -222,6 +223,17 @@ describe('CPython Tests', () => {
         expect(int('1z141z5', 36)).toEqual(4294967297)
         */
     });
+    test('bitwise operators', () => {
+    
+    });
+    describe('longobject.c', () => {
+        // Objects\longobject.c.PyLong_FromString (2117)
+        test('PyLong_FromString', () => {
+            expect(int('10')).toEqual(10);
+            expect(int('+10')).toEqual(10);
+            expect(int('-10')).toEqual(-10);
+        })
+    })
 });
 describe('PyPy Tests', () => {
     test('inplace', () => {
@@ -391,27 +403,25 @@ describe('test_ValueError', () => {
     });
     
     test('invalid literal', () => {
+        expect(() => int("")).toThrow(new ValueError(`invalid literal for int() with base 10: ''`));
+        expect(() => int('')).toThrow(new ValueError(`invalid literal for int() with base 10: ''`));
+        expect(() => int(``)).toThrow(new ValueError(`invalid literal for int() with base 10: ''`));
+        expect(() => int(" ")).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`));
+        expect(() => int(' ')).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`));
+        expect(() => int(` `)).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`));
+        expect(() => int('  \t\t  ')).toThrow(new ValueError(`invalid literal for int() with base 10: '  \t\t  '`));
+        expect(() => int("+ 314")).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`));
+        expect(() => int("+ 314", undefined)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`));
+        expect(() => int("+ 314", 25)).toThrow(new ValueError(`invalid literal for int() with base 25: '+ 314'`));
+        expect(() => int("+ 314", 10)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`));
+        expect(() => int("+ 314", 0)).toThrow(new ValueError(`invalid literal for int() with base 0: '+ 314'`));
+        expect(() => int('  1x')).toThrow(new ValueError(`invalid literal for int() with base 10: '  1x'`));
+        expect(() => int('_1')).toThrow(new ValueError(`invalid literal for int() with base 10: '_1'`));
+        expect(() => int('1.5')).toThrow(new ValueError(`invalid literal for int() with base 10: '1.5'`));
         // TODO:
         //  ['  1\02  ', ValueError],
         //  ["\u0200", ValueError]
-        const invalids = [
-            [""],
-            [''],
-            [' '],
-            [' '],
-            ['  \t\t  '],
-            ["+ 314",],
-            ["+ 314"],
-            ["+ 314", undefined],
-            ["+ 314", 25],
-            ["+ 314", 10],
-            ["+ 314", 0],
-            ['  1x']
-        ];
-        for (let [val, base] of invalids) {
-            expect(() => int(val, base))
-                .toThrow(new ValueError(`invalid literal for int() with base ${base === undefined ? 10 : base}: '${val}'`));
-        }
+        
     });
     test('base out of range', () => {
         for (let [val, base] of [["+ 314", 1], ["+ 314", 37]]) {

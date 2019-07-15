@@ -14,19 +14,6 @@
 		"foo": "node scripts/foo.ts",
 		"build:live": "nodemon --watch src/int.ts --exec ts-node -T src/int.ts"
 	},
-	"jest": {
-		"//": "https://jestjs.io/docs/en/configuration",
-		"verbose": true,
-		"bail": false,
-		"preset": "ts-jest",
-		"testEnvironment": "node",
-		"globals": {
-			"ts-jest": {
-				"//": "https://kulshekhar.github.io/ts-jest/user/config/#options",
-				"diagnostics": false
-			}
-		}
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/giladbarnea/pythonjs.git"
