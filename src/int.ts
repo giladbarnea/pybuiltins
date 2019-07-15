@@ -189,15 +189,19 @@ export class Int extends Number {
                 mod,
                 isFloat,
                 'nosign[0]: ': nosign[0],
-                'RegExp(/[a-zA-Z]/).test(letter)': RegExp(/[a-zA-Z]/).test(letter),
-                'parseInt(x, base)': parseInt(x, base)
+                'letter && RegExp(/[a-zA-Z]/).test(letter)': letter && RegExp(/[a-zA-Z]/).test(letter),
+                'parseInt(x, base)': parseInt(x, base),
+                'nosign[2]': nosign[2]
                 
             });
-            /*if (isFloat) {
+            if (isFloat) {
                 if (log) console.log('isFloat, valueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
-            */
+            if (letter && RegExp(/[a-zA-Z]/).test(letter) && nosign[2] === undefined) {
+                if (log) console.log('has letter, nosign[2] is undefined');
+                throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
+            }
             if (mod !== 0 && Boolean(parseInt(x, base))) {
                 if (log) console.log(`mod !== 0 and Boolean(parseInt), super(parseInt(x, base)) and return`);
                 super(parseInt(x, base));
