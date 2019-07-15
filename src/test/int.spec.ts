@@ -357,7 +357,56 @@ describe('Bitwise', () => {
         // https://wiki.python.org/moin/BitwiseOperators
         
     });
-    describe('binary numbers', () => {
+    describe('numbers with letters must have some base', () => {
+        test("int('0711')", () => expect(int('0711')).toEqual(711));
+        test("int('0b11')", () => expect(() => int('0b11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0b11'`)));
+        test("int('0o11')", () => expect(() => int('0o11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0o11'`)));
+        test("int('0x11')", () => expect(() => int('0x11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0x11'`)));
+        test("int('0c11')", () => expect(() => int('0c11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0c11'`)));
+        test("int('11')", () => expect(int('11')).toEqual(11));
+    });
+    describe('base 0 works only if bin/hex/oct, otherwise only if x["0"] != 0', () => {
+        test("int('0711',0)", () => expect(() => int('0711', 0)).toThrow(new ValueError(`invalid literal for int() with base 0: '0711'`)));
+        test("int('711',0)", () => expect(int('711', 0)).toEqual(711));
+        test("int('0b11',0)", () => expect(int('0b11', 0)).toEqual(3));
+        test("int('0o11',0)", () => expect(int('0o11', 0)).toEqual(9));
+        test("int('0x11',0)", () => expect(int('0x11', 0)).toEqual(17));
+        test("int('0c11',0)", () => expect(() => int('0c11', 0)).toThrow(new ValueError(`invalid literal for int() with base 0: '0c11'`)));
+        test("int('11',0)", () => expect(int('11', 0)).toEqual(11));
+    });
+    describe('base 2 works only if all digits < 2, or with true binary (digits == 11)', () => {
+        test("int('0711', 2)", () => expect(() => int('0711', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0711'`)));
+        test("int('0b11', 2)", () => expect(int('0b11', 2)).toEqual(3));
+        test("int('0o11', 2)", () => expect(() => int('0o11', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0o11'`)));
+        test("int('0x11', 2)", () => expect(() => int('0x11', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0x11'`)));
+        test("int('0c11', 2)", () => expect(() => int('0c11', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0c11'`)));
+        test("int('11', 2)", () => expect(int('11', 2)).toEqual(3));
+    });
+    describe('base 2 works only if all digits < 2, or with true binary (digits == 12)', () => {
+        test("int('0712', 2)", () => expect(() => int('0712', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0712'`)));
+        test("int('0b12', 2)", () => expect(() => int('0b12', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0b12'`)));
+        test("int('0o12', 2)", () => expect(() => int('0o12', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0o12'`)));
+        test("int('0x12', 2)", () => expect(() => int('0x12', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0x12'`)));
+        test("int('0c12', 2)", () => expect(() => int('0c12', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0c12'`)));
+        test("int('12', 2)", () => expect(() => int('12', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '12'`)));
+    });
+    describe('bin: base 0, 2 or > 11; oct: base 0, 8 or > 24; bin: base 0, 2 or > 11; hex: base 0, 16 or > 33; ', () => {
+        test("int('0711', 8)", () => expect(int('711', 8)).toEqual(457));
+        test("int('0b11', 11)", () => expect(() => int('0b11', 11)).toThrow(new ValueError(`invalid literal for int() with base 11: '0b11'`)));
+        test("int('0b11', 12)", () => expect(int('0b11', 12)).toEqual(1597);
+        test("int('0o11', 8)", () => expect(int('0o11', 8)).toEqual(9));
+        test("int('0o11', 24)", () => expect(() => int('0o11', 24)).toThrow(new ValueError(`invalid literal for int() with base 24: '0o11'`)));
+        test("int('0o11', 25)", () => expect(int('0o11', 25)).toEqual(15026));
+        test("int('0x11', 16)", () => expect(int('0x11', 16)).toEqual(17));
+        test("int('0x11', 33)", () => expect(() => int('0x11', 33)).toThrow(new ValueError(`invalid literal for int() with base 33: '0x11'`)));
+        test("int('0x11', 34)", () => expect(int('0x11', 34)).toEqual(38183));
+        test("int('0c11', 13)", () => expect(int('0c11', 13)).toEqual(2042));
+        let base = chance.integer({min: 2, max: 36});
+        test(`int('11', ${base})`, () => expect(int('11', base)).toEqual(parseInt('11', base)));
+    });
+    
+    
+    describe.skip('binary numbers', () => {
         // TODO: int('1b111101',2) etc. should fail
         
         test('number, no base', () => expect(int(0b11)).toEqual(3));
@@ -371,10 +420,10 @@ describe('Bitwise', () => {
         test('string literal, base 0', () => expect(int('0b11', 0)).toEqual(3));
         test('string literal, base 1', () => expect(() => int('0b11', 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0")));
         test('string literal, base 1 with spaces', () => expect(() => int('  0b11', 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0")));
-        test('string literal with 0b, base 2', () => expect(int('0b11', 2, true)).toEqual(3));
-        test('string literal with 0b, base 2 with spaces', () => expect(int('  0b11', 2, true)).toEqual(3));
-        test('string literal without 0b, base 2', () => expect(int('11', 2, true)).toEqual(3));
-        test('string literal without 0b, base 2 with spaces', () => expect(int('  11', 2, true)).toEqual(3));
+        test('string literal with 0b, base 2', () => expect(int('0b11', 2)).toEqual(3));
+        test('string literal with 0b, base 2 with spaces', () => expect(int('  0b11', 2)).toEqual(3));
+        test('string literal without 0b, base 2', () => expect(int('11', 2)).toEqual(3));
+        test('string literal without 0b, base 2 with spaces', () => expect(int('  11', 2)).toEqual(3));
         for (let i = 3; i <= 11; i++)
             test(`string literal, base: ${i}`, () => expect(() => int('0b11', i)).toThrow(new ValueError(`invalid literal for int() with base ${i}: '0b11'`)));
         test('string literal, base 12', () => expect(int('0b11', 12)).toEqual(1597));
