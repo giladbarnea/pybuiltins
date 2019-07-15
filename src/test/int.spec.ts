@@ -451,7 +451,7 @@ describe('Bitwise', () => {
         test('string literal, base 34', () => expect(int('0b11', 34)).toEqual(12751));
         test('string literal, base 35', () => expect(int('0b11', 35)).toEqual(13511));
         
-        test('string literal, no base, throws', () => expect(() => int('0b11', undefined, true)).toThrow(new ValueError(`invalid literal for int() with base 10: '0b11'`)));
+        test('string literal, no base, throws', () => expect(() => int('0b11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0b11'`)));
         
     });
     describe.skip('hexadecimal numbers', () => {

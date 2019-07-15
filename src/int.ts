@@ -188,17 +188,25 @@ export class Int extends Number {
                 } else {
                     if (log) console.log('not isSpecial');
                     if (nosign[0] !== '0') {
-                        console.log(`nosign[0] !== '0', base=10`);
+                        if (log) console.log(`nosign[0] !== '0', base=10`);
                         base = 10;
                     } else {
-                        console.log(`nosign[0] === '0', base=10`);
+                        if (log) console.log(`nosign[0] === '0', base=10`);
                         
                     }
                 }
             }
             
             
-            if (!(isSpecial && base === specialBase) && nosign[0] !== 0) {
+            if (base !== specialBase) {
+                if (log) console.log(`base !== specialBase (${base} !== ${specialBase})`);
+                /**
+                 * We don't want to check specials with matching base (ie bin:2, oct:8, hex: 16).
+                 * When special and base matches, base === specialBase.
+                 * Same for special with base 0.
+                 * */
+                // specialBase may be undefined if not special
+                // otherwise int('0x123', 16) throws
                 for (let c of x) {
                     let convertedC;
                     if (RegExp(/[a-zA-Z]/).test(c)) {
