@@ -225,9 +225,7 @@ describe('CPython Tests', () => {
         expect(int('1z141z5', 36)).toEqual(4294967297)
         */
     });
-    test('bitwise operators', () => {
     
-    });
     describe('longobject.c', () => {
         // Objects\longobject.c.PyLong_FromString (2117)
         test('PyLong_FromString', () => {
@@ -354,6 +352,20 @@ describe.skip('Int vs pythonlang', () => {
         
     });
 });
+describe('Bitwise', () => {
+    test('bitwise operators', () => {
+        // https://wiki.python.org/moin/BitwiseOperators
+        
+    });
+    test('binary numbers', () => {
+        expect(int(0b111101)).toEqual(61);
+        expect(() => int('0b111101')).toThrow(new ValueError(`invalid literal for int() with base 10: '0b111101'`));
+    });
+    test('decimal numbers', () => {
+    
+    });
+});
+
 describe('literal_tricky_bases', () => {
     test('return normal value', () => {
         
@@ -394,7 +406,7 @@ describe('literal_tricky_bases', () => {
     
     
 });
-describe('test_ValueError', () => {
+describe('ValueError misc', () => {
     // \pypy\objspace\std\test\test_intobject.py test_leading_zero_literal()
     test('pypy/objspace/std/test/test_intobject.py test_leading_zero_literal()', () => {
         const invalids = [
@@ -426,6 +438,7 @@ describe('test_ValueError', () => {
         expect(() => int('  1x')).toThrow(new ValueError(`invalid literal for int() with base 10: '  1x'`));
         expect(() => int('_1')).toThrow(new ValueError(`invalid literal for int() with base 10: '_1'`));
         expect(() => int('1.5')).toThrow(new ValueError(`invalid literal for int() with base 10: '1.5'`));
+        expect(() => int('hello5')).toThrow(new ValueError(`invalid literal for int() with base 10: 'hello5'`));
         // TODO:
         //  ['  1\02  ', ValueError],
         //  ["\u0200", ValueError]
@@ -439,7 +452,7 @@ describe('test_ValueError', () => {
     
     
 });
-describe('test_TypeError', () => {
+describe('TypeError misc', () => {
     test('argument must be', () => {
         const badargs = [
             [int],

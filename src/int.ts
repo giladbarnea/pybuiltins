@@ -105,12 +105,15 @@ export class Int extends Number {
         
         if (typeofx !== 'number' && typeofx !== 'string')
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
+        const mod = x % 1;
         if (typeofx === 'string') {
-            if (x % 1 !== 0 || !RegExp(/\d/).test(x)) // int("")
+            if (mod !== 0) // int('1.5')
+                throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+            if (!RegExp(/\d/).test(x)) // int("")
                 throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
         }
         
-        const mod = x % 1;
+        
         if (isNaN(mod)) // int("+ 314")
             throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
         if (typeofx === 'string') {
