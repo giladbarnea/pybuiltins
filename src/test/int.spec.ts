@@ -365,7 +365,7 @@ describe('Bitwise', () => {
         for (let i = 2; i <= 36; i++)
             test(`number, base ${i}`, () => expect(() => int(0b111101, i)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
         test('string literal, base 2', () => expect(int('0b111101', 2)).toEqual(61));
-        test('string literal, base 0', () => expect(int('0b111101', 0)).toEqual(61));
+        test('string literal, base 0', () => expect(int('0b111101', 0, true)).toEqual(61));
         test('string literal, base 12', () => expect(int('0b111101', 12)).toEqual(33117265));
         test('string literal, base 13', () => expect(int('0b111101', 13)).toEqual(53497120));
         test('string literal, base 14', () => expect(int('0b111101', 14)).toEqual(83404077));
@@ -396,16 +396,16 @@ describe('Bitwise', () => {
         for (let i = 3; i <= 11; i++)
             test(`string literal, non-2 base: ${i}`, () => expect(() => int('0b111101', i)).toThrow(new ValueError(`invalid literal for int() with base ${i}: '0b111101'`)));
     });
-    describe.skip('hexadecimal numbers', () => {
+    describe('hexadecimal numbers', () => {
         test('number, no base', () => expect(int(0x1)).toEqual(1));
-        test('number, base 0', () => expect(() => int(0x1, 0)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
-        test('number, base 0', () => expect(() => int(0x1, 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0")));
+        test('number, base 0 throws', () => expect(() => int(0x1, 0)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
+        test('number, base 1 throws', () => expect(() => int(0x1, 1)).toThrow(new ValueError("int() base must be >= 2 and <= 36, or 0")));
         let base = chance.integer({min: 2, max: 36});
-        test(`number, base ${base}`, () => expect(() => int(0x1, base)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
-        test('string literal, base 2', () => expect(int('0x1', 2)).toEqual(61));
+        test(`number, base ${base} throws`, () => expect(() => int(0x1, base)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
+        test('string literal, base 2 throws', () => expect(() => int('0x1', 2)).toThrow(new ValueError(`invalid literal for int() with base 10: '0x1'`)));
         test('string literal, base 0', () => expect(int('0x1', 0)).toEqual(1));
-        test('string literal, no base', () => expect(() => int('0x1')).toThrow(new ValueError(`invalid literal for int() with base 10: '0x1'`)));
-        test('string literal, out of range base', () => expect(() => int('0x1', 3)).toThrow(new ValueError(`invalid literal for int() with base 3: '0x1'`)));
+        test('string literal, no base throws', () => expect(() => int('0x1')).toThrow(new ValueError(`invalid literal for int() with base 10: '0x1'`)));
+        test('string literal, base 3 throws', () => expect(() => int('0x1', 3)).toThrow(new ValueError(`invalid literal for int() with base 3: '0x1'`)));
     });
 });
 
