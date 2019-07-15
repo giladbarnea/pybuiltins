@@ -116,8 +116,7 @@ export class Int extends Number {
             extendConsole();
             console.bgcyan(`constructor, x: ${x}, base: ${base}`)
         }
-        const orig = x;
-        let sign = undefined;
+        
         if (x === undefined || x === false) {
             if (log) console.log('x is undefined or false, super(0) return');
             super(0);
@@ -151,17 +150,21 @@ export class Int extends Number {
             if (log) console.log('typeof x isnt number or string, TypeError');
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
         }
+        const orig = x;
+        let sign = undefined;
+        let nosign = x;
         try {
             x = x.trim(); // "  +314 " => "+314"
             if (log && orig !== x) console.log(`after x.trim(): '${x}'`);
             if (x[0] === '-' || x[0] === '+') {
                 sign = x[0] === '-' ? -1 : 1;
-                if (log) console.log(`x[0] is '${x[0]}', sign is: ${sign}'`);
+                nosign = x.slice(1);
+                if (log) console.log(`x[0] is '${x[0]}', sign is: ${sign}', nosign is: '${nosign}'`);
             }
         } catch (e) {
             // may not be string
         }
-        const letter = x[sign !== undefined ? 2 : 1];
+        const letter = nosign[1];
         const isBinary = letter === 'b' || letter === 'B';
         const isOctal = letter === 'o' || letter === 'O';
         const isHexaDecimal = letter === 'x' || letter === 'X';
@@ -177,17 +180,24 @@ export class Int extends Number {
                 if (log) console.log('x is float or RegExp or mod isNan, ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
-            if (isSpecial) {
-                if (log) console.log('isSpecial');
-                if (base === 0) {
-                    if (log) console.log(`base === 0, base=${specialBase}`);
+            if (base === 0) {
+                if (log) console.log('base === 0');
+                if (isSpecial) {
+                    if (log) console.log(`isSpecial, base=${specialBase}`);
                     base = specialBase;
                 } else {
-                    if (log) console.log('base !== 0');
+                    if (log) console.log('not isSpecial');
+                    if (nosign[0] !== '0') {
+                        console.log(`nosign[0] !== '0', base=10`);
+                        base = 10;
+                    } else {
+                        console.log(`nosign[0] === '0', base=10`);
+                    }
                 }
             }
             
-            if (!(isSpecial && base === specialBase)) {
+            
+            if (!(isSpecial && base === specialBase) && x[0] !== 0) {
                 for (let c of x) {
                     let convertedC;
                     if (RegExp(/[a-zA-Z]/).test(c)) {

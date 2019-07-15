@@ -359,7 +359,7 @@ describe('Bitwise', () => {
     });
     describe('numbers with letters must have some base', () => {
         test("int('0711')", () => expect(int('0711')).toEqual(711));
-        test("int('0b11')", () => expect(() => int('0b11', undefined, true)).toThrow(new ValueError(`invalid literal for int() with base 10: '0b11'`)));
+        test("int('0b11')", () => expect(() => int('0b11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0b11'`)));
         test("int('0o11')", () => expect(() => int('0o11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0o11'`)));
         test("int('0x11')", () => expect(() => int('0x11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0x11'`)));
         test("int('0c11')", () => expect(() => int('0c11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0c11'`)));
@@ -400,7 +400,7 @@ describe('Bitwise', () => {
         test("int('0x11', 16)", () => expect(int('0x11', 16)).toEqual(17));
         test("int('0x11', 33)", () => expect(() => int('0x11', 33)).toThrow(new ValueError(`invalid literal for int() with base 33: '0x11'`)));
         test("int('0x11', 34)", () => expect(int('0x11', 34)).toEqual(38183));
-        test("int('0c11', 13)", () => expect(int('0c11', 13)).toEqual(2042));
+        test("int('0c11', 13)", () => expect(int('0c11', 13, true)).toEqual(2042));
         let base = chance.integer({min: 2, max: 36});
         test(`int('11', ${base})`, () => expect(int('11', base)).toEqual(parseInt('11', base)));
     });
