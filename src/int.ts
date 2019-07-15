@@ -106,6 +106,9 @@ export class Int extends Number {
         if (typeofx !== 'number' && typeofx !== 'string')
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
         const mod = x % 1;
+        const isHexaDecimal = x[1] === 'x' || x[1] === 'X';
+        const isOctal = x[1] === 'o' || x[1] === 'O';
+        const isBinary = x[1] === 'b' || x[1] === 'B';
         if (typeofx === 'string') {
             if (mod !== 0) // int('1.5')
                 throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
@@ -134,17 +137,21 @@ export class Int extends Number {
                 // CPython Objects\longobject.c.PyLong_FromString (lineno 2144)
                 if (x[0] != '0') {
                     base = 10;
-                } else if (x[1] === 'x' || x[1] === 'X') {
-                    base = 16;
-                } else if (x[1] === 'o' || x[1] === 'O') {
-                    base = 8;
-                } else if (x[1] === 'b' || x[1] === 'B') {
-                    base = 2;
                 } else {
-                    /* "old" (C-style) octal literal, now invalid.
-                    it might still be zero though */
-                    errorIfNonZero = true;
-                    base = 10;
+                    if (isHexaDecimal) {
+                        base = 16;
+                    } else {
+                        if (isOctal) {
+                            base = 8;
+                        } else if (isBinary) {
+                            base = 2;
+                        } else {
+                            /* "old" (C-style) octal literal, now invalid.
+                            it might still be zero though */
+                            errorIfNonZero = true;
+                            base = 10;
+                        }
+                    }
                 }
             }
             if (x[0] == '0' &&
@@ -166,7 +173,6 @@ export class Int extends Number {
 }
 
 export function int(x = undefined, base?: string | number | Function): Int {
-    if (x === '1.5') debugger;
     return new Int(x, base)
 }
 

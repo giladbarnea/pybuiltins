@@ -357,9 +357,13 @@ describe('Bitwise', () => {
         // https://wiki.python.org/moin/BitwiseOperators
         
     });
-    test('binary numbers', () => {
-        expect(int(0b111101)).toEqual(61);
-        expect(() => int('0b111101')).toThrow(new ValueError(`invalid literal for int() with base 10: '0b111101'`));
+    describe('binary numbers', () => {
+        test('binary number, no base', () => expect(int(0b111101)).toEqual(61));
+        test('binary number, base 0', () => expect(() => int(0b111101, 0)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
+        test('binary string literal, base 0', () => expect(int('0b111101', 0)).toEqual(61));
+        test('binary string literal, base 2', () => expect(int('0b111101', 2)).toEqual(61));
+        test('binary string literal, no base', () => expect(() => int('0b111101')).toThrow(new ValueError(`invalid literal for int() with base 10: '0b111101'`)));
+        test('binary string literal, out of range base', () => expect(() => int('0b111101', 3)).toThrow(new ValueError(`invalid literal for int() with base 3: '0b111101'`)));
     });
     test('decimal numbers', () => {
     
