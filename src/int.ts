@@ -156,14 +156,28 @@ export class Int extends Number {
         const mod = x % 1;
         const isFloat = mod !== 0;
         if (typeofx === 'string') {
+            if (log) console.log('typeof x string');
             if (isFloat || // int('1.5')
                 !RegExp(/\d/).test(x) || // int("")
                 isNaN(mod)) { // int("+ 314")
-                if (log) console.log('typeof x string and x is float or RegExp or mod isNan, ValueError');
+                if (log) console.log('x is float or RegExp or mod isNan, ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
             }
-            for (let c of x) {
-                if (c >= base && c != '0') { // int("07", 5)
+            let slicedX = x.trim(); // "  +314 " => "+314"
+            if (log && slicedX !== x) console.log(`trimmed x ('${x}') to: '${slicedX}'`);
+            if (slicedX[0] === '-' || slicedX[0] === '+') {
+                if (log) console.log(`slicedX[0] is '${slicedX[0]}', slicing to ${slicedX.slice(1)}`);
+                slicedX = slicedX.slice(1); // "+314" => "314"
+            }
+            for (let c of slicedX) {
+                let convertedC;
+                if (RegExp(/[a-z][A-Z]/).test(c)) {
+                    convertedC = parseInt(c, 36);
+                    if (log) console.log(`in for loop, converted '${c}' to: ${convertedC}`);
+                } else {
+                    convertedC = c;
+                }
+                if (convertedC >= base && c != '0') { // int("07", 5)
                     if (log) console.log(`char ${c} bigger than base ${base}, ValueError`);
                     throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
                 }
