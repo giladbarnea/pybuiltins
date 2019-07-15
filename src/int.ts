@@ -165,9 +165,14 @@ export class Int extends Number {
         }
         
         const letter = nosign[1];
-        const isBinary = letter === 'b' || letter === 'B';
-        const isOctal = letter === 'o' || letter === 'O';
-        const isHexaDecimal = letter === 'x' || letter === 'X';
+        let isBinary = false;
+        let isOctal = false;
+        let isHexaDecimal = false;
+        if (nosign[0] === '0') {
+            isBinary = letter === 'b' || letter === 'B';
+            isOctal = letter === 'o' || letter === 'O';
+            isHexaDecimal = letter === 'x' || letter === 'X';
+        }
         const isSpecial = isBinary || isOctal || isHexaDecimal;
         const specialBase = isBinary ? 2 : isOctal ? 8 : isHexaDecimal ? 16 : undefined;
         const mod = x % 1;
@@ -193,12 +198,12 @@ export class Int extends Number {
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             */
-            /*if (mod !== 0 && Boolean(parseInt(x, base))) {
+            if (mod !== 0 && Boolean(parseInt(x, base))) {
                 if (log) console.log(`mod !== 0 and Boolean(parseInt), super(parseInt(x, base)) and return`);
                 super(parseInt(x, base));
                 return
             }
-            */
+            
             if (isFloat || // int('1.5')
                 !RegExp(/\d/).test(x) || // int("")
                 // (isNaN(mod) && !RegExp(/[a-zA-Z]/).test(letter) && !isSpecial)) { // int("+ 314")
