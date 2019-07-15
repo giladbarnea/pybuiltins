@@ -359,7 +359,7 @@ describe('Bitwise', () => {
     });
     describe('numbers with letters must have some base', () => {
         test("int('0711')", () => expect(int('0711')).toEqual(711));
-        test("int('0b11')", () => expect(() => int('0b11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0b11'`)));
+        test("int('0b11')", () => expect(() => int('0b11', undefined, true)).toThrow(new ValueError(`invalid literal for int() with base 10: '0b11'`)));
         test("int('0o11')", () => expect(() => int('0o11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0o11'`)));
         test("int('0x11')", () => expect(() => int('0x11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0x11'`)));
         test("int('0c11')", () => expect(() => int('0c11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0c11'`)));

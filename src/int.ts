@@ -117,7 +117,7 @@ export class Int extends Number {
             console.bgcyan(`constructor, x: ${x}, base: ${base}`)
         }
         const orig = x;
-        let sign = 1;
+        let sign = undefined;
         if (x === undefined || x === false) {
             if (log) console.log('x is undefined or false, super(0) return');
             super(0);
@@ -154,13 +154,19 @@ export class Int extends Number {
         try {
             x = x.trim(); // "  +314 " => "+314"
             if (log && orig !== x) console.log(`after x.trim(): '${x}'`);
-            
+            if (x[0] === '-' || x[0] === '+') {
+                sign = x[0] === '-' ? -1 : 1;
+                if (log) console.log(`x[0] is '${x[0]}', sign is: ${sign}'`);
+            }
         } catch (e) {
             // may not be string
         }
-        const isHexaDecimal = x[1] === 'x' || x[1] === 'X';
-        const isOctal = x[1] === 'o' || x[1] === 'O';
-        const isBinary = x[1] === 'b' || x[1] === 'B';
+        const letter = x[sign !== undefined ? 2 : 1];
+        const isBinary = letter === 'b' || letter === 'B';
+        const isOctal = letter === 'o' || letter === 'O';
+        const isHexaDecimal = letter === 'x' || letter === 'X';
+        const isSpecial = isBinary || isOctal || isHexaDecimal;
+        const specialBase = isBinary ? 2 : isOctal ? 8 : isHexaDecimal ? 16 : undefined;
         const mod = x % 1;
         const isFloat = mod !== 0;
         if (typeofx === 'string') {
@@ -171,33 +177,29 @@ export class Int extends Number {
                 if (log) console.log('x is float or RegExp or mod isNan, ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
-            if (isBinary) {
-                if (log) console.log('isBinary');
+            if (isSpecial) {
+                if (log) console.log('isSpecial');
                 if (base === 0) {
-                    if (log) console.log('base === 0, base=2');
-                    base = 2;
+                    if (log) console.log(`base === 0, base=${specialBase}`);
+                    base = specialBase;
                 } else {
                     if (log) console.log('base !== 0');
                 }
             }
             
-            // if (x[0] === '-' || x[0] === '+') {
-            //     if (x[0] === '-')
-            //         sign = -1;
-            //     if (log) console.log(`x[0] is '${x[0]}', slicing to '${x.slice(1)}'`);
-            //     x = x.slice(1); // "+314" => "314"
-            // }
-            for (let c of x) {
-                let convertedC;
-                if (RegExp(/[a-z][A-Z]/).test(c)) {
-                    convertedC = parseInt(c, 36);
-                    if (log) console.log(`in for loop, converted '${c}' to: ${convertedC}`);
-                } else {
-                    convertedC = c;
-                }
-                if (convertedC >= base && c != '0') { // int("07", 5)
-                    if (log) console.log(`${convertedC} is bigger than base ${base}, ValueError`);
-                    throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
+            if (!(isSpecial && base === specialBase)) {
+                for (let c of x) {
+                    let convertedC;
+                    if (RegExp(/[a-zA-Z]/).test(c)) {
+                        convertedC = parseInt(c, 36);
+                        if (log) console.log(`in for loop, converted '${c}' to: ${convertedC}`);
+                    } else {
+                        convertedC = c;
+                    }
+                    if (convertedC >= base && c != '0') { // int("07", 5)
+                        if (log) console.log(`${convertedC} is bigger than base ${base}, ValueError`);
+                        throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
+                    }
                 }
             }
             
@@ -206,10 +208,10 @@ export class Int extends Number {
         
         if (isFloat) {
             if (x < 0) {
-                if (log) console.log(`x < 0, super(Math.ceil(x)) return`);
+                if (log) console.log(`x < 0, super(Math.ceil(${x})) return`);
                 super(Math.ceil(x));
             } else {
-                if (log) console.log(`x >= 0, super(Math.floor(x)) return`);
+                if (log) console.log(`x >= 0, super(Math.floor(${x})) return`);
                 super(Math.floor(x));
             }
             return
@@ -252,10 +254,10 @@ export class Int extends Number {
             
         }
         if (base !== 10) {
-            if (log) console.log(`base !== 10, super(parseInt(x, <number>base)) return`);
+            if (log) console.log(`base !== 10, super(parseInt(${x}, <number>${base})) return`);
             super(parseInt(x, <number>base));
         } else {
-            if (log) console.log(`base === 10, super(x) return`);
+            if (log) console.log(`base === 10, super(${x}) return`);
             super(x);
         }
     }
