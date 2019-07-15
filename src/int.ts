@@ -114,7 +114,7 @@ export class Int extends Number {
     constructor(x = undefined, base?: string | number | Function, log?: boolean) {
         if (log) {
             extendConsole();
-            console.bgcyan(`constructor, x: ${x}, base: ${base}`)
+            console.bgcyan(`constructor, x: ${x}, base: ${base}, parseInt(x,base): ${parseInt(x, base)}`);
         }
         
         if (x === undefined || x === false) {
@@ -125,11 +125,11 @@ export class Int extends Number {
         const typeofx = typeof x;
         let errorIfNonZero = false;
         if (base === undefined) {
-            if (log) console.log('base === undefined, base=10');
+            if (log) console.log('base === undefined: => base=10');
             base = 10;
         } else {
             if (base === null) {
-                if (log) console.log('base ===, TypeError');
+                if (log) console.log('base === null, TypeError');
                 throw new TypeError(`'null' object cannot be interpreted as an integer`);
             }
             if (base !== 0 && base < 2 || base > 36) {
@@ -143,8 +143,6 @@ export class Int extends Number {
             }
         }
         
-        const typeofbase = typeof base;
-        
         
         if (typeofx !== 'number' && typeofx !== 'string') {
             if (log) console.log('typeof x isnt number or string, TypeError');
@@ -155,6 +153,7 @@ export class Int extends Number {
         let nosign = x;
         try {
             x = x.trim(); // "  +314 " => "+314"
+            nosign = x;
             if (log && orig !== x) console.log(`after x.trim(): '${x}'`);
             if (x[0] === '-' || x[0] === '+') {
                 sign = x[0] === '-' ? -1 : 1;
@@ -164,6 +163,7 @@ export class Int extends Number {
         } catch (e) {
             // may not be string
         }
+        
         const letter = nosign[1];
         const isBinary = letter === 'b' || letter === 'B';
         const isOctal = letter === 'o' || letter === 'O';
@@ -173,6 +173,7 @@ export class Int extends Number {
         const mod = x % 1;
         const isFloat = RegExp(/\./).test(x);
         if (typeofx === 'string') {
+            
             if (log) console.log('typeof x === string:\n', {
                 letter,
                 isBinary,
@@ -181,9 +182,23 @@ export class Int extends Number {
                 isSpecial,
                 specialBase,
                 mod,
-                isFloat
+                isFloat,
+                'nosign[0]: ': nosign[0],
+                'RegExp(/[a-zA-Z]/).test(letter)': RegExp(/[a-zA-Z]/).test(letter),
+                'parseInt(x, base)': parseInt(x, base)
                 
             });
+            /*if (isFloat) {
+                if (log) console.log('isFloat, valueError');
+                throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
+            }
+            */
+            /*if (mod !== 0 && Boolean(parseInt(x, base))) {
+                if (log) console.log(`mod !== 0 and Boolean(parseInt), super(parseInt(x, base)) and return`);
+                super(parseInt(x, base));
+                return
+            }
+            */
             if (isFloat || // int('1.5')
                 !RegExp(/\d/).test(x) || // int("")
                 // (isNaN(mod) && !RegExp(/[a-zA-Z]/).test(letter) && !isSpecial)) { // int("+ 314")
