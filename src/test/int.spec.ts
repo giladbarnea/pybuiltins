@@ -384,14 +384,14 @@ describe('Bitwise', () => {
     });
     describe('base 2 works only if all digits < 2, or with true binary (digits == 12)', () => {
         test("int('0712', 2)", () => expect(() => int('0712', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0712'`)));
-        test("int('0b12', 2)", () => expect(() => int('0b12', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0b12'`)));
+        test("int('0b12', 2)", () => expect(() => int('0b12', 2, true)).toThrow(new ValueError(`invalid literal for int() with base 2: '0b12'`)));
         test("int('0o12', 2)", () => expect(() => int('0o12', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0o12'`)));
         test("int('0x12', 2)", () => expect(() => int('0x12', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0x12'`)));
         test("int('0c12', 2)", () => expect(() => int('0c12', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0c12'`)));
         test("int('12', 2)", () => expect(() => int('12', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '12'`)));
     });
     describe('bin: base 0, 2 or > 11; oct: base 0, 8 or > 24; bin: base 0, 2 or > 11; hex: base 0, 16 or > 33; ', () => {
-        test("int('0711', 8)", () => expect(int('711', 8)).toEqual(457));
+        test("int('0711', 8)", () => expect(int('711', 8, true)).toEqual(457));
         test("int('0b11', 11)", () => expect(() => int('0b11', 11)).toThrow(new ValueError(`invalid literal for int() with base 11: '0b11'`)));
         test("int('0b11', 12)", () => expect(int('0b11', 12)).toEqual(1597);
         test("int('0o11', 8)", () => expect(int('0o11', 8)).toEqual(9));
@@ -401,8 +401,9 @@ describe('Bitwise', () => {
         test("int('0x11', 33)", () => expect(() => int('0x11', 33)).toThrow(new ValueError(`invalid literal for int() with base 33: '0x11'`)));
         test("int('0x11', 34)", () => expect(int('0x11', 34)).toEqual(38183));
         test("int('0c11', 13)", () => expect(int('0c11', 13, true)).toEqual(2042));
+        test("int('0d11', 14)", () => expect(int('0d11', 14, true)).toEqual(2563));
         let base = chance.integer({min: 2, max: 36});
-        test(`int('11', ${base})`, () => expect(int('11', base)).toEqual(parseInt('11', base)));
+        test(`int('11', ${base})`, () => expect(int('11', base, true)).toEqual(parseInt('11', base)));
     });
     
     
@@ -468,16 +469,14 @@ describe('Bitwise', () => {
 });
 
 describe('literal_tricky_bases', () => {
-    test('return normal value', () => {
-        
-        expect(int("00", 0)).toEqual(0);
-        expect(int("07", 10)).toEqual(7);
-        expect(int("07", 8)).toEqual(7);
-        expect(int("016", 7)).toEqual(13);
-        expect(int("02", 3)).toEqual(2);
-        expect(int("33", 4)).toEqual(15);
-        expect(int("033", 4)).toEqual(15);
-    });
+    
+    test('("00", 0)', () => expect(int("00", 0)).toEqual(0));
+    test('("07", 10)', () => expect(int("07", 10)).toEqual(7));
+    test('("07", 8)', () => expect(int("07", 8)).toEqual(7));
+    test('("016", 7)', () => expect(int("016", 7, true)).toEqual(13));
+    test('("02", 3)', () => expect(int("02", 3)).toEqual(2));
+    test('("33", 4)', () => expect(int("33", 4)).toEqual(15));
+    test('("033", 4)', () => expect(int("033", 4)).toEqual(15));
     test('throw ValueError', () => {
         expect(() => int("07", 5)) // parseInt("07", 5) => 0
             .toThrow(new ValueError(`invalid literal for int() with base 5: '07'`));
@@ -523,23 +522,26 @@ describe('ValueError misc', () => {
         
     });
     
-    test('invalid literal', () => {
-        expect(() => int("")).toThrow(new ValueError(`invalid literal for int() with base 10: ''`));
-        expect(() => int('')).toThrow(new ValueError(`invalid literal for int() with base 10: ''`));
-        expect(() => int(``)).toThrow(new ValueError(`invalid literal for int() with base 10: ''`));
-        expect(() => int(" ")).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`));
-        expect(() => int(' ')).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`));
-        expect(() => int(` `)).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`));
-        expect(() => int('  \t\t  ')).toThrow(new ValueError(`invalid literal for int() with base 10: '  \t\t  '`));
-        expect(() => int("+ 314")).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`));
-        expect(() => int("+ 314", undefined)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`));
-        expect(() => int("+ 314", 25)).toThrow(new ValueError(`invalid literal for int() with base 25: '+ 314'`));
-        expect(() => int("+ 314", 10)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`));
-        expect(() => int("+ 314", 0)).toThrow(new ValueError(`invalid literal for int() with base 0: '+ 314'`));
-        expect(() => int('  1x')).toThrow(new ValueError(`invalid literal for int() with base 10: '  1x'`));
-        expect(() => int('_1')).toThrow(new ValueError(`invalid literal for int() with base 10: '_1'`));
-        expect(() => int('1.5')).toThrow(new ValueError(`invalid literal for int() with base 10: '1.5'`));
-        expect(() => int('hello5')).toThrow(new ValueError(`invalid literal for int() with base 10: 'hello5'`));
+    describe('invalid literal', () => {
+        test(`("")`, () => expect(() => int("")).toThrow(new ValueError(`invalid literal for int() with base 10: ''`)));
+        test(`('')`, () => expect(() => int('')).toThrow(new ValueError(`invalid literal for int() with base 10: ''`)));
+        test('(``)', () => expect(() => int(``)).toThrow(new ValueError(`invalid literal for int() with base 10: ''`)));
+        test(`(" ")`, () => expect(() => int(" ")).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`)));
+        test(`(' ')`, () => expect(() => int(' ')).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`)));
+        test('(` `)', () => expect(() => int(` `)).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`)));
+        test(`('  \t\t  ')`, () => expect(() => int('  \t\t  ')).toThrow(new ValueError(`invalid literal for int() with base 10: '  \t\t  '`)));
+        test(`("+ 314")`, () => expect(() => int("+ 314")).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
+        test(`("+ 314", undefined)`, () => expect(() => int("+ 314", undefined)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
+        test(`("+ 314", 25)`, () => expect(() => int("+ 314", 25)).toThrow(new ValueError(`invalid literal for int() with base 25: '+ 314'`)));
+        test(`("+ 314", 10)`, () => expect(() => int("+ 314", 10)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
+        test(`("+ 314", 0)`, () => expect(() => int("+ 314", 0)).toThrow(new ValueError(`invalid literal for int() with base 0: '+ 314'`)));
+        test(`('  1x')`, () => expect(() => int('  1x')).toThrow(new ValueError(`invalid literal for int() with base 10: '  1x'`)));
+        test(`('_1')`, () => expect(() => int('_1')).toThrow(new ValueError(`invalid literal for int() with base 10: '_1'`)));
+        test(`('1.5')`, () => expect(() => int('1.5', undefined, true)).toThrow(new ValueError(`invalid literal for int() with base 10: '1.5'`)));
+        test(`('15.0')`, () => expect(() => int('15.0', undefined, true)).toThrow(new ValueError(`invalid literal for int() with base 10: '15.0'`)));
+        test(`('-1.5')`, () => expect(() => int('-1.5', undefined, true)).toThrow(new ValueError(`invalid literal for int() with base 10: '-1.5'`)));
+        test(`('-15.0')`, () => expect(() => int('-15.0', undefined, true)).toThrow(new ValueError(`invalid literal for int() with base 10: '-15.0'`)));
+        test(`('hello5')`, () => expect(() => int('hello5')).toThrow(new ValueError(`invalid literal for int() with base 10: 'hello5'`)));
         // TODO:
         //  ['  1\02  ', ValueError],
         //  ["\u0200", ValueError]

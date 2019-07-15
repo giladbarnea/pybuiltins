@@ -171,13 +171,24 @@ export class Int extends Number {
         const isSpecial = isBinary || isOctal || isHexaDecimal;
         const specialBase = isBinary ? 2 : isOctal ? 8 : isHexaDecimal ? 16 : undefined;
         const mod = x % 1;
-        const isFloat = mod !== 0;
+        const isFloat = RegExp(/\./).test(x);
         if (typeofx === 'string') {
-            if (log) console.log('typeof x === string');
+            if (log) console.log('typeof x === string:\n', {
+                letter,
+                isBinary,
+                isOctal,
+                isHexaDecimal,
+                isSpecial,
+                specialBase,
+                mod,
+                isFloat
+                
+            });
             if (isFloat || // int('1.5')
                 !RegExp(/\d/).test(x) || // int("")
+                // (isNaN(mod) && !RegExp(/[a-zA-Z]/).test(letter) && !isSpecial)) { // int("+ 314")
                 isNaN(mod)) { // int("+ 314")
-                if (log) console.log(`'${x}' is float or !RegExp or ${x}%1 isNaN, ValueError`);
+                if (log) console.log(`'${x}' is float or !RegExp or ${x}%1 isNaN, letter is '${letter}', ValueError`);
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             if (base === 0) {
@@ -264,7 +275,7 @@ export class Int extends Number {
                 }
             }
         }
-        if (x[0] === '0' && (
+        if (nosign[0] === '0' && (
             (base === 16 && isHexaDecimal) ||
             (base === 8 && isOctal) ||
             (base === 2 && isBinary))) {
