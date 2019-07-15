@@ -177,7 +177,7 @@ export class Int extends Number {
             if (isFloat || // int('1.5')
                 !RegExp(/\d/).test(x) || // int("")
                 isNaN(mod)) { // int("+ 314")
-                if (log) console.log('x is float or RegExp or mod isNan, ValueError');
+                if (log) console.log(`'${x}' is float or !RegExp or ${x}%1 isNaN, ValueError`);
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             if (base === 0) {
@@ -192,12 +192,13 @@ export class Int extends Number {
                         base = 10;
                     } else {
                         console.log(`nosign[0] === '0', base=10`);
+                        
                     }
                 }
             }
             
             
-            if (!(isSpecial && base === specialBase) && x[0] !== 0) {
+            if (!(isSpecial && base === specialBase) && nosign[0] !== 0) {
                 for (let c of x) {
                     let convertedC;
                     if (RegExp(/[a-zA-Z]/).test(c)) {
