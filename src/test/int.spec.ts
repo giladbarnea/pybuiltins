@@ -102,8 +102,7 @@ describe('CPython Tests', () => {
         for (let bad of shouldThrow)
             expect(bad).toThrow(ValueError);
         // Lib\test\test_int.py
-        describe('4294967296', () => {
-            
+        describe('2**32 (4294967296)', () => {
             
             test("int('100000000000000000000000000000000', 2)", () => expect(int('100000000000000000000000000000000', 2)).toEqual(4294967296));
             test("int('102002022201221111211', 3)", () => expect(int('102002022201221111211', 3)).toEqual(4294967296));
@@ -151,88 +150,77 @@ describe('CPython Tests', () => {
             test("int(' 0X123  ', 0)", () => expect(int(' 0X123  ', 0)).toEqual(291));
             test("int(' 0B100 ', 0)", () => expect(int(' 0B100 ', 0)).toEqual(4));
         });
-        // tests with base 0
-        /*let base0values = [
-            [' 0o123  ', 83],
-            ['000', 0],
-            ['0o123', 83],
-            ['0x123', 291],
-            ['0b100', 4],
-            [' 0O123   ', 83],
-            [' 0X123  ', 291],
-            [' 0B100 ', 4],
-        ];
-        for (let [value, expected] of base0values) {
-            expect(int(value, 0)).toEqual(expected)
-        }
-        */
-        
-        // without base still base 10
-        expect(int('0123')).toEqual(123);
-        expect(int('0123', 10)).toEqual(123);
-        
-        // tests with prefix and base != 0
-        expect(int('0x123', 16)).toEqual(291);
-        // expect(int('0o123', 8)).toEqual(83);
-        // expect(int('0b100', 2)).toEqual(4);
-        expect(int('0X123', 16)).toEqual(291);
-        // expect(int('0O123', 8)).toEqual(83);
-        // expect(int('0B100', 2)).toEqual(4);
-        
-        // the code has special checks for the first character after the  type prefix
-        expect(() => int('0b2', 2)).toThrow(ValueError);
-        expect(() => int('0b02', 2)).toThrow(ValueError);
-        expect(() => int('0B2', 2)).toThrow(ValueError);
-        expect(() => int('0B02', 2)).toThrow(ValueError);
-        expect(() => int('0o8', 8)).toThrow(ValueError);
-        expect(() => int('0o08', 8)).toThrow(ValueError);
-        expect(() => int('0O8', 8)).toThrow(ValueError);
-        expect(() => int('0O08', 8)).toThrow(ValueError);
-        expect(() => int('0xg', 16)).toThrow(ValueError);
-        expect(() => int('0x0g', 16)).toThrow(ValueError);
-        expect(() => int('0Xg', 16)).toThrow(ValueError);
-        expect(() => int('0X0g', 16)).toThrow(ValueError);
+        test('without base still base 10', () => {
+            expect(int('0123')).toEqual(123);
+            expect(int('0123', 10)).toEqual(123);
+        });
+        describe('with prefix and base != 0', () => {
+            
+            test("int('0x123', 16)", () => expect(int('0x123', 16)).toEqual(291));
+            test("int('0o123', 8)", () => expect(int('0o123', 8)).toEqual(83));
+            test("int('0b100', 2)", () => expect(int('0b100', 2)).toEqual(4));
+            test("int('0X123', 16)", () => expect(int('0X123', 16)).toEqual(291));
+            test("int('0O123', 8)", () => expect(int('0O123', 8)).toEqual(83));
+            test("int('0B100', 2)", () => expect(int('0B100', 2)).toEqual(4))
+        });
         
         
-        // Checks for proper evaluation of 2**32 + 1
-        expect(int('100000000000000000000000000000001', 2)).toEqual(4294967297);
-        expect(int('102002022201221111212', 3)).toEqual(4294967297);
-        expect(int('10000000000000001', 4)).toEqual(4294967297);
-        expect(int('32244002423142', 5)).toEqual(4294967297);
-        expect(int('1550104015505', 6)).toEqual(4294967297);
-        expect(int('211301422355', 7)).toEqual(4294967297);
-        expect(int('40000000001', 8)).toEqual(4294967297);
-        expect(int('12068657455', 9)).toEqual(4294967297);
-        expect(int('4294967297', 10)).toEqual(4294967297);
-        expect(int('1904440555', 11)).toEqual(4294967297);
-        /*expect(int('9ba461595', 12)).toEqual(4294967297);
-        expect(int('535a7988a', 13)).toEqual(4294967297);
-        expect(int('2ca5b7465', 14)).toEqual(4294967297);
-        expect(int('1a20dcd82', 15)).toEqual(4294967297);
-        expect(int('100000001', 16)).toEqual(4294967297);
-        expect(int('a7ffda92', 17)).toEqual(4294967297);
-        expect(int('704he7g5', 18)).toEqual(4294967297);
-        expect(int('4f5aff67', 19)).toEqual(4294967297);
-        expect(int('3723ai4h', 20)).toEqual(4294967297);
-        expect(int('281d55i5', 21)).toEqual(4294967297);
-        expect(int('1fj8b185', 22)).toEqual(4294967297);
-        expect(int('1606k7id', 23)).toEqual(4294967297);
-        expect(int('mb994ah', 24)).toEqual(4294967297);
-        expect(int('hek2mgm', 25)).toEqual(4294967297);
-        expect(int('dnchbnn', 26)).toEqual(4294967297);
-        expect(int('b28jpdn', 27)).toEqual(4294967297);
-        expect(int('8pfgih5', 28)).toEqual(4294967297);
-        expect(int('76beigh', 29)).toEqual(4294967297);
-        expect(int('5qmcpqh', 30)).toEqual(4294967297);
-        expect(int('4q0jto5', 31)).toEqual(4294967297);
-        expect(int('4000001', 32)).toEqual(4294967297);
-        expect(int('3aokq95', 33)).toEqual(4294967297);
-        expect(int('2qhxjlj', 34)).toEqual(4294967297);
-        expect(int('2br45qc', 35)).toEqual(4294967297);
-        expect(int('1z141z5', 36)).toEqual(4294967297)
-        */
+        describe('special checks for the first character after the type prefix', () => {
+            expect(() => int('0b2', 2)).toThrow(ValueError);
+            expect(() => int('0b02', 2)).toThrow(ValueError);
+            expect(() => int('0B2', 2)).toThrow(ValueError);
+            expect(() => int('0B02', 2)).toThrow(ValueError);
+            expect(() => int('0o8', 8)).toThrow(ValueError);
+            expect(() => int('0o08', 8)).toThrow(ValueError);
+            expect(() => int('0O8', 8)).toThrow(ValueError);
+            expect(() => int('0O08', 8)).toThrow(ValueError);
+            expect(() => int('0xg', 16)).toThrow(ValueError);
+            expect(() => int('0x0g', 16)).toThrow(ValueError);
+            expect(() => int('0Xg', 16)).toThrow(ValueError);
+            expect(() => int('0X0g', 16)).toThrow(ValueError);
+        });
+        
+        describe('2**32 + 1 (4294967297)', () => {
+            
+            
+            test("int('100000000000000000000000000000001', 2)", () => expect(int('100000000000000000000000000000001', 2)).toEqual(4294967297));
+            test("int('102002022201221111212', 3)", () => expect(int('102002022201221111212', 3)).toEqual(4294967297));
+            test("int('10000000000000001', 4)", () => expect(int('10000000000000001', 4)).toEqual(4294967297));
+            test("int('32244002423142', 5)", () => expect(int('32244002423142', 5)).toEqual(4294967297));
+            test("int('1550104015505', 6)", () => expect(int('1550104015505', 6)).toEqual(4294967297));
+            test("int('211301422355', 7)", () => expect(int('211301422355', 7)).toEqual(4294967297));
+            test("int('40000000001', 8)", () => expect(int('40000000001', 8)).toEqual(4294967297));
+            test("int('12068657455', 9)", () => expect(int('12068657455', 9)).toEqual(4294967297));
+            test("int('4294967297', 10)", () => expect(int('4294967297', 10)).toEqual(4294967297));
+            test("int('1904440555', 11)", () => expect(int('1904440555', 11)).toEqual(4294967297));
+            test("int('9ba461595', 12)", () => expect(int('9ba461595', 12)).toEqual(4294967297));
+            test("int('535a7988a', 13)", () => expect(int('535a7988a', 13)).toEqual(4294967297));
+            test("int('2ca5b7465', 14)", () => expect(int('2ca5b7465', 14)).toEqual(4294967297));
+            test("int('1a20dcd82', 15)", () => expect(int('1a20dcd82', 15)).toEqual(4294967297));
+            test("int('100000001', 16)", () => expect(int('100000001', 16)).toEqual(4294967297));
+            test("int('a7ffda92', 17)", () => expect(int('a7ffda92', 17)).toEqual(4294967297));
+            test("int('704he7g5', 18)", () => expect(int('704he7g5', 18)).toEqual(4294967297));
+            test("int('4f5aff67', 19)", () => expect(int('4f5aff67', 19)).toEqual(4294967297));
+            test("int('3723ai4h', 20)", () => expect(int('3723ai4h', 20)).toEqual(4294967297));
+            test("int('281d55i5', 21)", () => expect(int('281d55i5', 21)).toEqual(4294967297));
+            test("int('1fj8b185', 22)", () => expect(int('1fj8b185', 22)).toEqual(4294967297));
+            test("int('1606k7id', 23)", () => expect(int('1606k7id', 23)).toEqual(4294967297));
+            test("int('mb994ah', 24)", () => expect(int('mb994ah', 24)).toEqual(4294967297));
+            test("int('hek2mgm', 25)", () => expect(int('hek2mgm', 25)).toEqual(4294967297));
+            test("int('dnchbnn', 26)", () => expect(int('dnchbnn', 26)).toEqual(4294967297));
+            test("int('b28jpdn', 27)", () => expect(int('b28jpdn', 27)).toEqual(4294967297));
+            test("int('8pfgih5', 28)", () => expect(int('8pfgih5', 28)).toEqual(4294967297));
+            test("int('76beigh', 29)", () => expect(int('76beigh', 29)).toEqual(4294967297));
+            test("int('5qmcpqh', 30)", () => expect(int('5qmcpqh', 30)).toEqual(4294967297));
+            test("int('4q0jto5', 31)", () => expect(int('4q0jto5', 31)).toEqual(4294967297));
+            test("int('4000001', 32)", () => expect(int('4000001', 32)).toEqual(4294967297));
+            test("int('3aokq95', 33)", () => expect(int('3aokq95', 33)).toEqual(4294967297));
+            test("int('2qhxjlj', 34)", () => expect(int('2qhxjlj', 34)).toEqual(4294967297));
+            test("int('2br45qc', 35)", () => expect(int('2br45qc', 35)).toEqual(4294967297));
+            test("int('1z141z5', 36)", () => expect(int('1z141z5', 36)).toEqual(4294967297))
+            
+        });
     });
-    
     describe('longobject.c', () => {
         // Objects\longobject.c.PyLong_FromString (2117)
         test('PyLong_FromString', () => {
