@@ -116,7 +116,7 @@ export class Int extends Number {
             extendConsole();
             console.bgcyan(`constructor, x: ${x}, base: ${base}`)
         }
-        ;
+        const orig = x;
         if (x === undefined || x === false) {
             if (log) console.log('x is undefined or false, super(0) return');
             super(0);
@@ -150,25 +150,35 @@ export class Int extends Number {
             if (log) console.log('typeof x isnt number or string, TypeError');
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
         }
+        try {
+            x = x.trim(); // "  +314 " => "+314"
+            if (log && orig !== x) console.log(`after x.trim(): ${x}`);
+        } catch (e) {
+            // may not be string
+        }
         const isHexaDecimal = x[1] === 'x' || x[1] === 'X';
         const isOctal = x[1] === 'o' || x[1] === 'O';
         const isBinary = x[1] === 'b' || x[1] === 'B';
         const mod = x % 1;
         const isFloat = mod !== 0;
         if (typeofx === 'string') {
-            if (log) console.log('typeof x string');
+            if (log) console.log('typeof x === string');
             if (isFloat || // int('1.5')
                 !RegExp(/\d/).test(x) || // int("")
                 isNaN(mod)) { // int("+ 314")
                 if (log) console.log('x is float or RegExp or mod isNan, ValueError');
-                throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+                throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
-            let slicedX = x.trim(); // "  +314 " => "+314"
+            if (isBinary && base === 0) {
+                base = 2;
+            }
+            let slicedX = x;
             if (log && slicedX !== x) console.log(`trimmed x ('${x}') to: '${slicedX}'`);
             if (slicedX[0] === '-' || slicedX[0] === '+') {
                 if (log) console.log(`slicedX[0] is '${slicedX[0]}', slicing to ${slicedX.slice(1)}`);
                 slicedX = slicedX.slice(1); // "+314" => "314"
             }
+            
             for (let c of slicedX) {
                 let convertedC;
                 if (RegExp(/[a-z][A-Z]/).test(c)) {
@@ -178,10 +188,11 @@ export class Int extends Number {
                     convertedC = c;
                 }
                 if (convertedC >= base && c != '0') { // int("07", 5)
-                    if (log) console.log(`char ${c} bigger than base ${base}, ValueError`);
-                    throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+                    if (log) console.log(`${convertedC} is bigger than base ${base}, ValueError`);
+                    throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
                 }
             }
+            
         }
         
         
