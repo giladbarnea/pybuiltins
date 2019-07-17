@@ -84,6 +84,8 @@ function extendConsole() {
     for (let [k, v] of Object.entries(colors)) {
         console[k] = (...args) => console.log(`${v}${args}${reset}`)
     }
+    
+    
 }
 
 export class Int extends Number {
@@ -112,9 +114,10 @@ export class Int extends Number {
     
     
     constructor(x = undefined, base?: string | number | Function, log?: boolean) {
+        const parsedInt = parseInt(x, base);
         if (log) {
             extendConsole();
-            console.bgcyan(`constructor, x: ${x}, base: ${base}, parseInt(x,base): ${parseInt(x, base)}`);
+            console.black(`constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}`);
         }
         
         if (x === undefined || x === false) {
@@ -161,26 +164,35 @@ export class Int extends Number {
                 if (log) console.log(`x[0] is '${x[0]}', sign is: ${sign}', nosign is: '${nosign}'`);
             }
         } catch (e) {
-            // may not be string
+            // may not be string, no .trim()
         }
-        
-        const letter = nosign[1];
+        let prefix = null;
+        if (nosign[1] && RegExp(/[a-zA-Z]/).test(nosign[1])) {
+            if (log) console.log(`nosign[1] and nosign[1] = /[a-zA-Z]/, prefix = nosign[1] = ${nosign[1]}`);
+            prefix = nosign[1];
+        }
         let isBinary = false;
         let isOctal = false;
         let isHexaDecimal = false;
+        let isSpecial = false;
+        let specialBase = undefined;
+        let isFloat = false;
         if (nosign[0] === '0') {
-            isBinary = letter === 'b' || letter === 'B';
-            isOctal = letter === 'o' || letter === 'O';
-            isHexaDecimal = letter === 'x' || letter === 'X';
+            if (log) console.log(`nosign[0] === '0'`);
+            prefix = nosign[1];
+            isBinary = prefix === 'b' || prefix === 'B';
+            isOctal = prefix === 'o' || prefix === 'O';
+            isHexaDecimal = prefix === 'x' || prefix === 'X';
+            isSpecial = isBinary || isOctal || isHexaDecimal;
+            specialBase = isBinary ? 2 : isOctal ? 8 : isHexaDecimal ? 16 : undefined;
+        } else if (!isSpecial) { // can't possibly be special and float at the same time
+            isFloat = RegExp(/\./).test(x);
         }
-        const isSpecial = isBinary || isOctal || isHexaDecimal;
-        const specialBase = isBinary ? 2 : isOctal ? 8 : isHexaDecimal ? 16 : undefined;
         const mod = x % 1;
-        const isFloat = RegExp(/\./).test(x);
         if (typeofx === 'string') {
             
             if (log) console.log('typeof x === string:\n', {
-                letter,
+                prefix,
                 isBinary,
                 isOctal,
                 isHexaDecimal,
@@ -189,8 +201,8 @@ export class Int extends Number {
                 mod,
                 isFloat,
                 'nosign[0]: ': nosign[0],
-                'letter && RegExp(/[a-zA-Z]/).test(letter)': letter && RegExp(/[a-zA-Z]/).test(letter),
-                'parseInt(x, base)': parseInt(x, base),
+                'prefix && RegExp(/[a-zA-Z]/).test(prefix)': prefix && RegExp(/[a-zA-Z]/).test(prefix),
+                parsedInt,
                 'nosign[2]': nosign[2]
                 
             });
@@ -198,21 +210,22 @@ export class Int extends Number {
                 if (log) console.log('isFloat, valueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
-            if (letter && RegExp(/[a-zA-Z]/).test(letter) && nosign[2] === undefined) {
-                if (log) console.log('has letter, nosign[2] is undefined');
+            
+            if (prefix && RegExp(/[a-zA-Z]/).test(prefix) && nosign[2] === undefined) {
+                // RegExp(/[a-zA-Z]/).test(undefined) => true, must check prefix && ...
+                if (log) console.log('has prefix, nosign[2] is undefined. ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
-            if (mod !== 0 && Boolean(parseInt(x, base))) {
-                if (log) console.log(`mod !== 0 and Boolean(parseInt), super(parseInt(x, base)) and return`);
-                super(parseInt(x, base));
+            if (mod !== 0 && Boolean(parsedInt)) {
+                if (log) console.log(`mod !== 0 and Boolean(parseInt), super(parsedInt) and return`);
+                super(parsedInt);
                 return
             }
             
             if (isFloat || // int('1.5')
                 !RegExp(/\d/).test(x) || // int("")
-                // (isNaN(mod) && !RegExp(/[a-zA-Z]/).test(letter) && !isSpecial)) { // int("+ 314")
                 isNaN(mod)) { // int("+ 314")
-                if (log) console.log(`'${x}' is float or !RegExp or ${x}%1 isNaN, letter is '${letter}', ValueError`);
+                if (log) console.log(`'${x}' isFloat or isNaN(mod) or /\d/, prefix is '${prefix}', ValueError`);
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             if (base === 0) {
