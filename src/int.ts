@@ -114,7 +114,7 @@ export class Int extends Number {
     
     
     constructor(x = undefined, base?: string | number | Function, log?: boolean) {
-        let parsedInt = parseInt(x, <number>base);
+        let parsedInt = parseInt(x, <number>base); // NaN if fails
         if (log) {
             extendConsole();
             console.black(`constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}`);
@@ -170,7 +170,7 @@ export class Int extends Number {
         // *  Special number handling
         let prefix = null;
         if (nosign[1] && RegExp(/[a-zA-Z]/).test(nosign[1])) {
-            if (log) console.log(`nosign[1] and nosign[1] = /[a-zA-Z]/, prefix = nosign[1] = ${nosign[1]}`);
+            if (log) console.log(`nosign[1] and nosign[1] = [a-zA-Z], prefix = nosign[1] = ${nosign[1]}`);
             prefix = nosign[1];
         }
         let isBinary = false;
@@ -191,7 +191,6 @@ export class Int extends Number {
         }
         const mod = x % 1;
         if (typeofx === 'string') {
-            
             if (log) console.log('typeof x === string:\n', {
                 prefix,
                 isBinary,
@@ -341,6 +340,7 @@ export function int(x = undefined, base?: string | number | Function, log?: bool
     return new Int(x, base, log)
 }
 
+// console.log('4_2');
 // int('_1');
 // let n1 = int(5);
 // let n2 = int(10);

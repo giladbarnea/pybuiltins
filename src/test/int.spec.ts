@@ -166,18 +166,18 @@ describe('CPython Tests', () => {
         
         
         describe('special checks for the first character after the type prefix', () => {
-            expect(() => int('0b2', 2)).toThrow(ValueError);
-            expect(() => int('0b02', 2)).toThrow(ValueError);
-            expect(() => int('0B2', 2)).toThrow(ValueError);
-            expect(() => int('0B02', 2)).toThrow(ValueError);
-            expect(() => int('0o8', 8)).toThrow(ValueError);
-            expect(() => int('0o08', 8)).toThrow(ValueError);
-            expect(() => int('0O8', 8)).toThrow(ValueError);
-            expect(() => int('0O08', 8)).toThrow(ValueError);
-            expect(() => int('0xg', 16)).toThrow(ValueError);
-            expect(() => int('0x0g', 16)).toThrow(ValueError);
-            expect(() => int('0Xg', 16)).toThrow(ValueError);
-            expect(() => int('0X0g', 16)).toThrow(ValueError);
+            test(`int('0b2', 2)`, () => expect(() => int('0b2', 2)).toThrow(ValueError));
+            test(`int('0b02', 2)`, () => expect(() => int('0b02', 2)).toThrow(ValueError));
+            test(`int('0B2', 2)`, () => expect(() => int('0B2', 2)).toThrow(ValueError));
+            test(`int('0B02', 2)`, () => expect(() => int('0B02', 2)).toThrow(ValueError));
+            test(`int('0o8', 8)`, () => expect(() => int('0o8', 8)).toThrow(ValueError));
+            test(`int('0o08', 8)`, () => expect(() => int('0o08', 8)).toThrow(ValueError));
+            test(`int('0O8', 8)`, () => expect(() => int('0O8', 8)).toThrow(ValueError));
+            test(`int('0O08', 8)`, () => expect(() => int('0O08', 8)).toThrow(ValueError));
+            test(`int('0xg', 16)`, () => expect(() => int('0xg', 16)).toThrow(ValueError));
+            test(`int('0x0g', 16)`, () => expect(() => int('0x0g', 16)).toThrow(ValueError));
+            test(`int('0Xg', 16)`, () => expect(() => int('0Xg', 16)).toThrow(ValueError));
+            test(`int('0X0g', 16)`, () => expect(() => int('0X0g', 16)).toThrow(ValueError));
         });
         
         describe('2**32 + 1 (4294967297)', () => {
@@ -224,28 +224,16 @@ describe('CPython Tests', () => {
     //\Lib\test\test_int.py.test_underscores()
     describe('test_underscore', () => {
         // \Lib\test\test_grammar.py
-        const VALID_UNDERSCORE_LITERALS = [
-            '0_0_0',
-            '4_2',
-            '1_0000_0000',
-            '0b1001_0100',
-            '0xffff_ffff',
-            '0o5_7_7',
-            '1_00_00.5',
-            '1_00_00.5e5',
-            '1_00_00e5_1',
-            '1e1_0',
-            '.1_4',
-            '.1_4e1',
-            '0b_0',
-            '0x_f',
-            '0o_5',
-            '1_00_00j',
-            '1_00_00.5j',
-            '1_00_00e5_1j',
-            '.1_4j',
-            '(1_2.5+3_3j)',
-            '(.5_6j)',
+        const VALID_UNDERSCORE_LITERALS: [string, number][] = [
+            ['0_0_0', 0],
+            ['4_2', 42],
+            ['1_0000_0000', 100000000],
+            ['0b1001_0100', 148],
+            ['0xffff_ffff', 4294967295],
+            ['0o5_7_7', 383],
+            ['0b_0', 0],
+            ['0x_f', 15],
+            ['0o_5', 5],
         ];
         const INVALID_UNDERSCORE_LITERALS = [
             // Trailing underscores:
@@ -299,13 +287,15 @@ describe('CPython Tests', () => {
             // Complex cases with parens:
             '(1+1.5_j_)',
             '(1+1.5_j)',
-        ]
+        ];
         const ignore = [...'.eEjJ'];
-        for (let literal of VALID_UNDERSCORE_LITERALS) {
-            if (ignore.some(ch => literal.includes(ch))) {
-                continue;
-            }
-            expect(int(literal, 0)).toEqual(eval(literal));
+        for (let [literal, expected] of VALID_UNDERSCORE_LITERALS) {
+            test(`int('${literal}', 0) == ${expected}`, () => {
+                let actual = int(literal, 0, true);
+                console.black(`actual: ${actual}`);
+                return expect(actual).toEqual(expected);
+                
+            });
         }
     });
     describe('longobject.c', () => {
