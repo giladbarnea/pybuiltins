@@ -166,6 +166,8 @@ export class Int extends Number {
         } catch (e) {
             // may not be string, no .trim()
         }
+        
+        // *  Special number handling
         let prefix = null;
         if (nosign[1] && RegExp(/[a-zA-Z]/).test(nosign[1])) {
             if (log) console.log(`nosign[1] and nosign[1] = /[a-zA-Z]/, prefix = nosign[1] = ${nosign[1]}`);
@@ -179,7 +181,6 @@ export class Int extends Number {
         let isFloat = false;
         if (nosign[0] === '0') {
             if (log) console.log(`nosign[0] === '0'`);
-            prefix = nosign[1];
             isBinary = prefix === 'b' || prefix === 'B';
             isOctal = prefix === 'o' || prefix === 'O';
             isHexaDecimal = prefix === 'x' || prefix === 'X';
@@ -201,7 +202,6 @@ export class Int extends Number {
                 mod,
                 isFloat,
                 'nosign[0]: ': nosign[0],
-                'prefix && RegExp(/[a-zA-Z]/).test(prefix)': prefix && RegExp(/[a-zA-Z]/).test(prefix),
                 parsedInt,
                 'nosign[2]': nosign[2]
                 
@@ -211,13 +211,13 @@ export class Int extends Number {
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             
-            if (prefix && RegExp(/[a-zA-Z]/).test(prefix) && nosign[2] === undefined) {
-                // RegExp(/[a-zA-Z]/).test(undefined) => true, must check prefix && ...
-                if (log) console.log('has prefix, nosign[2] is undefined. ValueError');
+            if (prefix !== null && nosign[2] === undefined) {
+                // prefix is not null iff nosign[1] is a-zA-Z
+                if (log) console.log('prefix !== null, nosign[2] is undefined. ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
-            if (mod !== 0 && Boolean(parsedInt)) {
-                if (log) console.log(`mod !== 0 and Boolean(parseInt), super(parsedInt) and return`);
+            if (mod !== 0 && parsedInt) {
+                if (log) console.log(`mod !== 0 && parseInt, super(parsedInt) and return`);
                 super(parsedInt);
                 return
             }
