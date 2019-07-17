@@ -113,17 +113,6 @@ describe('CPython Tests', () => {
             test("int('12068657454', 9)", () => expect(int('12068657454', 9)).toEqual(4294967296));
             test("int('4294967296', 10)", () => expect(int('4294967296', 10)).toEqual(4294967296));
             test("int('1904440554', 11)", () => expect(int('1904440554', 11)).toEqual(4294967296));
-            // letter: 'b',
-            // isBinary: false,
-            // isOctal: false,
-            // isHexaDecimal: false,
-            // isSpecial: false,
-            // specialBase: undefined,
-            // mod: NaN,
-            // isFloat: false,
-            // 'nosign[0]: ': '9',
-            // 'RegExp(/[a-zA-Z]/).test(letter)': true,
-            // 'parseInt(x, base)': 4294967296
             test("int('9ba461594', 12)", () => expect(int('9ba461594', 12)).toEqual(4294967296));
             test("int('535a79889', 13)", () => expect(int('535a79889', 13)).toEqual(4294967296));
             test("int('2ca5b7464', 14)", () => expect(int('2ca5b7464', 14)).toEqual(4294967296));
@@ -204,17 +193,6 @@ describe('CPython Tests', () => {
             test("int('12068657455', 9)", () => expect(int('12068657455', 9)).toEqual(4294967297));
             test("int('4294967297', 10)", () => expect(int('4294967297', 10)).toEqual(4294967297));
             test("int('1904440555', 11)", () => expect(int('1904440555', 11)).toEqual(4294967297));
-            // letter: 'b',
-            // isBinary: false,
-            // isOctal: false,
-            // isHexaDecimal: false,
-            // isSpecial: false,
-            // specialBase: undefined,
-            // mod: NaN,
-            // isFloat: false,
-            // 'nosign[0]: ': '9',
-            // 'RegExp(/[a-zA-Z]/).test(letter)': true,
-            // 'parseInt(x, base)': 4294967297
             test("int('9ba461595', 12)", () => expect(int('9ba461595', 12)).toEqual(4294967297));
             test("int('535a7988a', 13)", () => expect(int('535a7988a', 13)).toEqual(4294967297));
             test("int('2ca5b7465', 14)", () => expect(int('2ca5b7465', 14)).toEqual(4294967297));
@@ -242,6 +220,93 @@ describe('CPython Tests', () => {
             test("int('1z141z5', 36)", () => expect(int('1z141z5', 36)).toEqual(4294967297))
             
         });
+    });
+    //\Lib\test\test_int.py.test_underscores()
+    describe('test_underscore', () => {
+        // \Lib\test\test_grammar.py
+        const VALID_UNDERSCORE_LITERALS = [
+            '0_0_0',
+            '4_2',
+            '1_0000_0000',
+            '0b1001_0100',
+            '0xffff_ffff',
+            '0o5_7_7',
+            '1_00_00.5',
+            '1_00_00.5e5',
+            '1_00_00e5_1',
+            '1e1_0',
+            '.1_4',
+            '.1_4e1',
+            '0b_0',
+            '0x_f',
+            '0o_5',
+            '1_00_00j',
+            '1_00_00.5j',
+            '1_00_00e5_1j',
+            '.1_4j',
+            '(1_2.5+3_3j)',
+            '(.5_6j)',
+        ];
+        const INVALID_UNDERSCORE_LITERALS = [
+            // Trailing underscores:
+            '0_',
+            '42_',
+            '1.4j_',
+            '0x_',
+            '0b1_',
+            '0xf_',
+            '0o5_',
+            '0 if 1_Else 1',
+            // Underscores in the base selector:
+            '0_b0',
+            '0_xf',
+            '0_o5',
+            // Old-style octal, still disallowed:
+            '0_7',
+            '09_99',
+            // Multiple consecutive underscores:
+            '4_______2',
+            '0.1__4',
+            '0.1__4j',
+            '0b1001__0100',
+            '0xffff__ffff',
+            '0x___',
+            '0o5__77',
+            '1e1__0',
+            '1e1__0j',
+            // Underscore right before a dot:
+            '1_.4',
+            '1_.4j',
+            // Underscore right after a dot:
+            '1._4',
+            '1._4j',
+            '._5',
+            '._5j',
+            // Underscore right after a sign:
+            '1.0e+_1',
+            '1.0e+_1j',
+            // Underscore right before j:
+            '1.4_j',
+            '1.4e5_j',
+            // Underscore right before e:
+            '1_e1',
+            '1.4_e1',
+            '1.4_e1j',
+            // Underscore right after e:
+            '1e_1',
+            '1.4e_1',
+            '1.4e_1j',
+            // Complex cases with parens:
+            '(1+1.5_j_)',
+            '(1+1.5_j)',
+        ]
+        const ignore = [...'.eEjJ'];
+        for (let literal of VALID_UNDERSCORE_LITERALS) {
+            if (ignore.some(ch => literal.includes(ch))) {
+                continue;
+            }
+            expect(int(literal, 0)).toEqual(eval(literal));
+        }
     });
     describe('longobject.c', () => {
         // Objects\longobject.c.PyLong_FromString (2117)
@@ -417,17 +482,6 @@ describe('Bitwise', () => {
         test("int('0x11', 16)", () => expect(int('0x11', 16)).toEqual(17));
         test("int('0x11', 33)", () => expect(() => int('0x11', 33)).toThrow(new ValueError(`invalid literal for int() with base 33: '0x11'`)));
         test("int('0x11', 34)", () => expect(int('0x11', 34)).toEqual(38183));
-        //letter: 'c',
-        // isBinary: false,
-        // isOctal: false,
-        // isHexaDecimal: false,
-        // isSpecial: false,
-        // specialBase: undefined,
-        // mod: NaN,
-        // isFloat: false,
-        // 'nosign[0]: ': '0',
-        // 'RegExp(/[a-zA-Z]/).test(letter)': true,
-        // 'parseInt(x, base)': 2042
         test("int('0c11', 13)", () => expect(int('0c11', 13)).toEqual(2042));
         test("int('0d11', 14)", () => expect(int('0d11', 14)).toEqual(2563));
         let base = chance.integer({min: 2, max: 36});
@@ -479,7 +533,6 @@ describe('Bitwise', () => {
         test('string literal, base 33', () => expect(int('0b11', 33)).toEqual(12013));
         test('string literal, base 34', () => expect(int('0b11', 34)).toEqual(12751));
         test('string literal, base 35', () => expect(int('0b11', 35)).toEqual(13511));
-        
         test('string literal, no base, throws', () => expect(() => int('0b11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0b11'`)));
         
     });
@@ -563,43 +616,10 @@ describe('ValueError misc', () => {
         test(`("+ 314", 25)`, () => expect(() => int("+ 314", 25)).toThrow(new ValueError(`invalid literal for int() with base 25: '+ 314'`)));
         test(`("+ 314", 10)`, () => expect(() => int("+ 314", 10)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
         test(`("+ 314", 0)`, () => expect(() => int("+ 314", 0)).toThrow(new ValueError(`invalid literal for int() with base 0: '+ 314'`)));
-        // letter: 'x',
-        // isBinary: false,
-        // isOctal: false,
-        // isHexaDecimal: false,
-        // isSpecial: false,
-        // specialBase: undefined,
-        // mod: NaN,
-        // isFloat: false,
-        // 'nosign[0]: ': '1',
-        // 'RegExp(/[a-zA-Z]/).test(letter)': true,
-        // 'parseInt(x, base)': 1
         test(`('  1x')`, () => expect(() => int('  1x')).toThrow(new ValueError(`invalid literal for int() with base 10: '  1x'`)));
         test(`('_1')`, () => expect(() => int('_1')).toThrow(new ValueError(`invalid literal for int() with base 10: '_1'`)));
-        // letter: '.',
-        // isBinary: false,
-        // isOctal: false,
-        // isHexaDecimal: false,
-        // isSpecial: false,
-        // specialBase: undefined,
-        // mod: 0.5,
-        // isFloat: true,
-        // 'nosign[0]: ': '1',
-        // 'RegExp(/[a-zA-Z]/).test(letter)': false,
-        // 'parseInt(x, base)': 1
         test(`('1.5')`, () => expect(() => int('1.5')).toThrow(new ValueError(`invalid literal for int() with base 10: '1.5'`)));
         test(`('15.0')`, () => expect(() => int('15.0')).toThrow(new ValueError(`invalid literal for int() with base 10: '15.0'`)));
-        // letter: '.',
-        // isBinary: false,
-        // isOctal: false,
-        // isHexaDecimal: false,
-        // isSpecial: false,
-        // specialBase: undefined,
-        // mod: -0.5,
-        // isFloat: true,
-        // 'nosign[0]: ': '1',
-        // 'RegExp(/[a-zA-Z]/).test(letter)': false,
-        // 'parseInt(x, base)': -1
         test(`('-1.5')`, () => expect(() => int('-1.5')).toThrow(new ValueError(`invalid literal for int() with base 10: '-1.5'`)));
         test(`('-15.0')`, () => expect(() => int('-15.0')).toThrow(new ValueError(`invalid literal for int() with base 10: '-15.0'`)));
         test(`('hello5')`, () => expect(() => int('hello5')).toThrow(new ValueError(`invalid literal for int() with base 10: 'hello5'`)));

@@ -114,7 +114,7 @@ export class Int extends Number {
     
     
     constructor(x = undefined, base?: string | number | Function, log?: boolean) {
-        const parsedInt = parseInt(x, <number>base);
+        let parsedInt = parseInt(x, <number>base);
         if (log) {
             extendConsole();
             console.black(`constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}`);
@@ -315,6 +315,7 @@ export class Int extends Number {
                 }
             }
         }
+        
         if (nosign[0] === '0' && ( // keep '0' and not 0
             (base === 16 && isHexaDecimal) ||
             (base === 8 && isOctal) ||
@@ -325,8 +326,8 @@ export class Int extends Number {
             
         }
         if (base !== 10) {
-            if (log) console.log(`base !== 10, super(parseInt(${x}, <number>${base})) return`);
-            super(parseInt(x, <number>base));
+            if (log) console.log(`base !== 10, super(parseInt(${x}, ${base})) return`);
+            super(parseInt(x, <number>base)); // TODO: parsedInt can be reset just before this cond
         } else {
             if (log) console.log(`base === 10, super(${x}) return`);
             super(x);
