@@ -558,7 +558,7 @@ describe('ValueError misc', () => {
         test(`(' ')`, () => expect(() => int(' ')).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`)));
         test('(` `)', () => expect(() => int(` `)).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`)));
         test(`('  \t\t  ')`, () => expect(() => int('  \t\t  ')).toThrow(new ValueError(`invalid literal for int() with base 10: '  \t\t  '`)));
-        test(`("+ 314")`, () => expect(() => int("+ 314", undefined, true)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
+        test(`("+ 314")`, () => expect(() => int("+ 314")).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
         test(`("+ 314", undefined)`, () => expect(() => int("+ 314", undefined)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
         test(`("+ 314", 25)`, () => expect(() => int("+ 314", 25)).toThrow(new ValueError(`invalid literal for int() with base 25: '+ 314'`)));
         test(`("+ 314", 10)`, () => expect(() => int("+ 314", 10)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
@@ -574,7 +574,7 @@ describe('ValueError misc', () => {
         // 'nosign[0]: ': '1',
         // 'RegExp(/[a-zA-Z]/).test(letter)': true,
         // 'parseInt(x, base)': 1
-        test(`('  1x')`, () => expect(() => int('  1x', undefined, true)).toThrow(new ValueError(`invalid literal for int() with base 10: '  1x'`)));
+        test(`('  1x')`, () => expect(() => int('  1x')).toThrow(new ValueError(`invalid literal for int() with base 10: '  1x'`)));
         test(`('_1')`, () => expect(() => int('_1')).toThrow(new ValueError(`invalid literal for int() with base 10: '_1'`)));
         // letter: '.',
         // isBinary: false,

@@ -319,7 +319,7 @@ export class Int extends Number {
             (base === 16 && isHexaDecimal) ||
             (base === 8 && isOctal) ||
             (base === 2 && isBinary))) {
-            
+            // TODO: is this cond equiv to if(base===specialBase)?
             if (log) console.log(`0th digit is 0 and either isHexaDecimal or isOctal or isBinary with matching base, x.slice(2)`);
             x = x.slice(2);
             
