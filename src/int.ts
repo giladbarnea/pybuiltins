@@ -215,7 +215,7 @@ export class Int extends Number {
                 if (log) console.log('prefix !== null, nosign[2] is undefined. ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
-            if (mod !== 0 && parsedInt) { // int('9ba461594', 12)
+            if (isNaN(mod) && parsedInt) { // int('9ba461594', 12)
                 if (log) console.log(`mod !== 0 && parseInt, super(parsedInt) and return`);
                 super(parsedInt);
                 return
