@@ -288,7 +288,7 @@ export class Int extends Number {
             
             if (log) console.log(`base === 0`);
             // CPython Objects\longobject.c.PyLong_FromString (lineno 2144)
-            if (x[0] !== 0) {
+            if (nosign[0] !== 0) {
                 if (log) console.log(`0th digit not '0', base = 10`);
                 base = 10;
             } else { // TODO: nothing reaches here
