@@ -114,7 +114,7 @@ export class Int extends Number {
     
     
     constructor(x = undefined, base?: string | number | Function, log?: boolean) {
-        const parsedInt = parseInt(x, base);
+        const parsedInt = parseInt(x, <number>base);
         if (log) {
             extendConsole();
             console.black(`constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}`);
@@ -216,7 +216,7 @@ export class Int extends Number {
                 if (log) console.log('prefix !== null, nosign[2] is undefined. ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
-            if (mod !== 0 && parsedInt) {
+            if (mod !== 0 && parsedInt) { // int('9ba461594', 12)
                 if (log) console.log(`mod !== 0 && parseInt, super(parsedInt) and return`);
                 super(parsedInt);
                 return
@@ -273,7 +273,8 @@ export class Int extends Number {
         }
         
         
-        if (isFloat) {
+        if (isFloat) { // 3.14
+            
             if (x < 0) {
                 if (log) console.log(`x < 0, super(Math.ceil(${x})) return`);
                 super(Math.ceil(x));
@@ -283,13 +284,15 @@ export class Int extends Number {
             }
             return
         }
-        if (base === 0) {
+        if (base === 0) { // int(000, 0)
+            
             if (log) console.log(`base === 0`);
             // CPython Objects\longobject.c.PyLong_FromString (lineno 2144)
-            if (x[0] !== '0') {
+            if (x[0] !== 0) {
                 if (log) console.log(`0th digit not '0', base = 10`);
                 base = 10;
-            } else {
+            } else { // TODO: nothing reaches here
+                
                 if (log) console.log(`0th digit is '0'`);
                 if (isHexaDecimal) {
                     if (log) console.log(`isHexaDecimal, base = 16`);
@@ -312,10 +315,11 @@ export class Int extends Number {
                 }
             }
         }
-        if (nosign[0] === '0' && (
+        if (nosign[0] === '0' && ( // keep '0' and not 0
             (base === 16 && isHexaDecimal) ||
             (base === 8 && isOctal) ||
             (base === 2 && isBinary))) {
+            
             if (log) console.log(`0th digit is 0 and either isHexaDecimal or isOctal or isBinary with matching base, x.slice(2)`);
             x = x.slice(2);
             
