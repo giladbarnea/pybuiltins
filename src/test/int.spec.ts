@@ -26,7 +26,7 @@ describe('CPython Tests', () => {
         // [repr(sys.maxsize), sys.maxsize],
         ['  1  ', 1],
     ];
-    describe.skip('test_basic', () => {
+    describe('test_basic', () => {
         expect(int()).toEqual(0);
         expect(int(false)).toEqual(0);
         test('int(314)', () => expect(int(314)).toEqual(314));
@@ -49,7 +49,18 @@ describe('CPython Tests', () => {
                     if (sign == "-") {
                         vv = -v
                     }
-                    test(`int('${ss}').toEqual(${vv})`, () => expect(int(ss, undefined, true)).toEqual(vv));
+                    try {
+                        let actual = int(ss, undefined, true);
+                        test(`int('${ss}').toEqual(${vv})`, () => expect(actual).toEqual(vv));
+                    } catch (e) {
+                        let isValueError = e instanceof ValueError;
+                        if (!isValueError) {
+                            console.log('failed toEqual.\nexpected:', vv, {prefix, sign, s, v, ss, e});
+                            throw e
+                        } else {
+                            // source ignores ValueErrors here
+                        }
+                    }
                     /*try {
                         // let actual = int(ss);
                     } catch (e) {
