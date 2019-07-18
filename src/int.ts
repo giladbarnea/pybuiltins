@@ -1,4 +1,5 @@
 import {ZeroDivisionError, ValueError} from "./exceptions"
+import {cc} from "./util";
 
 
 /**
@@ -55,38 +56,7 @@ Number.prototype = oldProto;
     }
 });
 */
-function extendConsole() {
-    const reset = '\x1b[0m';
-    const colors = {
-        cyan: '\x1b[36m',
-        yellow: '\x1b[33m',
-        bright: '\x1b[1m',
-        dim: '\x1b[2m',
-        underscore: '\x1b[4m',
-        blink: '\x1b[5m',
-        reverse: '\x1b[7m',
-        hidden: '\x1b[8m',
-        black: '\x1b[30m',
-        red: '\x1b[31m',
-        green: '\x1b[32m',
-        blue: '\x1b[34m',
-        magenta: '\x1b[35m',
-        white: '\x1b[37m',
-        bgblack: '\x1b[40m',
-        bgred: '\x1b[41m',
-        bggreen: '\x1b[42m',
-        bgyellow: '\x1b[43m',
-        bgblue: '\x1b[44m',
-        bgmagenta: '\x1b[45m',
-        bgcyan: '\x1b[46m',
-        bgwhite: '\x1b[47m'
-    };
-    for (let [k, v] of Object.entries(colors)) {
-        console[k] = (...args) => console.log(`${v}${args}${reset}`)
-    }
-    
-    
-}
+
 
 export class Int extends Number {
     toString(radix?: number): string {
@@ -115,10 +85,9 @@ export class Int extends Number {
     
     constructor(x = undefined, base?: string | number | Function, log?: boolean) {
         let parsedInt = parseInt(x, <number>base); // NaN if fails
-        if (log) {
-            extendConsole();
-            console.black(`constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}`);
-        }
+        const origbase = base;
+        if (log) console.log(cc(`black underscore`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}`));
+        
         
         if (x === undefined || x === false) {
             if (log) console.log('x is undefined or false, super(0) return');
@@ -170,9 +139,10 @@ export class Int extends Number {
         // *  Special number handling
         let prefix = null;
         if (nosign[1] && RegExp(/[a-zA-Z]/).test(nosign[1])) {
-            if (log) console.log(`nosign[1] and nosign[1] = [a-zA-Z], prefix = nosign[1] = ${nosign[1]}`);
+            if (log) console.log(`nosign[1] and nosign[1] is [a-zA-Z], prefix = nosign[1] = '${nosign[1]}'`);
             prefix = nosign[1];
         }
+        
         let isBinary = false;
         let isOctal = false;
         let isHexaDecimal = false;
@@ -187,7 +157,8 @@ export class Int extends Number {
             isSpecial = isBinary || isOctal || isHexaDecimal;
             specialBase = isBinary ? 2 : isOctal ? 8 : isHexaDecimal ? 16 : undefined;
         } else if (!isSpecial) { // can't possibly be special and float at the same time
-            isFloat = RegExp(/\./).test(x);
+            isFloat = RegExp(/\./).test(x); // TODO: when does this happen?
+            if (log) console.log('not isSpecial, /\./ in x? ', isFloat);
         }
         const mod = x % 1;
         if (typeofx === 'string') {
@@ -210,12 +181,24 @@ export class Int extends Number {
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             
-            if (prefix !== null && nosign[2] === undefined) {
-                // prefix is not null iff nosign[1] is a-zA-Z
-                if (log) console.log('prefix !== null, nosign[2] is undefined. ValueError');
-                throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
+            if (prefix !== null) {
+                if (log) console.log(`\x1b[3m prefix !== null`);
+                if (nosign[2] === undefined) { // int('1x')?
+                    // prefix is not null iff nosign[1] is a-zA-Z
+                    if (log) console.log('prefix !== null, nosign[2] is undefined. ValueError');
+                    throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
+                }
+                if (origbase === undefined) { // int('0c11')
+                    if (log) console.log(`\x1b[36m origbase is undefined, ValueError`);
+                    throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
+                } else {
+                    if (origbase === 0) {
+                    
+                    }
+                }
             }
-            if (isNaN(mod) && parsedInt) { // int('9ba461594', 12)
+            
+            if (isNaN(mod) && (parsedInt || parsedInt === 0)) { // int('9ba461594', 12)
                 if (log) console.log(`mod !== 0 && parseInt, super(parsedInt) and return`);
                 super(parsedInt);
                 return
