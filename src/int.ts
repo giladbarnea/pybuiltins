@@ -231,14 +231,14 @@ export class Int extends Number {
             }
             
             if (isFloat) {
-                if (log) console.log('isFloat, ValueError');
+                if (log) console.log(cc('bright yellow', 'isFloat, ValueError'));
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             
             if (isSpecial) {
                 if (log) console.log(cc(`blue`, `prefix !== null ('${prefix}')`));
                 if (origbase === undefined) { // int('0b11')
-                    if (log) console.log(`bright yellow`, `origbase is undefined, ValueError`);
+                    if (log) console.log(cc(`bright yellow`, `origbase is undefined, ValueError`));
                     throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
                 } else {
                     if (origbase === 0) {
@@ -248,7 +248,7 @@ export class Int extends Number {
                         if (nosign[0] === '0') {
                             // int('0x123', 0)
                             if (log) console.log(cc(`blue`, `nosign[0] is '0' and isSpecial`));
-                            
+                
                         }
                     }
                 }

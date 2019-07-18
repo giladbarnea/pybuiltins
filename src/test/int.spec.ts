@@ -37,8 +37,8 @@ describe('CPython Tests', () => {
         expect(int(-3.9)).toEqual(-3);
         expect(int(3.5)).toEqual(3);
         expect(int(-3.5)).toEqual(-3);
-        test('int("-3")', () => expect(int("-3")).toEqual(-3));
-        test('int(" -3 ")', () => expect(int(" -3 ")).toEqual(-3));
+        test('int("-3")', () => expect(int("-3", undefined, true)).toEqual(-3));
+        test('int(" -3 ")', () => expect(int(" -3 ", undefined, true)).toEqual(-3));
         test('int("10", 16)', () => expect(int("10", 16, true)).toEqual(16));
         
         for (let [s, v] of L) {
@@ -89,7 +89,7 @@ describe('CPython Tests', () => {
         expect(() => int(1, 12)).toThrow(TypeError);
         
         test("int('0x123', 16)", () => expect(int('0x123', 16)).toEqual(291));
-        test("int('0x123', 0)", () => expect(int('0x123', 0, true)).toEqual(291)); // mine
+        test("int('0x123', 0)", () => expect(int('0x123', 0)).toEqual(291)); // mine
         // expect(int('0x123', 16) === int('0x123', 0)).toBe(true); // mine
         // expect(int('0x123', 16)).toBe(int('0x123', 0)); // mine
         expect(int('0o123', 0)).toEqual(83);
