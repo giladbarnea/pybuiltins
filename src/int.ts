@@ -86,8 +86,7 @@ export class Int extends Number {
     constructor(x = undefined, base?: string | number | Function, log?: boolean) {
         let parsedInt = parseInt(x, <number>base); // NaN if fails
         const origbase = base;
-        if (log) console.log(cc(`black underscore`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}`));
-        
+        if (log) console.log(cc(`black underscore`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
         
         if (x === undefined || x === false) {
             if (log) console.log(cc('bright magenta', 'x is undefined or false, super(0) return'));
@@ -120,6 +119,7 @@ export class Int extends Number {
             if (log) console.log(cc('bright yellow', 'typeof x isnt number or string, TypeError'));
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
         }
+        
         const orig = x;
         let sign = undefined;
         let nosign = x;
@@ -224,6 +224,8 @@ export class Int extends Number {
                     mod1,
                     isFloat,
                     parsedInt,
+                    'Number(x)': Number(x),
+                    'Number(nosign)': Number(nosign),
                     
                 },);
             }
@@ -254,16 +256,16 @@ export class Int extends Number {
                 }
             }
             
-            if (isNaN(mod1) && parsedInt) { // int('9ba461594', 12)
-                if (log) console.log(cc('bright magenta', `isNaN(mod1) && parsedInt, super(parsedInt = ${parsedInt}) and return`));
+            
+            if (parsedInt) { // int('9ba461594', 12)
+                if (log) console.log(cc('bright magenta', `if (parsedInt), super(parsedInt = ${parsedInt}) and return`));
                 super(parsedInt);
                 return
             }
             
-            if (isFloat || // int('1.5')
-                !RegExp(/\d/).test(x) || // int("")
+            if (!RegExp(/\d/).test(x) || // int('0x', 16) int('0o', 8) int('0b', 2)
                 isNaN(mod1)) { // int("+ 314")
-                if (log) console.log(cc('bright yellow', `'${x}' isFloat or isNaN(mod1) or /\d/, prefix is '${prefix}', ValueError`));
+                if (log) console.log(cc('bright yellow', `isNaN(mod1) or '${x}' is /\d/, ValueError`));
                 throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
             }
             

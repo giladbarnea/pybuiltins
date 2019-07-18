@@ -221,79 +221,106 @@ describe('CPython Tests', () => {
         });
     });
     //\Lib\test\test_int.py.test_underscores()
-    describe.skip('test_underscore', () => {
-        // \Lib\test\test_grammar.py
-        const VALID_UNDERSCORE_LITERALS: [string, number][] = [
-            ['0_0_0', 0],
-            ['4_2', 42],
-            ['1_0000_0000', 100000000],
-            ['0b1001_0100', 148],
-            ['0xffff_ffff', 4294967295],
-            ['0o5_7_7', 383],
-            ['0b_0', 0],
-            ['0x_f', 15],
-            ['0o_5', 5],
-        ];
-        const INVALID_UNDERSCORE_LITERALS = [
-            // Trailing underscores:
-            '0_',
-            '42_',
-            '1.4j_',
-            '0x_',
-            '0b1_',
-            '0xf_',
-            '0o5_',
-            '0 if 1_Else 1',
-            // Underscores in the base selector:
-            '0_b0',
-            '0_xf',
-            '0_o5',
-            // Old-style octal, still disallowed:
-            '0_7',
-            '09_99',
-            // Multiple consecutive underscores:
-            '4_______2',
-            '0.1__4',
-            '0.1__4j',
-            '0b1001__0100',
-            '0xffff__ffff',
-            '0x___',
-            '0o5__77',
-            '1e1__0',
-            '1e1__0j',
-            // Underscore right before a dot:
-            '1_.4',
-            '1_.4j',
-            // Underscore right after a dot:
-            '1._4',
-            '1._4j',
-            '._5',
-            '._5j',
-            // Underscore right after a sign:
-            '1.0e+_1',
-            '1.0e+_1j',
-            // Underscore right before j:
-            '1.4_j',
-            '1.4e5_j',
-            // Underscore right before e:
-            '1_e1',
-            '1.4_e1',
-            '1.4_e1j',
-            // Underscore right after e:
-            '1e_1',
-            '1.4e_1',
-            '1.4e_1j',
-            // Complex cases with parens:
-            '(1+1.5_j_)',
-            '(1+1.5_j)',
-        ];
-        for (let [literal, expected] of VALID_UNDERSCORE_LITERALS) {
-            test(`int('${literal}', 0) == ${expected}`, () => {
-                let actual = int(literal, 0);
-                return expect(actual).toEqual(expected);
-                
-            });
-        }
+    describe('test_underscore', () => {
+        describe('Valid underscore literals', () => {
+            
+            
+            // \Lib\test\test_grammar.py
+            const VALID_UNDERSCORE_LITERALS: [string, number][] = [
+                ['0_0_0', 0],
+                ['4_2', 42],
+                ['1_0000_0000', 100000000],
+                ['0b1001_0100', 148],
+                ['0xffff_ffff', 4294967295],
+                ['0o5_7_7', 383],
+                ['0b_0', 0],
+                ['0x_f', 15],
+                ['0o_5', 5],
+            ];
+            
+            for (let [literal, expected] of VALID_UNDERSCORE_LITERALS) {
+                test(`int('${literal}', 0) == ${expected}`, () => {
+                    let actual = int(literal, 0, true);
+                    return expect(actual).toEqual(expected);
+                    
+                });
+            }
+            for (let [literal, expected] of VALID_UNDERSCORE_LITERALS) {
+                let literalNoUnderscore = literal.split('_').join('');
+                test(`int('${literalNoUnderscore}', 0) == ${expected}`, () => {
+                    let actual = int(literalNoUnderscore, 0, true);
+                    return expect(actual).toEqual(expected);
+                    
+                });
+            }
+            
+        });
+        describe('Invalid underscore literals', () => {
+            const INVALID_UNDERSCORE_LITERALS = [
+                // Trailing underscores:
+                '0_',
+                '42_',
+                '0x_',
+                '0b1_',
+                '0xf_',
+                '0o5_',
+                '0 if 1_Else 1',
+                // Underscores in the base selector:
+                '0_b0',
+                '0_xf',
+                '0_o5',
+                // Old-style octal, still disallowed:
+                '0_7',
+                '09_99',
+                // Multiple consecutive underscores:
+                '4_______2',
+                '0.1__4',
+                '0.1__4j',
+                '0b1001__0100',
+                '0xffff__ffff',
+                '0x___',
+                '0o5__77',
+                '1e1__0',
+                '1e1__0j',
+                // Underscore right before a dot:
+                '1_.4',
+                '1_.4j',
+                // Underscore right after a dot:
+                '1._4',
+                '1._4j',
+                '._5',
+                '._5j',
+                // Underscore right after a sign:
+                '1.0e+_1',
+                '1.0e+_1j',
+                // Underscore right before j:
+                '1.4_j',
+                '1.4e5_j',
+                // Underscore right before e:
+                '1_e1',
+                '1.4_e1',
+                '1.4_e1j',
+                // Underscore right after e:
+                '1e_1',
+                '1.4e_1',
+                '1.4e_1j',
+                // Complex cases with parens:
+                '(1+1.5_j_)',
+                '(1+1.5_j)',
+            ];
+            for (let invalid of INVALID_UNDERSCORE_LITERALS) {
+                test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0)).toThrow(ValueError));
+            }
+        });
+        describe('Additional test cases with bases != 0, only for the constructor', () => {
+            test('int("1_00", 3)', () => expect(int("1_00", 3)).toEqual(9));
+            test('int("0_100")', () => expect(int("0_100")).toEqual(100));  // not valid as a literal!
+            test('int("_100") ValueError', () => expect(() => int("_100")).toThrow(ValueError));
+            test('"int("+_100") ValueError', () => expect(() => int("+_100")).toThrow(ValueError));
+            test('int("1__00") ValueError', () => expect(() => int("1__00")).toThrow(ValueError));
+            test('int("100_") ValueError', () => expect(() => int("100_")).toThrow(ValueError))
+        });
+        
     });
     describe('longobject.c', () => {
         // Objects\longobject.c.PyLong_FromString (2117)
@@ -440,7 +467,7 @@ describe('Bitwise', () => {
     });
     describe('base 0 works only if true bin/hex/oct, otherwise only if x[0] !== "0" and all char < 10 (base:=10)', () => {
         let _valerr = literal => valerr(literal, 0);
-        test("int('0711', 0) ValueError", () => expect(() => int('0711', 0)).toThrow(_valerr('0711')));
+        test("int('0711', 0) ValueError", () => expect(() => int('0711', 0, true)).toThrow(_valerr('0711')));
         test("int('711', 0)", () => expect(int('711', 0)).toEqual(711));
         test("int('0b11', 0)", () => expect(int('0b11', 0)).toEqual(3));
         test("int('1b11', 0) ValueError", () => expect(() => int('1b11', 0)).toThrow(_valerr('1b11')));
