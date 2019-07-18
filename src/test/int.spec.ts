@@ -256,61 +256,93 @@ describe('CPython Tests', () => {
             
         });
         describe('Invalid underscore literals', () => {
-            const INVALID_UNDERSCORE_LITERALS = [
-                // Trailing underscores:
-                '0_',
-                '42_',
-                '0x_',
-                '0b1_',
-                '0xf_',
-                '0o5_',
-                '0 if 1_Else 1',
-                // Underscores in the base selector:
-                '0_b0',
-                '0_xf',
-                '0_o5',
-                // Old-style octal, still disallowed:
-                '0_7',
-                '09_99',
-                // Multiple consecutive underscores:
-                '4_______2',
-                '0.1__4',
-                '0.1__4j',
-                '0b1001__0100',
-                '0xffff__ffff',
-                '0x___',
-                '0o5__77',
-                '1e1__0',
-                '1e1__0j',
-                // Underscore right before a dot:
-                '1_.4',
-                '1_.4j',
-                // Underscore right after a dot:
-                '1._4',
-                '1._4j',
-                '._5',
-                '._5j',
-                // Underscore right after a sign:
-                '1.0e+_1',
-                '1.0e+_1j',
-                // Underscore right before j:
-                '1.4_j',
-                '1.4e5_j',
-                // Underscore right before e:
-                '1_e1',
-                '1.4_e1',
-                '1.4_e1j',
-                // Underscore right after e:
-                '1e_1',
-                '1.4e_1',
-                '1.4e_1j',
-                // Complex cases with parens:
-                '(1+1.5_j_)',
-                '(1+1.5_j)',
-            ];
-            for (let invalid of INVALID_UNDERSCORE_LITERALS) {
-                test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-            }
+            describe('Trailing underscore', () => {
+                let invalids = ['0_',
+                    '42_',
+                    '0x_',
+                    '0b1_',
+                    '0xf_',
+                    '0o5_',
+                    '0 if 1_Else 1',];
+                for (let invalid of invalids) {
+                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
+                }
+            });
+            describe('Underscores in the base selector', () => {
+                let invalids = ['0_b0',
+                    '0_xf',
+                    '0_o5',];
+                for (let invalid of invalids) {
+                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
+                }
+            });
+            describe('Old-style octal', () => {
+                let invalids = ['0_7',
+                    '09_99',];
+                for (let invalid of invalids) {
+                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
+                }
+            });
+            describe('Multiple consecutive underscores', () => {
+                let invalids = ['4_______2',
+                    '0.1__4',
+                    '0.1__4j',
+                    '0b1001__0100',
+                    '0xffff__ffff',
+                    '0x___',
+                    '0o5__77',
+                    '1e1__0',
+                    '1e1__0j',];
+                for (let invalid of invalids) {
+                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
+                }
+            });
+            describe('Underscore right before a dot', () => {
+                let invalids = ['1_.4',
+                    '1_.4j',];
+                for (let invalid of invalids) {
+                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
+                }
+            });
+            describe('Underscore right after a dot', () => {
+                let invalids = ['1._4',
+                    '1._4j',
+                    '._5',
+                    '._5j',];
+                for (let invalid of invalids) {
+                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
+                }
+            });
+            describe('Underscore right after a sign', () => {
+                let invalids = ['1.0e+_1',
+                    '1.0e+_1j',];
+                for (let invalid of invalids) {
+                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
+                }
+            });
+            describe('Underscore right before j', () => {
+                let invalids = ['1.4_j',
+                    '1.4e5_j',];
+                for (let invalid of invalids) {
+                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
+                }
+            });
+            describe('Underscore right before e', () => {
+                let invalids = ['1_e1',
+                    '1.4_e1',
+                    '1.4_e1j',];
+                for (let invalid of invalids) {
+                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
+                }
+            });
+            describe('Complex cases with parens', () => {
+                let invalids = ['(1+1.5_j_)',
+                    '(1+1.5_j)',];
+                for (let invalid of invalids) {
+                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
+                }
+            });
+            
         });
         describe('Additional test cases with bases != 0, only for the constructor', () => {
             test('int("1_00", 3)', () => expect(int("1_00", 3, true)).toEqual(9));
