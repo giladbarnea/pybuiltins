@@ -235,23 +235,9 @@ export class Int extends Number {
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             
-            if (isSpecial) {
-                if (log) console.log(cc(`blue`, `prefix !== null ('${prefix}')`));
-                if (origbase === undefined) { // int('0b11')
-                    if (log) console.log(cc(`bright yellow`, `origbase is undefined, ValueError`));
-                    throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
-                } else {
-                    if (origbase === 0) {
-                        // base 0 works only if true bin/hex/oct,
-                        // otherwise only if x[0] !== "0" and all char < 10 (because base was set to 10)
-                        if (log) console.log(cc(`blue`, `origbase === 0`));
-                        if (nosign[0] === '0') {
-                            // int('0x123', 0)
-                            if (log) console.log(cc(`blue`, `nosign[0] is '0' and isSpecial`));
-                
-                        }
-                    }
-                }
+            if (isSpecial && origbase === undefined) {
+                if (log) console.log(cc(`bright yellow`, `isSpecial && origbase === undefined, ValueError`));
+                throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
             }
             
             
