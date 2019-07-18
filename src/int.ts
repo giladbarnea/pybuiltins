@@ -198,8 +198,10 @@ export class Int extends Number {
             (base === 8 && isOctal) ||
             (base === 2 && isBinary))) {
             // TODO: is this cond equiv to if(base===specialBase)?
-            if (log) console.log(cc('cyan', `0th digit is 0 and isSpecial with matching base => x = x.slice(2)`));
             x = x.slice(2);
+            if (log) console.log(cc('cyan',
+                `nosign[0] === '0' and isSpecial with matching base => x = x.slice(2) = '${x}', nosign = '${nosign}'`));
+            // nosign = x;
             
         }
         
