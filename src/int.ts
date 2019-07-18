@@ -257,7 +257,7 @@ export class Int extends Number {
             }
             
             
-            if (parsedInt) { // int('9ba461594', 12)
+            if (Number.isInteger(parsedInt)) { // int('9ba461594', 12)
                 if (log) console.log(cc('bright magenta', `if (parsedInt), super(parsedInt = ${parsedInt}) and return`));
                 super(parsedInt);
                 return

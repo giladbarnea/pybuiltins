@@ -309,16 +309,16 @@ describe('CPython Tests', () => {
                 '(1+1.5_j)',
             ];
             for (let invalid of INVALID_UNDERSCORE_LITERALS) {
-                test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0)).toThrow(ValueError));
+                test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
             }
         });
         describe('Additional test cases with bases != 0, only for the constructor', () => {
-            test('int("1_00", 3)', () => expect(int("1_00", 3)).toEqual(9));
+            test('int("1_00", 3)', () => expect(int("1_00", 3, true)).toEqual(9));
             test('int("0_100")', () => expect(int("0_100")).toEqual(100));  // not valid as a literal!
             test('int("_100") ValueError', () => expect(() => int("_100")).toThrow(ValueError));
             test('"int("+_100") ValueError', () => expect(() => int("+_100")).toThrow(ValueError));
-            test('int("1__00") ValueError', () => expect(() => int("1__00")).toThrow(ValueError));
-            test('int("100_") ValueError', () => expect(() => int("100_")).toThrow(ValueError))
+            test('int("1__00") ValueError', () => expect(() => int("1__00", undefined, true)).toThrow(ValueError));
+            test('int("100_") ValueError', () => expect(() => int("100_", undefined, true)).toThrow(ValueError))
         });
         
     });
