@@ -182,7 +182,7 @@ export class Int extends Number {
             }
             
             if (prefix !== null) {
-                if (log) console.log(cc(`blue prefix !== null`));
+                if (log) console.log(cc(`blue`, `prefix !== null (it's '${prefix}')`));
                 if (nosign[2] === undefined) { // int('1x')?
                     // prefix is not null iff nosign[1] is a-zA-Z
                     if (log) console.log(cc('bright yellow', 'nosign[2] is undefined. ValueError'));
@@ -201,12 +201,14 @@ export class Int extends Number {
                             if (log) console.log(cc(`blue`, `nosign[0] is '0' and isSpecial`));
                             
                         }
+                    }else{
+                    
                     }
                 }
             }
             
             if (isNaN(mod) && (parsedInt || parsedInt === 0)) { // int('9ba461594', 12)
-                if (log) console.log(`mod !== 0 && parseInt, super(parsedInt) and return`);
+                if (log) console.log(cc('bright magenta', `mod !== 0 && parseInt, super(parsedInt) and return`));
                 super(parsedInt);
                 return
             }
