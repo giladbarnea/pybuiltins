@@ -3,7 +3,7 @@ import * as perf from "./perf"
 /*
 
 */
-function cc(colorValue: string, ...args) {
+function cc(val: string, ...args) {
     const colorsDict = {
         reset: '\x1b[0m',
         bright: '\x1b[1m',
@@ -30,8 +30,24 @@ function cc(colorValue: string, ...args) {
         bgwhite: '\x1b[47m',
         
     };
-    const colors = colorValue.split(' ');
-    return `${colors.map(c => colorsDict[c]).join('')}${args}${colorsDict.reset}`
+    let words = val.split(' ');
+    
+    if (args.length === 0) {
+        let colorStr = '';
+        while (true) {
+            let splice = words.splice(0, 1);
+            let color = colorsDict[splice[0]];
+            if (color === undefined) {
+                words = [...splice, ...words];
+                break;
+            }
+            colorStr += color;
+        }
+        return colorStr + words.join(' ') + colorsDict.reset
+        
+    }
+    return `${words.map(c => colorsDict[c]).join('')}${args}${colorsDict.reset}`
+    // return [words.map(c => colorsDict[c]).join('') + args[0], ...args.slice(1)]
 }
 
 export {perf, cc}

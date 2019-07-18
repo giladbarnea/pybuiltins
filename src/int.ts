@@ -97,7 +97,7 @@ export class Int extends Number {
         const typeofx = typeof x;
         let errorIfNonZero = false;
         if (base === undefined) {
-            if (log) console.log('base === undefined: => base=10');
+            if (log) console.log(cc('bright', 'base === undefined: => base=10'));
             base = 10;
         } else {
             if (base === null) {
@@ -139,7 +139,7 @@ export class Int extends Number {
         // *  Special number handling
         let prefix = null;
         if (nosign[1] && RegExp(/[a-zA-Z]/).test(nosign[1])) {
-            if (log) console.log(`nosign[1] and nosign[1] is [a-zA-Z], prefix = nosign[1] = '${nosign[1]}'`);
+            if (log) console.log(cc('cyan', `nosign[1] and nosign[1] is [a-zA-Z], prefix = nosign[1] = '${nosign[1]}'`));
             prefix = nosign[1];
         }
         
@@ -150,7 +150,7 @@ export class Int extends Number {
         let specialBase = undefined;
         let isFloat = false;
         if (nosign[0] === '0') {
-            if (log) console.log(`nosign[0] === '0'`);
+            if (log) console.log(cc('blue', `nosign[0] === '0'`));
             isBinary = prefix === 'b' || prefix === 'B';
             isOctal = prefix === 'o' || prefix === 'O';
             isHexaDecimal = prefix === 'x' || prefix === 'X';
@@ -158,12 +158,14 @@ export class Int extends Number {
             specialBase = isBinary ? 2 : isOctal ? 8 : isHexaDecimal ? 16 : undefined;
         } else if (!isSpecial) { // can't possibly be special and float at the same time
             isFloat = RegExp(/\./).test(x); // TODO: when does this happen?
-            if (log) console.log('not isSpecial, /\./ in x? ', isFloat);
+            if (log) console.log(cc('cyan', 'not isSpecial, /\./ in x? ', isFloat));
         }
         const mod = x % 1;
         if (typeofx === 'string') {
-            if (log) console.log('typeof x === string:\n', {
+            if (log) console.log(cc('blue typeof x === string:\n'), {
+                'nosign[0]: ': nosign[0],
                 prefix,
+                'nosign[2]': nosign[2],
                 isBinary,
                 isOctal,
                 isHexaDecimal,
@@ -171,29 +173,34 @@ export class Int extends Number {
                 specialBase,
                 mod,
                 isFloat,
-                'nosign[0]: ': nosign[0],
                 parsedInt,
-                'nosign[2]': nosign[2]
                 
             });
             if (isFloat) {
-                if (log) console.log('isFloat, valueError');
+                if (log) console.log('isFloat, ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             
             if (prefix !== null) {
-                if (log) console.log(`\x1b[3m prefix !== null`);
+                if (log) console.log(cc(`blue prefix !== null`));
                 if (nosign[2] === undefined) { // int('1x')?
                     // prefix is not null iff nosign[1] is a-zA-Z
-                    if (log) console.log('prefix !== null, nosign[2] is undefined. ValueError');
+                    if (log) console.log(cc('bright yellow', 'nosign[2] is undefined. ValueError'));
                     throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
                 }
                 if (origbase === undefined) { // int('0c11')
-                    if (log) console.log(`\x1b[36m origbase is undefined, ValueError`);
+                    if (log) console.log(`bright yellow`, `origbase is undefined, ValueError`);
                     throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
                 } else {
                     if (origbase === 0) {
-                    
+                        if (log) console.log(cc(`blue`, `origbase === 0`));
+                        if (nosign[0] !== '0' || !isSpecial) { // int('0c11', 0)
+                            if (log) console.log(cc(`bright yellow`, `nosign[0] !== '0' or !isSpecial, ValueError`));
+                            throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
+                        } else {
+                            if (log) console.log(cc(`blue`, `nosign[0] is '0' and isSpecial`));
+                            
+                        }
                     }
                 }
             }
