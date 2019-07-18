@@ -26,10 +26,10 @@ describe('CPython Tests', () => {
         // [repr(sys.maxsize), sys.maxsize],
         ['  1  ', 1],
     ];
-    describe('test_basic', () => {
+    describe.skip('test_basic', () => {
         expect(int()).toEqual(0);
         expect(int(false)).toEqual(0);
-        expect(int(314)).toEqual(314);
+        test('int(314)', () => expect(int(314)).toEqual(314));
         expect(int(3.14)).toEqual(3);
         // Check that conversion from float truncates towards zero
         expect(int(-3.14)).toEqual(-3);
@@ -49,9 +49,9 @@ describe('CPython Tests', () => {
                     if (sign == "-") {
                         vv = -v
                     }
-                    try {
-                        let actual = int(ss);
-                        expect(actual).toEqual(vv);
+                    test(`int('${ss}').toEqual(${vv})`, () => expect(int(ss, undefined, true)).toEqual(vv));
+                    /*try {
+                        // let actual = int(ss);
                     } catch (e) {
                         let isValueError = e instanceof ValueError;
                         if (!(isValueError)) {
@@ -62,6 +62,7 @@ describe('CPython Tests', () => {
                         }
                         
                     }
+                    */
                 }
             }
         }
@@ -88,14 +89,14 @@ describe('CPython Tests', () => {
         expect(x).toBeInstanceOf(Int);
         expect(() => int(1, 12)).toThrow(TypeError);
         
-        expect(int('0x123', 16, true)).toEqual(291);
+        test("int('0x123', 16)", () => expect(int('0x123', 16, true)).toEqual(291));
         expect(int('0x123', 0)).toEqual(291); // mine
         // expect(int('0x123', 16) === int('0x123', 0)).toBe(true); // mine
         // expect(int('0x123', 16)).toBe(int('0x123', 0)); // mine
         expect(int('0o123', 0)).toEqual(83);
-        expect(int('0o123', 0)).toEqual(int('0o123', 8)); // mine
+        test("int('0o123', 0)", () => expect(int('0o123', 0)).toEqual(83)); // mine
         
-        const shouldThrow = [
+        /*const shouldThrow = [
             () => int('0x', 16),
             () => int('0x', 0),
             () => int('0o', 8),
@@ -106,6 +107,14 @@ describe('CPython Tests', () => {
         ];
         for (let bad of shouldThrow)
             expect(bad).toThrow(ValueError);
+        */
+        test("int('0x', 16) ValueError", () => expect(() => int('0x', 16, true)).toThrow(ValueError));
+        test("int('0x', 0) ValueError", () => expect(() => int('0x', 0, true)).toThrow(ValueError));
+        test("int('0o', 8) ValueError", () => expect(() => int('0o', 8, true)).toThrow(ValueError));
+        test("int('0o', 0) ValueError", () => expect(() => int('0o', 0, true)).toThrow(ValueError));
+        test("int('0b', 2) ValueError", () => expect(() => int('0b', 2, true)).toThrow(ValueError));
+        test("int('0b', 0) ValueError", () => expect(() => int('0b', 0, true)).toThrow(ValueError));
+        
         // Lib\test\test_int.py
         describe('2**32 (4294967296)', () => {
             
@@ -118,7 +127,7 @@ describe('CPython Tests', () => {
             test("int('12068657454', 9)", () => expect(int('12068657454', 9)).toEqual(4294967296));
             test("int('4294967296', 10)", () => expect(int('4294967296', 10)).toEqual(4294967296));
             test("int('1904440554', 11)", () => expect(int('1904440554', 11)).toEqual(4294967296));
-            test("int('9ba461594', 12)", () => expect(int('9ba461594', 12)).toEqual(4294967296));
+            test("int('9ba461594', 12)", () => expect(int('9ba461594', 12, true)).toEqual(4294967296));
             test("int('535a79889', 13)", () => expect(int('535a79889', 13)).toEqual(4294967296));
             test("int('2ca5b7464', 14)", () => expect(int('2ca5b7464', 14)).toEqual(4294967296));
             test("int('1a20dcd81', 15)", () => expect(int('1a20dcd81', 15)).toEqual(4294967296));
@@ -198,7 +207,7 @@ describe('CPython Tests', () => {
             test("int('12068657455', 9)", () => expect(int('12068657455', 9)).toEqual(4294967297));
             test("int('4294967297', 10)", () => expect(int('4294967297', 10)).toEqual(4294967297));
             test("int('1904440555', 11)", () => expect(int('1904440555', 11)).toEqual(4294967297));
-            test("int('9ba461595', 12)", () => expect(int('9ba461595', 12)).toEqual(4294967297));
+            test("int('9ba461595', 12)", () => expect(int('9ba461595', 12, true)).toEqual(4294967297));
             test("int('535a7988a', 13)", () => expect(int('535a7988a', 13)).toEqual(4294967297));
             test("int('2ca5b7465', 14)", () => expect(int('2ca5b7465', 14)).toEqual(4294967297));
             test("int('1a20dcd82', 15)", () => expect(int('1a20dcd82', 15)).toEqual(4294967297));
@@ -445,17 +454,17 @@ describe('Bitwise', () => {
         test("int('11')", () => expect(int('11')).toEqual(11));
         
     });
-    describe('base 0 works only if true bin/hex/oct, otherwise only if x["0"] != 0 and no letters', () => {
+    describe('base 0 works only if true bin/hex/oct, otherwise only if x[0] !== "0" and all char < 10 (base:=10)', () => {
         let _valerr = literal => valerr(literal, 0);
-        test("int('0711', 0) ValueError", () => expect(() => int('0711', 0)).toThrow(_valerr('0711')));
-        test("int('711', 0)", () => expect(int('711', 0)).toEqual(711));
-        test("int('0b11', 0)", () => expect(int('0b11', 0)).toEqual(3));
-        test("int('1b11', 0) ValueError", () => expect(() => int('1b11', 0)).toThrow(_valerr('1b11')));
-        test("int('0o11', 0)", () => expect(int('0o11', 0)).toEqual(9));
-        test("int('0x11', 0)", () => expect(int('0x11', 0)).toEqual(17));
-        test("int('0c11', 0) ValueError", () => expect(() => int('0c11', 0)).toThrow(_valerr('0c11')));
-        test("int('1c11', 0) ValueError", () => expect(() => int('1c11', 0)).toThrow(_valerr('1c11')));
-        test("int('11', 0)", () => expect(int('11', 0)).toEqual(11));
+        test("int('0711', 0) ValueError", () => expect(() => int('0711', 0, true)).toThrow(_valerr('0711')));
+        test("int('711', 0)", () => expect(int('711', 0, true)).toEqual(711));
+        test("int('0b11', 0)", () => expect(int('0b11', 0, true)).toEqual(3));
+        test("int('1b11', 0) ValueError", () => expect(() => int('1b11', 0, true)).toThrow(_valerr('1b11')));
+        test("int('0o11', 0)", () => expect(int('0o11', 0, true)).toEqual(9));
+        test("int('0x11', 0)", () => expect(int('0x11', 0, true)).toEqual(17));
+        test("int('0c11', 0) ValueError", () => expect(() => int('0c11', 0, true)).toThrow(_valerr('0c11')));
+        test("int('1c11', 0) ValueError", () => expect(() => int('1c11', 0, true)).toThrow(_valerr('1c11')));
+        test("int('11', 0)", () => expect(int('11', 0, true)).toEqual(11));
     });
     
     describe('base 2 works only if all digits < 2 (including letters), or if letter - then only true binary of 0b[0-1]', () => {
@@ -484,21 +493,21 @@ describe('Bitwise', () => {
     describe('bin: base 0, 2 or > 11; oct: base 0, 8 or > 24; hex: base 0, 16 or > 33; ', () => {
         test("int('0711', 8)", () => expect(int('711', 8)).toEqual(457));
         // 11 == b (base must be higher)
-        test("int('0b11', 11) ValueError", () => expect(() => int('0b11', 11)).toThrow(valerr('0b11', 11)));
+        test("int('0b11', 11) ValueError", () => expect(() => int('0b11', 11, true)).toThrow(valerr('0b11', 11)));
         test("int('0b11', 12)", () => expect(int('0b11', 12)).toEqual(1597));
         test("int('0b19', 12)", () => expect(int('0b19', 12)).toEqual(1605));
         
         // octal == 8
         test("int('0o11', 8)", () => expect(int('0o11', 8, true)).toEqual(9));
         // 24 == o (base must be higher)
-        test("int('0o11', 24) ValueError", () => expect(() => int('0o11', 24)).toThrow(valerr('0o11', 24)));
+        test("int('0o11', 24) ValueError", () => expect(() => int('0o11', 24, true)).toThrow(valerr('0o11', 24)));
         test("int('0o11', 25)", () => expect(int('0o11', 25)).toEqual(15026));
         test("int('0o19', 25)", () => expect(int('0o19', 25)).toEqual(15034));
         
         // hex == 16
         test("int('0x11', 16)", () => expect(int('0x11', 16, true)).toEqual(17));
         // 33 == x (base must be higher)
-        test("int('0x11', 33) ValueError", () => expect(() => int('0x11', 33)).toThrow(valerr('0x11', 33)));
+        test("int('0x11', 33) ValueError", () => expect(() => int('0x11', 33, true)).toThrow(valerr('0x11', 33)));
         test("int('0x11', 34)", () => expect(int('0x11', 34)).toEqual(38183));
         test("int('0c11', 13)", () => expect(int('0c11', 13)).toEqual(2042));
         test("int('0d11', 14)", () => expect(int('0d11', 14)).toEqual(2563));
@@ -570,11 +579,11 @@ describe('Bitwise', () => {
 describe('Literal string numbers with bases just on the limit', () => {
     
     test('int("00", 0)', () => expect(int("00", 0)).toEqual(0));
-    test('int("01"!, 0) ValueError', () => expect(() => int("01", 0)).toThrow(valerr('01', 0)));     // parseInt("01", 0) => 1
-    test('int("-01", 0) ValueError', () => expect(() => int("-01", 0)).toThrow(valerr('-01', 0)));   // parseInt("-01", 0) => -1
+    test('int("01", 0) ValueError', () => expect(() => int("01", 0)).toThrow(valerr('01', 0)));     // parseInt("01", 0) => 1
+    test('int("-01", 0) ValueError', () => expect(() => int("-01", 0, true)).toThrow(valerr('-01', 0)));   // parseInt("-01", 0) => -1
     test('int("02", 2) ValueError', () => expect(() => int("02", 2)).toThrow(valerr("02", 2))); // parseInt("02", 2) => 0
     test('int("02", 3)', () => expect(int("02", 3)).toEqual(2));
-    test('int("07", 0) ValueError', () => expect(() => int("07", 0)).toThrow(valerr('07', 0)));
+    test('int("07", 0) ValueError', () => expect(() => int("07", 0, true)).toThrow(valerr('07', 0)));
     test('int("07", 7) ValueError', () => expect(() => int("07", 7)).toThrow(valerr('07', 7)));
     test('int("07", 8)', () => expect(int("07", 8)).toEqual(7));
     test('int("07", 10)', () => expect(int("07", 10)).toEqual(7));
