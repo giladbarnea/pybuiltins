@@ -193,10 +193,10 @@ export class Int extends Number {
         // equivalent to big cond in longobject.c:2160
         if (isSpecial && base === specialBase) {
             x = x.slice(2);
-            if (log) console.log(cc('cyan',
-                `nosign[0] === '0' and isSpecial with matching base => x = x.slice(2) = '${x}', nosign = '${nosign}'`));
             nosign = x;
             parsedInt = parseInt(x, <number>base);
+            if (log) console.log(cc('cyan',
+                `isSpecial && base === specialBase => x = x.slice(2) = '${x}', nosign = x = '${nosign}', parsedInt = ${parsedInt}`));
             
         }
         
@@ -282,7 +282,7 @@ export class Int extends Number {
         
         if (base !== 10) { // int("10", 16)
             if (log) console.log(cc('bright magenta', `base !== 10, super(parseInt(${x}, ${base}) = ${parseInt(x, <number>base)}) return`));
-            super(parseInt(x, <number>base)); // TODO: parsedInt can be reset just before this cond
+            super(parsedInt);
         } else { // int(314)
             if (log) console.log(cc('bright magenta', `base === 10, super(${x}) return`));
             super(x);

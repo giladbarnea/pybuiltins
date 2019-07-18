@@ -90,22 +90,9 @@ describe('CPython Tests', () => {
         
         test("int('0x123', 16)", () => expect(int('0x123', 16)).toEqual(291));
         test("int('0x123', 0)", () => expect(int('0x123', 0)).toEqual(291)); // mine
-        // expect(int('0x123', 16) === int('0x123', 0)).toBe(true); // mine
-        // expect(int('0x123', 16)).toBe(int('0x123', 0)); // mine
         test("int('0o123', 0)", () => expect(int('0o123', 0, true)).toEqual(83)); // mine
         
-        /*const shouldThrow = [
-            () => int('0x', 16),
-            () => int('0x', 0),
-            () => int('0o', 8),
-            () => int('0o', 0),
-            () => int('0b', 2),
-            () => int('0b', 0),
         
-        ];
-        for (let bad of shouldThrow)
-            expect(bad).toThrow(ValueError);
-        */
         test("int('0x', 16) ValueError", () => expect(() => int('0x', 16)).toThrow(ValueError));
         test("int('0x', 0) ValueError", () => expect(() => int('0x', 0)).toThrow(ValueError));
         test("int('0o', 8) ValueError", () => expect(() => int('0o', 8)).toThrow(ValueError));
