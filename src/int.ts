@@ -288,7 +288,7 @@ export class Int extends Number {
                 !RegExp(/\d/).test(x) || // int("")
                 isNaN(mod1)) { // int("+ 314")
                 if (log) console.log(cc('bright yellow', `'${x}' isFloat or isNaN(mod1) or /\d/, prefix is '${prefix}', ValueError`));
-                throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
+                throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
             }
             
             
