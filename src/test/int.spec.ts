@@ -625,7 +625,7 @@ describe('ValueError misc', () => {
         test(`("+ 314", undefined)`, () => expect(() => int("+ 314", undefined)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
         test(`("+ 314", 25)`, () => expect(() => int("+ 314", 25)).toThrow(new ValueError(`invalid literal for int() with base 25: '+ 314'`)));
         test(`("+ 314", 10)`, () => expect(() => int("+ 314", 10)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
-        test(`("+ 314", 0)`, () => expect(() => int("+ 314", 0)).toThrow(new ValueError(`invalid literal for int() with base 0: '+ 314'`)));
+        test(`("+ 314", 0)`, () => expect(() => int("+ 314", 0, true)).toThrow(new ValueError(`invalid literal for int() with base 0: '+ 314'`)));
         test(`('  1x')`, () => expect(() => int('  1x')).toThrow(new ValueError(`invalid literal for int() with base 10: '  1x'`)));
         test(`('_1')`, () => expect(() => int('_1')).toThrow(new ValueError(`invalid literal for int() with base 10: '_1'`)));
         test(`('1.5')`, () => expect(() => int('1.5')).toThrow(new ValueError(`invalid literal for int() with base 10: '1.5'`)));

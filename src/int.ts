@@ -149,7 +149,7 @@ export class Int extends Number {
         
         
         if (nosign[0] === '0' && nosign[1] && RegExp(/[a-zA-Z]/).test(nosign[1])) {
-            if (log) console.log(cc('cyan', `nosign[0] === '0', nosign[1] is [a-zA-Z], prefix = nosign[1] = '${nosign[1]}'`));
+            if (log) console.log(cc('cyan', `nosign[0] === '0', nosign[1] is [a-zA-Z] => prefix = nosign[1] = '${nosign[1]}'`));
             prefix = nosign[1];
             isBinary = prefix === 'b' || prefix === 'B';
             isOctal = prefix === 'o' || prefix === 'O';
@@ -159,7 +159,7 @@ export class Int extends Number {
         } else if (!isSpecial) { // int('9ba461594', 12)
             // can't possibly be special and float at the same time
             isFloat = RegExp(/\./).test(x);
-            if (log) console.log(cc('cyan', `!isSpecial, isFloat = /./ in x = ${isFloat}`));
+            if (log) console.log(cc('cyan', `!isSpecial => isFloat = /./ in x = ${isFloat}`));
         }
         
         
@@ -262,7 +262,7 @@ export class Int extends Number {
             }
             
             
-            for (let c of isSpecial ? nosign.slice(2) : nosign) {
+            for (let c of x) {
                 let convertedC;
                 if (RegExp(/[a-zA-Z]/).test(c)) {
                     convertedC = parseInt(c, 36);
