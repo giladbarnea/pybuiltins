@@ -182,22 +182,13 @@ export class Int extends Number {
                     } else if (isBinary) {
                         if (log) console.log(cc('cyan', `isBinary => base = 2`));
                         base = 2;
-                    } else {
-                        if (log) console.log(cc('blue', `under base === 0: !isSpecial`));
-                        /* "old" (C-style) octal literal, now invalid.
-                        it might still be zero though */
-                        errorIfNonZero = true;
-                        // base = 10;
                     }
                 }
             }
         }
         
-        if (nosign[0] === '0' && ( // keep '0' and not 0
-            (base === 16 && isHexaDecimal) ||
-            (base === 8 && isOctal) ||
-            (base === 2 && isBinary))) {
-            // TODO: is this cond equiv to if(base===specialBase)?
+        // equivalent to big cond in longobject.c:2160
+        if (isSpecial && base === specialBase) {
             x = x.slice(2);
             if (log) console.log(cc('cyan',
                 `nosign[0] === '0' and isSpecial with matching base => x = x.slice(2) = '${x}', nosign = '${nosign}'`));
