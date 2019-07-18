@@ -95,11 +95,10 @@ export class Int extends Number {
             return
         }
         const typeofx = typeof x;
-        let errorIfNonZero = false;
         if (base === undefined) {
             base = 10;
-            // parsedInt = parseInt(x, <number>base);
-            if (log) console.log(cc('cyan', `base === undefined: => base=10, parsedInt=${parsedInt}`));
+            parsedInt = parseInt(x, <number>base);
+            if (log) console.log(cc('cyan', `base === undefined => base=10, parsedInt=${parsedInt}`));
         } else {
             if (base === null) {
                 if (log) console.log('base === null, TypeError');
@@ -125,7 +124,8 @@ export class Int extends Number {
         let sign = undefined;
         let nosign = x;
         try {
-            x = x.trim(); // "  +314 " => "+314"
+            // don't remove in-between spaces: '+314' valid, '+ 314' invalid
+            x = x.trim(); // " + 314 " => "+ 314"
             nosign = x;
             if (log && orig !== x) console.log(cc('cyan', `after x.trim(): '${x}'`));
             if (x[0] === '-' || x[0] === '+') {
@@ -133,7 +133,8 @@ export class Int extends Number {
                 nosign = x.slice(1);
                 if (log) console.log(cc('cyan', `x[0] is '${x[0]}', sign is: ${sign}', nosign is: '${nosign}'`));
             }
-            // parsedInt = parseInt(x, <number>base); // NaN if fails
+            parsedInt = parseInt(x, <number>base); // NaN if fails
+            if (log) console.log(cc('cyan', `parsedInt = parseInt(x, base) = ${parsedInt}`));
         } catch (e) {
             // may not be string, no .trim()
         }
