@@ -171,6 +171,7 @@ export class Int extends Number {
                 isHexaDecimal,
                 isSpecial,
                 specialBase,
+                base,
                 mod,
                 isFloat,
                 parsedInt,
@@ -182,7 +183,7 @@ export class Int extends Number {
             }
             
             if (prefix !== null) {
-                if (log) console.log(cc(`blue`, `prefix !== null (it's '${prefix}')`));
+                if (log) console.log(cc(`blue`, `prefix !== null ('${prefix}')`));
                 if (nosign[2] === undefined) { // int('1x')?
                     // prefix is not null iff nosign[1] is a-zA-Z
                     if (log) console.log(cc('bright yellow', 'nosign[2] is undefined. ValueError'));
@@ -201,8 +202,21 @@ export class Int extends Number {
                             if (log) console.log(cc(`blue`, `nosign[0] is '0' and isSpecial`));
                             
                         }
-                    }else{
-                    
+                    } else {
+                        if (log) console.log(cc(`blue`, `origbase !== 0`));
+                        for (let c of x) {
+                            let convertedC;
+                            if (RegExp(/[a-zA-Z]/).test(c)) {
+                                convertedC = parseInt(c, 36);
+                                if (log) console.log(cc('cyan', `in for loop, converted '${c}' to: ${convertedC}`));
+                            } else {
+                                convertedC = c;
+                            }
+                            if (convertedC >= base && c != '0') { // int("07", 5)
+                                if (log) console.log(cc('bright yellow', `${convertedC} is bigger than base ${base}, ValueError`));
+                                throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
+                            }
+                        }
                     }
                 }
             }
@@ -237,7 +251,7 @@ export class Int extends Number {
             }
             
             
-            if (base !== specialBase) {
+            if (!isSpecial) {
                 if (log) console.log(`base !== specialBase (${base} !== ${specialBase})`);
                 /**
                  * We don't want to check specials with matching base (ie bin:2, oct:8, hex: 16).
