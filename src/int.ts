@@ -133,7 +133,7 @@ export class Int extends Number {
                 nosign = x.slice(1);
                 if (log) console.log(cc('cyan', `x[0] is '${x[0]}', sign is: ${sign}', nosign is: '${nosign}'`));
             }
-            parsedInt = parseInt(x, <number>base); // NaN if fails
+            parsedInt = parseInt(x, <number>base);
             if (log) console.log(cc('cyan', `parsedInt = parseInt(x, base) = ${parsedInt}`));
         } catch (e) {
             // may not be string, no .trim()
@@ -170,6 +170,7 @@ export class Int extends Number {
             if (nosign[0] !== '0') {
                 if (log) console.log(cc('cyan', `nosign[0] !== '0' => base = 10`));
                 base = 10;
+                
             } else {
                 if (log) console.log(cc('blue', `nosign[0] === '0'`));
                 if (isHexaDecimal) {
@@ -186,6 +187,7 @@ export class Int extends Number {
                     }
                 }
             }
+            parsedInt = parseInt(x, <number>base);
         }
         
         // equivalent to big cond in longobject.c:2160
@@ -193,7 +195,8 @@ export class Int extends Number {
             x = x.slice(2);
             if (log) console.log(cc('cyan',
                 `nosign[0] === '0' and isSpecial with matching base => x = x.slice(2) = '${x}', nosign = '${nosign}'`));
-            // nosign = x;
+            nosign = x;
+            parsedInt = parseInt(x, <number>base);
             
         }
         

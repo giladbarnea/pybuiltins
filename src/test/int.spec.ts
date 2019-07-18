@@ -92,8 +92,7 @@ describe('CPython Tests', () => {
         test("int('0x123', 0)", () => expect(int('0x123', 0)).toEqual(291)); // mine
         // expect(int('0x123', 16) === int('0x123', 0)).toBe(true); // mine
         // expect(int('0x123', 16)).toBe(int('0x123', 0)); // mine
-        expect(int('0o123', 0)).toEqual(83);
-        test("int('0o123', 0)", () => expect(int('0o123', 0)).toEqual(83)); // mine
+        test("int('0o123', 0)", () => expect(int('0o123', 0, true)).toEqual(83)); // mine
         
         /*const shouldThrow = [
             () => int('0x', 16),
