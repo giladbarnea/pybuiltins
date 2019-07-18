@@ -237,14 +237,7 @@ export class Int extends Number {
             
             if (isSpecial) {
                 if (log) console.log(cc(`blue`, `prefix !== null ('${prefix}')`));
-                /*if (nosign[2] === undefined) { // int('1x')?
-                    // prefix is not null iff nosign[1] is a-zA-Z
-                    throw new Error('what');
-                    if (log) console.log(cc('bright yellow', 'nosign[2] is undefined. ValueError'));
-                    throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
-                }
-                */
-                if (origbase === undefined) { // int('0c11')
+                if (origbase === undefined) { // int('0b11')
                     if (log) console.log(`bright yellow`, `origbase is undefined, ValueError`);
                     throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
                 } else {
@@ -252,10 +245,8 @@ export class Int extends Number {
                         // base 0 works only if true bin/hex/oct,
                         // otherwise only if x[0] !== "0" and all char < 10 (because base was set to 10)
                         if (log) console.log(cc(`blue`, `origbase === 0`));
-                        if (nosign[0] !== '0' || !isSpecial) { // int('0c11', 0)
-                            if (log) console.log(cc(`bright yellow`, `nosign[0] !== '0' or !isSpecial, ValueError`));
-                            throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
-                        } else { // TODO: when does this happen?
+                        if (nosign[0] === '0') {
+                            // int('0x123', 0)
                             if (log) console.log(cc(`blue`, `nosign[0] is '0' and isSpecial`));
                             
                         }
@@ -331,10 +322,10 @@ export class Int extends Number {
             return
         }
         
-        if (base !== 10) {
+        if (base !== 10) { // int("10", 16)
             if (log) console.log(cc('bright magenta', `base !== 10, super(parseInt(${x}, ${base}) = ${parseInt(x, <number>base)}) return`));
             super(parseInt(x, <number>base)); // TODO: parsedInt can be reset just before this cond
-        } else {
+        } else { // int(314)
             if (log) console.log(cc('bright magenta', `base === 10, super(${x}) return`));
             super(x);
         }

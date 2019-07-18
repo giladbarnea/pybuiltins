@@ -37,9 +37,9 @@ describe('CPython Tests', () => {
         expect(int(-3.9)).toEqual(-3);
         expect(int(3.5)).toEqual(3);
         expect(int(-3.5)).toEqual(-3);
-        test('-3', () => expect(int("-3")).toEqual(-3));
-        test(' -3 ', () => expect(int(" -3 ")).toEqual(-3));
-        test('10, 16', () => expect(int("10", 16)).toEqual(16));
+        test('int("-3")', () => expect(int("-3")).toEqual(-3));
+        test('int(" -3 ")', () => expect(int(" -3 ")).toEqual(-3));
+        test('int("10", 16)', () => expect(int("10", 16, true)).toEqual(16));
         
         for (let [s, v] of L) {
             for (let sign of ["", "+", "-"]) {
@@ -50,7 +50,7 @@ describe('CPython Tests', () => {
                         vv = -v
                     }
                     try {
-                        let actual = int(ss, undefined);
+                        let actual = int(ss);
                         test(`int('${ss}').toEqual(${vv})`, () => expect(actual).toEqual(vv));
                     } catch (e) {
                         let isValueError = e instanceof ValueError;
@@ -89,7 +89,7 @@ describe('CPython Tests', () => {
         expect(() => int(1, 12)).toThrow(TypeError);
         
         test("int('0x123', 16)", () => expect(int('0x123', 16)).toEqual(291));
-        expect(int('0x123', 0)).toEqual(291); // mine
+        test("int('0x123', 0)", () => expect(int('0x123', 0, true)).toEqual(291)); // mine
         // expect(int('0x123', 16) === int('0x123', 0)).toBe(true); // mine
         // expect(int('0x123', 16)).toBe(int('0x123', 0)); // mine
         expect(int('0o123', 0)).toEqual(83);
@@ -613,25 +613,25 @@ describe('ValueError misc', () => {
     });
     
     describe('invalid literal', () => {
-        test(`("")`, () => expect(() => int("")).toThrow(new ValueError(`invalid literal for int() with base 10: ''`)));
-        test(`('')`, () => expect(() => int('')).toThrow(new ValueError(`invalid literal for int() with base 10: ''`)));
-        test('(``)', () => expect(() => int(``)).toThrow(new ValueError(`invalid literal for int() with base 10: ''`)));
-        test(`(" ")`, () => expect(() => int(" ")).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`)));
-        test(`(' ')`, () => expect(() => int(' ')).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`)));
-        test('(` `)', () => expect(() => int(` `)).toThrow(new ValueError(`invalid literal for int() with base 10: ' '`)));
-        test(`('  \t\t  ')`, () => expect(() => int('  \t\t  ')).toThrow(new ValueError(`invalid literal for int() with base 10: '  \t\t  '`)));
-        test(`("+ 314")`, () => expect(() => int("+ 314")).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
-        test(`("+ 314", undefined)`, () => expect(() => int("+ 314", undefined)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
-        test(`("+ 314", 25)`, () => expect(() => int("+ 314", 25)).toThrow(new ValueError(`invalid literal for int() with base 25: '+ 314'`)));
-        test(`("+ 314", 10)`, () => expect(() => int("+ 314", 10)).toThrow(new ValueError(`invalid literal for int() with base 10: '+ 314'`)));
-        test(`("+ 314", 0)`, () => expect(() => int("+ 314", 0)).toThrow(new ValueError(`invalid literal for int() with base 0: '+ 314'`)));
-        test(`('  1x')`, () => expect(() => int('  1x')).toThrow(new ValueError(`invalid literal for int() with base 10: '  1x'`)));
-        test(`('_1')`, () => expect(() => int('_1')).toThrow(new ValueError(`invalid literal for int() with base 10: '_1'`)));
-        test(`('1.5')`, () => expect(() => int('1.5')).toThrow(new ValueError(`invalid literal for int() with base 10: '1.5'`)));
-        test(`('15.0')`, () => expect(() => int('15.0')).toThrow(new ValueError(`invalid literal for int() with base 10: '15.0'`)));
-        test(`('-1.5')`, () => expect(() => int('-1.5')).toThrow(new ValueError(`invalid literal for int() with base 10: '-1.5'`)));
-        test(`('-15.0')`, () => expect(() => int('-15.0')).toThrow(new ValueError(`invalid literal for int() with base 10: '-15.0'`)));
-        test(`('hello5')`, () => expect(() => int('hello5')).toThrow(new ValueError(`invalid literal for int() with base 10: 'hello5'`)));
+        test(`int("") ValueError`, () => expect(() => int("")).toThrow(valerr('')));
+        test(`int('') ValueError`, () => expect(() => int('')).toThrow(valerr('')));
+        test('int(``) ValueError', () => expect(() => int(``)).toThrow(valerr('')));
+        test(`int(" ") ValueError`, () => expect(() => int(" ")).toThrow(valerr(' ')));
+        test(`int(' ') ValueError`, () => expect(() => int(' ')).toThrow(valerr(' ')));
+        test('int(` `) ValueError', () => expect(() => int(` `)).toThrow(valerr(' ')));
+        test(`int('  \t\t  ') ValueError`, () => expect(() => int('  \t\t  ')).toThrow(valerr('  \t\t  ')));
+        test(`int("+ 314") ValueError`, () => expect(() => int("+ 314")).toThrow(valerr('+ 314')));
+        test(`int("+ 314", undefined) ValueError`, () => expect(() => int("+ 314", undefined)).toThrow(valerr('+ 314')));
+        test(`int("+ 314", 25) ValueError`, () => expect(() => int("+ 314", 25)).toThrow(valerr('+ 314', 25)));
+        test(`int("+ 314", 10) ValueError`, () => expect(() => int("+ 314", 10)).toThrow(valerr('+ 314')));
+        test(`int("+ 314", 0) ValueError`, () => expect(() => int("+ 314", 0)).toThrow(valerr("+ 314", 0)));
+        test(`int('  1x') ValueError`, () => expect(() => int('  1x')).toThrow(valerr('  1x')));
+        test(`int('_1') ValueError`, () => expect(() => int('_1')).toThrow(valerr('_1')));
+        test(`int('1.5') ValueError`, () => expect(() => int('1.5')).toThrow(valerr('1.5')));
+        test(`int('15.0') ValueError`, () => expect(() => int('15.0')).toThrow(valerr('15.0')));
+        test(`int('-1.5') ValueError`, () => expect(() => int('-1.5')).toThrow(valerr('-1.5')));
+        test(`int('-15.0') ValueError`, () => expect(() => int('-15.0')).toThrow(valerr('-15.0')));
+        test(`int('hello5') ValueError`, () => expect(() => int('hello5')).toThrow(valerr('hello5')));
         // TODO:
         //  ['  1\02  ', ValueError],
         //  ["\u0200", ValueError]
