@@ -446,11 +446,11 @@ describe('Bitwise', () => {
         
         
         test("int('0711')", () => expect(int('0711')).toEqual(711));
-        test("int('0b11') ValueError", () => expect(() => int('0b11')).toThrow(valerr('0b11')));
-        test("int('0o11') ValueError", () => expect(() => int('0o11')).toThrow(valerr('0o11')));
-        test("int('0x11') ValueError", () => expect(() => int('0x11')).toThrow(valerr('0x11')));
-        test("int('0c11') ValueError", () => expect(() => int('0c11')).toThrow(valerr('0c11')));
-        test("int('1c11') ValueError", () => expect(() => int('0c11')).toThrow(valerr('0c11')));
+        test("int('0b11') ValueError", () => expect(() => int('0b11', undefined, true)).toThrow(valerr('0b11')));
+        test("int('0o11') ValueError", () => expect(() => int('0o11', undefined, true)).toThrow(valerr('0o11')));
+        test("int('0x11') ValueError", () => expect(() => int('0x11', undefined, true)).toThrow(valerr('0x11')));
+        test("int('0c11') ValueError", () => expect(() => int('0c11', undefined, true)).toThrow(valerr('0c11')));
+        test("int('1c11') ValueError", () => expect(() => int('0c11', undefined, true)).toThrow(valerr('0c11')));
         test("int('11')", () => expect(int('11')).toEqual(11));
         
     });

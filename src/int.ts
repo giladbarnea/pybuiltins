@@ -206,42 +206,49 @@ export class Int extends Number {
         
         const mod1 = x % 1;
         if (typeofx === 'string') {
-            if (log) console.table({
-                'nosign[0]': nosign[0],
-                prefix,
-                'nosign[2]': nosign[2],
-                x,
-                nosign,
-                isBinary,
-                isOctal,
-                isHexaDecimal,
-                isSpecial,
-                specialBase,
-                base,
-                origbase,
-                mod1,
-                isFloat,
-                parsedInt,
-                
-            },);
+            if (log) {
+                console.log(cc('blue', "typeofx === 'string'"));
+                console.table({
+                    'nosign[0]': nosign[0],
+                    prefix,
+                    'nosign[2]': nosign[2],
+                    x,
+                    nosign,
+                    isBinary,
+                    isOctal,
+                    isHexaDecimal,
+                    isSpecial,
+                    specialBase,
+                    base,
+                    origbase,
+                    mod1,
+                    isFloat,
+                    parsedInt,
+                    
+                },);
+            }
             
             if (isFloat) {
                 if (log) console.log('isFloat, ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             
-            if (prefix !== null) {
+            if (isSpecial) {
                 if (log) console.log(cc(`blue`, `prefix !== null ('${prefix}')`));
-                if (nosign[2] === undefined) { // int('1x')?
+                /*if (nosign[2] === undefined) { // int('1x')?
                     // prefix is not null iff nosign[1] is a-zA-Z
+                    throw new Error('what');
                     if (log) console.log(cc('bright yellow', 'nosign[2] is undefined. ValueError'));
                     throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
                 }
+                */
                 if (origbase === undefined) { // int('0c11')
                     if (log) console.log(`bright yellow`, `origbase is undefined, ValueError`);
                     throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
                 } else {
                     if (origbase === 0) {
+                        // base 0 works only if true bin/hex/oct,
+                        // otherwise only if x[0] !== "0" and all char < 10 (because base was set to 10)
                         if (log) console.log(cc(`blue`, `origbase === 0`));
                         if (nosign[0] !== '0' || !isSpecial) { // int('0c11', 0)
                             if (log) console.log(cc(`bright yellow`, `nosign[0] !== '0' or !isSpecial, ValueError`));
@@ -250,22 +257,22 @@ export class Int extends Number {
                             if (log) console.log(cc(`blue`, `nosign[0] is '0' and isSpecial`));
                             
                         }
-                    } else {
-                        if (log) console.log(cc(`blue`, `origbase !== 0`));
-                        for (let c of isSpecial ? nosign.slice(2) : nosign) {
-                            let convertedC;
-                            if (RegExp(/[a-zA-Z]/).test(c)) {
-                                convertedC = parseInt(c, 36);
-                                if (log) console.log(cc('cyan', `in for loop, converted '${c}' to: ${convertedC}`));
-                            } else {
-                                convertedC = c;
-                            }
-                            if (convertedC >= base && c != '0') { // int("07", 5)
-                                if (log) console.log(cc('bright yellow', `${convertedC} is bigger than base ${base}, ValueError`));
-                                throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
-                            }
-                        }
                     }
+                }
+            }
+            
+            
+            for (let c of isSpecial ? nosign.slice(2) : nosign) {
+                let convertedC;
+                if (RegExp(/[a-zA-Z]/).test(c)) {
+                    convertedC = parseInt(c, 36);
+                    if (log) console.log(cc('cyan', `in for loop, converted '${c}' to: ${convertedC}`));
+                } else {
+                    convertedC = c;
+                }
+                if (convertedC >= base && c != '0') { // int("07", 5)
+                    if (log) console.log(cc('bright yellow', `${convertedC} is bigger than base ${base}, ValueError`));
+                    throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
                 }
             }
             
