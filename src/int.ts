@@ -221,7 +221,8 @@ export class Int extends Number {
                 },);
             }
             
-            if (isFloat) {
+            if (isFloat) { // int('1.5')
+                
                 if (log) console.log(cc('bright yellow', 'isFloat, ValueError'));
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
@@ -240,7 +241,7 @@ export class Int extends Number {
                 } else {
                     convertedC = c;
                 }
-                if (convertedC >= base && c != '0') { // int("07", 5)
+                if (convertedC >= base && c != '0') { // int("07", 0), int("0c11"), int("0c11", 0), int("0c12", 2),
                     if (log) console.log(cc('bright yellow', `${convertedC} is bigger than base ${base}, ValueError`));
                     throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
                 }
@@ -259,30 +260,6 @@ export class Int extends Number {
                 throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
             }
             
-            
-            if (!isSpecial) {
-                if (log) console.log(cc('blue', `!isSpecial`));
-                /**
-                 * We don't want to check specials with matching base (ie bin:2, oct:8, hex: 16).
-                 * When special and base matches, base === specialBase.
-                 * Same for special with base 0.
-                 * */
-                // specialBase may be undefined if not special
-                // otherwise int('0x123', 16) throws
-                for (let c of x) {
-                    let convertedC;
-                    if (RegExp(/[a-zA-Z]/).test(c)) {
-                        convertedC = parseInt(c, 36);
-                        if (log) console.log(cc('cyan', `in for loop, converted '${c}' to: ${convertedC}`));
-                    } else {
-                        convertedC = c;
-                    }
-                    if (convertedC >= base && c != '0') { // int("07", 5)
-                        if (log) console.log(cc('bright yellow', `${convertedC} is bigger than base ${base}, ValueError`));
-                        throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
-                    }
-                }
-            }
             
         }
         
