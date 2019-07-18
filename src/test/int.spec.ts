@@ -235,7 +235,7 @@ describe('CPython Tests', () => {
         });
     });
     //\Lib\test\test_int.py.test_underscores()
-    describe.skip('test_underscore', () => {
+    describe('test_underscore', () => {
         // \Lib\test\test_grammar.py
         const VALID_UNDERSCORE_LITERALS: [string, number][] = [
             ['0_0_0', 0],
@@ -532,7 +532,7 @@ describe('Bitwise', () => {
         test("int('11', 2)", () => expect(int('11', 2)).toEqual(3));
         test("int('  11', 2)", () => expect(int('  11', 2)).toEqual(3));
         for (let i = 3; i <= 11; i++)
-            test(`int('0b11', ${i}) ValueError`, () => expect(() => int('0b11', i)).toThrow(new ValueError(`invalid literal for int() with base ${i}: '0b11'`)));
+            test(`int('0b11', ${i}) ValueError`, () => expect(() => int('0b11', i)).toThrow(valerr('0b11', i)));
         test("int('0b11', 12).toEqual(1597))", () => expect(int('0b11', 12)).toEqual(1597));
         test("int('0b11', 13).toEqual(1873))", () => expect(int('0b11', 13)).toEqual(1873));
         test("int('0b11', 14).toEqual(2171))", () => expect(int('0b11', 14)).toEqual(2171));
@@ -557,7 +557,7 @@ describe('Bitwise', () => {
         test("int('0b11', 33).toEqual(12013))", () => expect(int('0b11', 33)).toEqual(12013));
         test("int('0b11', 34).toEqual(12751))", () => expect(int('0b11', 34)).toEqual(12751));
         test("int('0b11', 35).toEqual(13511))", () => expect(int('0b11', 35)).toEqual(13511));
-        test("int('0b11') ValueError", () => expect(() => int('0b11')).toThrow(new ValueError(`invalid literal for int() with base 10: '0b11'`)));
+        test("int('0b11') ValueError", () => expect(() => int('0b11')).toThrow(valerr('0b11')));
         
     });
     describe('hexadecimal numbers', () => {
