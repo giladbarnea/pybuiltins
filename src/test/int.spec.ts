@@ -437,10 +437,10 @@ describe('Bitwise', () => {
         
         
         test("int('0711')", () => expect(int('0711')).toEqual(711));
-        test("int('0b11')", () => expect(() => int('0b11')).toThrow(valerr('0b11')));
-        test("int('0o11')", () => expect(() => int('0o11')).toThrow(valerr('0o11')));
-        test("int('0x11')", () => expect(() => int('0x11')).toThrow(valerr('0x11')));
-        test("int('0c11')", () => expect(() => int('0c11', undefined, true)).toThrow(valerr('0c11')));
+        test("int('0b11') ValueError", () => expect(() => int('0b11')).toThrow(valerr('0b11')));
+        test("int('0o11') ValueError", () => expect(() => int('0o11')).toThrow(valerr('0o11')));
+        test("int('0x11') ValueError", () => expect(() => int('0x11')).toThrow(valerr('0x11')));
+        test("int('0c11') ValueError", () => expect(() => int('0c11')).toThrow(valerr('0c11')));
         test("int('11')", () => expect(int('11')).toEqual(11));
         
     });
@@ -477,12 +477,21 @@ describe('Bitwise', () => {
     });
     describe('bin: base 0, 2 or > 11; oct: base 0, 8 or > 24; hex: base 0, 16 or > 33; ', () => {
         test("int('0711', 8)", () => expect(int('711', 8)).toEqual(457));
+        // 11 == b (base must be higher)
         test("int('0b11', 11) ValueError", () => expect(() => int('0b11', 11)).toThrow(valerr('0b11', 11)));
         test("int('0b11', 12)", () => expect(int('0b11', 12)).toEqual(1597));
+        test("int('0b19', 12)", () => expect(int('0b19', 12)).toEqual(1605));
+        
+        // octal == 8
         test("int('0o11', 8)", () => expect(int('0o11', 8, true)).toEqual(9));
+        // 24 == o (base must be higher)
         test("int('0o11', 24) ValueError", () => expect(() => int('0o11', 24)).toThrow(valerr('0o11', 24)));
         test("int('0o11', 25)", () => expect(int('0o11', 25)).toEqual(15026));
+        test("int('0o19', 25)", () => expect(int('0o19', 25)).toEqual(15034));
+        
+        // hex == 16
         test("int('0x11', 16)", () => expect(int('0x11', 16, true)).toEqual(17));
+        // 33 == x (base must be higher)
         test("int('0x11', 33) ValueError", () => expect(() => int('0x11', 33)).toThrow(valerr('0x11', 33)));
         test("int('0x11', 34)", () => expect(int('0x11', 34)).toEqual(38183));
         test("int('0c11', 13)", () => expect(int('0c11', 13)).toEqual(2042));
