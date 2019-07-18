@@ -138,17 +138,18 @@ export class Int extends Number {
         
         // *  Special number handling
         let prefix = null;
-        if (nosign[1] && RegExp(/[a-zA-Z]/).test(nosign[1])) {
-            if (log) console.log(cc('cyan', `nosign[1] and nosign[1] is [a-zA-Z], prefix = nosign[1] = '${nosign[1]}'`));
-            prefix = nosign[1];
-        }
-        
         let isBinary = false;
         let isOctal = false;
         let isHexaDecimal = false;
         let isSpecial = false;
         let specialBase = undefined;
         let isFloat = false;
+        if (nosign[1] && RegExp(/[a-zA-Z]/).test(nosign[1])) {
+            if (log) console.log(cc('cyan', `nosign[1] and nosign[1] is [a-zA-Z], prefix = nosign[1] = '${nosign[1]}'`));
+            prefix = nosign[1];
+        }
+        
+        
         if (nosign[0] === '0') {
             if (log) console.log(cc('blue', `nosign[0] === '0'`));
             isBinary = prefix === 'b' || prefix === 'B';
@@ -162,8 +163,8 @@ export class Int extends Number {
         }
         const mod = x % 1;
         if (typeofx === 'string') {
-            if (log) console.log(cc('blue typeof x === string:\n'), {
-                'nosign[0]: ': nosign[0],
+            if (log) console.table({
+                'nosign[0]': nosign[0],
                 prefix,
                 'nosign[2]': nosign[2],
                 isBinary,
@@ -176,7 +177,8 @@ export class Int extends Number {
                 isFloat,
                 parsedInt,
                 
-            });
+            },);
+            
             if (isFloat) {
                 if (log) console.log('isFloat, ValueError');
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);

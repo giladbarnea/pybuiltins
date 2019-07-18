@@ -88,7 +88,7 @@ describe('CPython Tests', () => {
         expect(x).toBeInstanceOf(Int);
         expect(() => int(1, 12)).toThrow(TypeError);
         
-        expect(int('0x123', 16)).toEqual(291);
+        expect(int('0x123', 16, true)).toEqual(291);
         expect(int('0x123', 0)).toEqual(291); // mine
         // expect(int('0x123', 16) === int('0x123', 0)).toBe(true); // mine
         // expect(int('0x123', 16)).toBe(int('0x123', 0)); // mine
@@ -227,7 +227,7 @@ describe('CPython Tests', () => {
         });
     });
     //\Lib\test\test_int.py.test_underscores()
-    describe('test_underscore', () => {
+    describe.skip('test_underscore', () => {
         // \Lib\test\test_grammar.py
         const VALID_UNDERSCORE_LITERALS: [string, number][] = [
             ['0_0_0', 0],
@@ -441,24 +441,29 @@ describe('Bitwise', () => {
         test("int('0o11') ValueError", () => expect(() => int('0o11')).toThrow(valerr('0o11')));
         test("int('0x11') ValueError", () => expect(() => int('0x11')).toThrow(valerr('0x11')));
         test("int('0c11') ValueError", () => expect(() => int('0c11')).toThrow(valerr('0c11')));
+        test("int('1c11') ValueError", () => expect(() => int('0c11')).toThrow(valerr('0c11')));
         test("int('11')", () => expect(int('11')).toEqual(11));
         
     });
-    describe('base 0 works only if bin/hex/oct, otherwise only if x["0"] != 0', () => {
-        test("int('0711', 0) ValueError", () => expect(() => int('0711', 0)).toThrow(valerr('0711', 0)));
+    describe('base 0 works only if true bin/hex/oct, otherwise only if x["0"] != 0 and no letters', () => {
+        let _valerr = literal => valerr(literal, 0);
+        test("int('0711', 0) ValueError", () => expect(() => int('0711', 0)).toThrow(_valerr('0711')));
         test("int('711', 0)", () => expect(int('711', 0)).toEqual(711));
         test("int('0b11', 0)", () => expect(int('0b11', 0)).toEqual(3));
+        test("int('1b11', 0) ValueError", () => expect(() => int('1b11', 0)).toThrow(_valerr('1b11')));
         test("int('0o11', 0)", () => expect(int('0o11', 0)).toEqual(9));
         test("int('0x11', 0)", () => expect(int('0x11', 0)).toEqual(17));
-        test("int('0c11', 0) ValueError", () => expect(() => int('0c11', 0)).toThrow(valerr('0c11', 0)));
+        test("int('0c11', 0) ValueError", () => expect(() => int('0c11', 0)).toThrow(_valerr('0c11')));
+        test("int('1c11', 0) ValueError", () => expect(() => int('1c11', 0)).toThrow(_valerr('1c11')));
         test("int('11', 0)", () => expect(int('11', 0)).toEqual(11));
     });
     
-    describe('base 2 works only if all digits < 2 (including letters), or if letter - then only binary of 0b[0-1]', () => {
+    describe('base 2 works only if all digits < 2 (including letters), or if letter - then only true binary of 0b[0-1]', () => {
         let _valerr = literal => valerr(literal, 2);
         describe(`0{foo}11 only bin and '11' don't ValueError`, () => {
             test("int('0711', 2) ValueError", () => expect(() => int('0711', 2)).toThrow(_valerr('0711')));
             test("int('0b11', 2)", () => expect(int('0b11', 2, true)).toEqual(3));
+            test("int('1b11', 2) ValueError", () => expect(() => int('1b11', 2, true)).toThrow(_valerr('1b11')));
             test("int('0o11', 2) ValueError", () => expect(() => int('0o11', 2, true)).toThrow(_valerr('0o11')));
             test("int('0x11', 2) ValueError", () => expect(() => int('0x11', 2, true)).toThrow(_valerr('0x11')));
             test("int('0c11', 2) ValueError", () => expect(() => int('0c11', 2, true)).toThrow(_valerr('0c11')));
@@ -468,6 +473,7 @@ describe('Bitwise', () => {
             
             test("int('0712', 2) ValueError", () => expect(() => int('0712', 2)).toThrow(_valerr('0712')));
             test("int('0b12', 2) ValueError", () => expect(() => int('0b12', 2, true)).toThrow(_valerr('0b12')));
+            test("int('1b12', 2) ValueError", () => expect(() => int('1b12', 2, true)).toThrow(_valerr('1b12')));
             test("int('0o12', 2) ValueError", () => expect(() => int('0o12', 2, true)).toThrow(_valerr('0o12')));
             test("int('0x12', 2) ValueError", () => expect(() => int('0x12', 2, true)).toThrow(_valerr('0x12')));
             test("int('0c12', 2) ValueError", () => expect(() => int('0c12', 2)).toThrow(_valerr('0c12')));
