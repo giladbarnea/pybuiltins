@@ -97,7 +97,7 @@ export class Int extends Number {
         const typeofx = typeof x;
         if (base === undefined) {
             base = 10;
-            parsedInt = parseInt(x, <number>base);
+            // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
             if (log) console.log(cc('cyan', `base === undefined => base=10, parsedInt=${parsedInt}`));
         } else {
             if (base === null) {
@@ -133,7 +133,7 @@ export class Int extends Number {
                 nosign = x.slice(1);
                 if (log) console.log(cc('cyan', `x[0] is '${x[0]}', sign is: ${sign}', nosign is: '${nosign}'`));
             }
-            parsedInt = parseInt(x, <number>base);
+            // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
             if (log) console.log(cc('cyan', `parsedInt = parseInt(x, base) = ${parsedInt}`));
         } catch (e) {
             // may not be string, no .trim()
@@ -167,10 +167,9 @@ export class Int extends Number {
         if (base === 0) { // int(000, 0)
             if (log) console.log(cc('blue', `base === 0`));
             // CPython Objects\longobject.c.PyLong_FromString (lineno 2144)
-            if (nosign[0] !== '0') {
+            if (nosign[0] !== '0') { // int('711', 0), int('11', 0)
                 if (log) console.log(cc('cyan', `nosign[0] !== '0' => base = 10`));
                 base = 10;
-                
             } else {
                 if (log) console.log(cc('blue', `nosign[0] === '0'`));
                 if (isHexaDecimal) {
@@ -187,16 +186,20 @@ export class Int extends Number {
                     }
                 }
             }
-            parsedInt = parseInt(x, <number>base);
+            // updating parsedInt here never changes anything, so don't
         }
         
         // equivalent to big cond in longobject.c:2160
         if (isSpecial && base === specialBase) {
             x = x.slice(2);
             nosign = x;
+            // with int('0o123', 0): updates from 0 to 83 (good)
+            // int('0o', 8): 0 => NaN
+            // int('0b100', 0): 0 => 4 (good)
+            // int('0b2', 2): 0 => NaN
+            // int('0b11', 0): 0 => 3 (good)
+            // breakpoint: isNaN(parsedInt)? !isNaN(parseInt(x, base)): parsedInt !== parseInt(x, base)
             parsedInt = parseInt(x, <number>base);
-            if (log) console.log(cc('cyan',
-                `isSpecial && base === specialBase => x = x.slice(2) = '${x}', nosign = x = '${nosign}', parsedInt = ${parsedInt}`));
             
         }
         
@@ -281,7 +284,7 @@ export class Int extends Number {
         }
         
         if (base !== 10) { // int("10", 16)
-            if (log) console.log(cc('bright magenta', `base !== 10, super(parseInt(${x}, ${base}) = ${parseInt(x, <number>base)}) return`));
+            if (log) console.log(cc('bright magenta', `base !== 10, super(parsedInt = ${parsedInt}}) return`));
             super(parsedInt);
         } else { // int(314)
             if (log) console.log(cc('bright magenta', `base === 10, super(${x}) return`));

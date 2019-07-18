@@ -90,7 +90,7 @@ describe('CPython Tests', () => {
         
         test("int('0x123', 16)", () => expect(int('0x123', 16)).toEqual(291));
         test("int('0x123', 0)", () => expect(int('0x123', 0)).toEqual(291)); // mine
-        test("int('0o123', 0)", () => expect(int('0o123', 0, true)).toEqual(83)); // mine
+        test("int('0o123', 0)", () => expect(int('0o123', 0)).toEqual(83)); // mine
         
         
         test("int('0x', 16) ValueError", () => expect(() => int('0x', 16)).toThrow(ValueError));
@@ -603,8 +603,8 @@ describe('ValueError misc', () => {
         test(`int(' ') ValueError`, () => expect(() => int(' ')).toThrow(valerr(' ')));
         test('int(` `) ValueError', () => expect(() => int(` `)).toThrow(valerr(' ')));
         test(`int('  \t\t  ') ValueError`, () => expect(() => int('  \t\t  ')).toThrow(valerr('  \t\t  ')));
-        test(`int("+314").toEqual(314)`, () => expect(int("+314", undefined, true)).toEqual(314));
-        test(`int("+ 314") ValueError`, () => expect(() => int("+ 314", undefined, true)).toThrow(valerr('+ 314')));
+        test(`int("+314").toEqual(314)`, () => expect(int("+314", undefined)).toEqual(314));
+        test(`int("+ 314") ValueError`, () => expect(() => int("+ 314", undefined)).toThrow(valerr('+ 314')));
         test(`int("+ 314", undefined) ValueError`, () => expect(() => int("+ 314", undefined)).toThrow(valerr('+ 314')));
         test(`int("+ 314", 25) ValueError`, () => expect(() => int("+ 314", 25)).toThrow(valerr('+ 314', 25)));
         test(`int("+ 314", 10) ValueError`, () => expect(() => int("+ 314", 10)).toThrow(valerr('+ 314')));
