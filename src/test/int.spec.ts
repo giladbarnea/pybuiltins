@@ -2,6 +2,7 @@ import {int, Int} from "../int";
 import {bool} from "../bool";
 import {ValueError, ZeroDivisionError} from "../exceptions"
 import {Chance} from 'chance';
+import each from 'jest-each';
 
 const chance = new Chance();
 
@@ -226,121 +227,90 @@ describe('CPython Tests', () => {
             
             
             // \Lib\test\test_grammar.py
-            const VALID_UNDERSCORE_LITERALS: [string, number][] = [
-                ['0_0_0', 0],
-                ['4_2', 42],
-                ['1_0000_0000', 100000000],
-                ['0b1001_0100', 148],
-                ['0xffff_ffff', 4294967295],
-                ['0o5_7_7', 383],
-                ['0b_0', 0],
-                ['0x_f', 15],
-                ['0o_5', 5],
-            ];
             
-            for (let [literal, expected] of VALID_UNDERSCORE_LITERALS) {
-                test(`int('${literal}', 0) == ${expected}`, () => {
-                    let actual = int(literal, 0, true);
-                    return expect(actual).toEqual(expected);
-                    
-                });
-            }
-            for (let [literal, expected] of VALID_UNDERSCORE_LITERALS) {
-                let literalNoUnderscore = literal.split('_').join('');
-                test(`int('${literalNoUnderscore}', 0) == ${expected}`, () => {
-                    let actual = int(literalNoUnderscore, 0, true);
-                    return expect(actual).toEqual(expected);
-                    
-                });
-            }
+            test("int('0_0_0', 0)", () => expect(int('0_0_0', 0)).toEqual(0));
+            test("int('4_2', 0)", () => expect(int('4_2', 0)).toEqual(42));
+            test("int('1_0000_0000', 0)", () => expect(int('1_0000_0000', 0)).toEqual(100000000));
+            test("int('0b1001_0100', 0)", () => expect(int('0b1001_0100', 0)).toEqual(148));
+            test("int('0xffff_ffff', 0)", () => expect(int('0xffff_ffff', 0)).toEqual(4294967295));
+            test("int('0o5_7_7', 0)", () => expect(int('0o5_7_7', 0)).toEqual(383));
+            test("int('0b_0', 0)", () => expect(int('0b_0', 0)).toEqual(0));
+            test("int('0x_f', 0)", () => expect(int('0x_f', 0)).toEqual(15));
+            test("int('0o_5', 0)", () => expect(int('0o_5', 0)).toEqual(5));
+            
+            
+            test("int('000', 0)", () => expect(int('000', 0)).toEqual(0));
+            test("int('42', 0)", () => expect(int('42', 0)).toEqual(42));
+            test("int('100000000', 0)", () => expect(int('100000000', 0)).toEqual(100000000));
+            test("int('0b10010100', 0)", () => expect(int('0b10010100', 0)).toEqual(148));
+            test("int('0xffffffff', 0)", () => expect(int('0xffffffff', 0)).toEqual(4294967295));
+            test("int('0o577', 0)", () => expect(int('0o577', 0)).toEqual(383));
+            test("int('0b0', 0)", () => expect(int('0b0', 0)).toEqual(0));
+            test("int('0xf', 0)", () => expect(int('0xf', 0)).toEqual(15));
+            test("int('0o5', 0)", () => expect(int('0o5', 0)).toEqual(5));
+            
             
         });
         describe('Invalid underscore literals', () => {
             describe('Trailing underscore', () => {
-                let invalids = ['0_',
-                    '42_',
-                    '0x_',
-                    '0b1_',
-                    '0xf_',
-                    '0o5_',
-                    '0 if 1_Else 1',];
-                for (let invalid of invalids) {
-                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-                }
+                test(`int('0_', 0) ValueError`, () => expect(() => int('0_', 0, true)).toThrow(ValueError));
+                test(`int('42_', 0) ValueError`, () => expect(() => int('42_', 0, true)).toThrow(ValueError));
+                test(`int('0x_', 0) ValueError`, () => expect(() => int('0x_', 0, true)).toThrow(ValueError));
+                test(`int('0b1_', 0) ValueError`, () => expect(() => int('0b1_', 0, true)).toThrow(ValueError));
+                test(`int('0xf_', 0) ValueError`, () => expect(() => int('0xf_', 0, true)).toThrow(ValueError));
+                test(`int('0o5_', 0) ValueError`, () => expect(() => int('0o5_', 0, true)).toThrow(ValueError));
+                test(`int('0 if 1_Else 1', 0) ValueError`, () => expect(() => int('0 if 1_Else 1', 0, true)).toThrow(ValueError));
+                
             });
             describe('Underscores in the base selector', () => {
-                let invalids = ['0_b0',
-                    '0_xf',
-                    '0_o5',];
-                for (let invalid of invalids) {
-                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-                }
+                test(`int('0_b0', 0) ValueError`, () => expect(() => int('0_b0', 0, true)).toThrow(ValueError));
+                test(`int('0_xf', 0) ValueError`, () => expect(() => int('0_xf', 0, true)).toThrow(ValueError));
+                test(`int('0_o5', 0) ValueError`, () => expect(() => int('0_o5', 0, true)).toThrow(ValueError));
             });
             describe('Old-style octal', () => {
-                let invalids = ['0_7',
-                    '09_99',];
-                for (let invalid of invalids) {
-                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-                }
+                test(`int('0_7', 0) ValueError`, () => expect(() => int('0_7', 0, true)).toThrow(ValueError));
+                test(`int('09_99', 0) ValueError`, () => expect(() => int('09_99', 0, true)).toThrow(ValueError));
             });
             describe('Multiple consecutive underscores', () => {
-                let invalids = ['4_______2',
-                    '0.1__4',
-                    '0.1__4j',
-                    '0b1001__0100',
-                    '0xffff__ffff',
-                    '0x___',
-                    '0o5__77',
-                    '1e1__0',
-                    '1e1__0j',];
-                for (let invalid of invalids) {
-                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-                }
+                test(`int('4_______2', 0) ValueError`, () => expect(() => int('4_______2', 0, true)).toThrow(ValueError));
+                test(`int('0.1__4', 0) ValueError`, () => expect(() => int('0.1__4', 0, true)).toThrow(ValueError));
+                test(`int('0.1__4j', 0) ValueError`, () => expect(() => int('0.1__4j', 0, true)).toThrow(ValueError));
+                test(`int('0b1001__0100', 0) ValueError`, () => expect(() => int('0b1001__0100', 0, true)).toThrow(ValueError));
+                test(`int('0xffff__ffff', 0) ValueError`, () => expect(() => int('0xffff__ffff', 0, true)).toThrow(ValueError));
+                test(`int('0x___', 0) ValueError`, () => expect(() => int('0x___', 0, true)).toThrow(ValueError));
+                test(`int('0o5__77', 0) ValueError`, () => expect(() => int('0o5__77', 0, true)).toThrow(ValueError));
+                test(`int('1e1__0', 0) ValueError`, () => expect(() => int('1e1__0', 0, true)).toThrow(ValueError));
+                test(`int('1e1__0j', 0) ValueError`, () => expect(() => int('1e1__0j', 0, true)).toThrow(ValueError));
             });
             describe('Underscore right before a dot', () => {
-                let invalids = ['1_.4',
-                    '1_.4j',];
-                for (let invalid of invalids) {
-                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-                }
+                
+                test(`int('1_.4', 0) ValueError`, () => expect(() => int('1_.4', 0, true)).toThrow(ValueError));
+                test(`int('1_.4j', 0) ValueError`, () => expect(() => int('1_.4j', 0, true)).toThrow(ValueError));
             });
             describe('Underscore right after a dot', () => {
-                let invalids = ['1._4',
-                    '1._4j',
-                    '._5',
-                    '._5j',];
-                for (let invalid of invalids) {
-                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-                }
+                
+                test(`int('1._4', 0) ValueError`, () => expect(() => int('1._4', 0, true)).toThrow(ValueError));
+                test(`int('1._4j', 0) ValueError`, () => expect(() => int('1._4j', 0, true)).toThrow(ValueError));
+                test(`int('._5', 0) ValueError`, () => expect(() => int('._5', 0, true)).toThrow(ValueError));
+                test(`int('._5j', 0) ValueError`, () => expect(() => int('._5j', 0, true)).toThrow(ValueError));
             });
             describe('Underscore right after a sign', () => {
-                let invalids = ['1.0e+_1',
-                    '1.0e+_1j',];
-                for (let invalid of invalids) {
-                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-                }
+                
+                test(`int('1.0e+_1', 0) ValueError`, () => expect(() => int('1.0e+_1', 0, true)).toThrow(ValueError));
+                test(`int('1.0e+_1j', 0) ValueError`, () => expect(() => int('1.0e+_1j', 0, true)).toThrow(ValueError));
             });
             describe('Underscore right before j', () => {
-                let invalids = ['1.4_j',
-                    '1.4e5_j',];
-                for (let invalid of invalids) {
-                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-                }
+                test(`int('1.4_j', 0) ValueError`, () => expect(() => int('1.4_j', 0, true)).toThrow(ValueError));
+                test(`int('1.4e5_j', 0) ValueError`, () => expect(() => int('1.4e5_j', 0, true)).toThrow(ValueError));
             });
             describe('Underscore right before e', () => {
-                let invalids = ['1_e1',
-                    '1.4_e1',
-                    '1.4_e1j',];
-                for (let invalid of invalids) {
-                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-                }
+                test(`int('1_e1', 0) ValueError`, () => expect(() => int('1_e1', 0, true)).toThrow(ValueError));
+                test(`int('1.4_e1', 0) ValueError`, () => expect(() => int('1.4_e1', 0, true)).toThrow(ValueError));
+                test(`int('1.4_e1j', 0) ValueError`, () => expect(() => int('1.4_e1j', 0, true)).toThrow(ValueError));
             });
             describe('Complex cases with parens', () => {
-                let invalids = ['(1+1.5_j_)',
-                    '(1+1.5_j)',];
-                for (let invalid of invalids) {
-                    test(`int('${invalid}', 0) ValueError`, () => expect(() => int(invalid, 0, true)).toThrow(ValueError));
-                }
+                test(`int('(1+1.5_j_)', 0) ValueError`, () => expect(() => int('(1+1.5_j_)', 0, true)).toThrow(ValueError));
+                test(`int('(1+1.5_j)', 0) ValueError`, () => expect(() => int('(1+1.5_j)', 0, true)).toThrow(ValueError));
             });
             
         });
