@@ -658,11 +658,11 @@ describe('Bitwise', () => {
         test("int('+0b11') ValueError", () => expect(() => int('+0b11')).toThrow(ValueError));
         test("int('-0b11') ValueError", () => expect(() => int('-0b11')).toThrow(ValueError));
         
-        test("int('+0b11', 0)", () => expect(int('+0b11', 0)).toEqual(3));
-        test("int('-0b11', 0)", () => expect(int('-0b11', 0)).toEqual(-3));
+        test("int('+0b11', 0)", () => expect(int('+0b11', 0, true)).toEqual(3));
+        test("int('-0b11', 0)", () => expect(int('-0b11', 0, true)).toEqual(-3));
         
-        test("int('+0b11', 2)", () => expect(int('+0b11', 2)).toEqual(3));
-        test("int('-0b11', 2)", () => expect(int('-0b11', 2)).toEqual(-3));
+        test("int('+0b11', 2)", () => expect(int('+0b11', 2, true)).toEqual(3));
+        test("int('-0b11', 2)", () => expect(int('-0b11', 2, true)).toEqual(-3));
         
         test("int('+0b11', 12)", () => expect(int('+0b11', 12)).toEqual(1597));
         test("int('-0b11', 12)", () => expect(int('-0b11', 12)).toEqual(-1597));

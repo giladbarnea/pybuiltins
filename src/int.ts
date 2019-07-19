@@ -146,7 +146,7 @@ export class Int extends Number {
                 x = x.split('_').join('');
                 // don't update or set nosign here
                 parsedInt = parseInt(x, <number>base);
-                if (log) console.log(cc('blue', "No leading / trailing / multiple underscore"));
+                if (log) console.log(cc('cyan', `No leading / trailing / multiple underscore => x = '${x}', parsedInt = ${parsedInt}`));
             }
         }
         
@@ -206,16 +206,21 @@ export class Int extends Number {
         // **  Slice
         // equivalent to big cond in longobject.c:2160
         if (isSpecial && base === specialBase) {
-            // TODO: what about int('+0b0')?
-            x = x.slice(2);
-            nosign = x;
             // with int('0o123', 0): updates from 0 to 83 (good)
             // int('0o', 8): 0 => NaN
             // int('0b100', 0): 0 => 4 (good)
             // int('0b2', 2): 0 => NaN
             // int('0b11', 0): 0 => 3 (good)
             // breakpoint: isNaN(parsedInt)? !isNaN(parseInt(x, base)): parsedInt !== parseInt(x, base)
-            parsedInt = parseInt(x, <number>base);
+            if (sign === undefined) {
+                x = x.slice(2);
+                parsedInt = parseInt(x, <number>base);
+            } else {
+                x = x.slice(3);
+                parsedInt = parseInt(x * sign, <number>base);
+            }
+            nosign = x;
+            if (log) console.log(cc('cyan', `isSpecial && base === specialBase => x = '${x}', nosign = '${nosign}', parsedInt = ${parsedInt}`));
             
         }
         
