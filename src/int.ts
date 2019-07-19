@@ -147,10 +147,10 @@ export class Int extends Number {
                     if (log) console.log(cc('bright yellow', `Leading / trailing / multiple underscore, ValueError`));
                     throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
                 }
-                if (log) console.log(cc('blue', "No leading / trailing / multiple underscore"));
                 x = x.split('_').join('');
                 // don't update or set nosign here
-                parsedInt = parseInt(x, base);
+                parsedInt = parseInt(x, <number>base);
+                if (log) console.log(cc('blue', "No leading / trailing / multiple underscore"));
             }
         } catch (e) {
             if (!(e instanceof TypeError)) // Failed not because number doesn't have 'includes' function
@@ -176,8 +176,12 @@ export class Int extends Number {
             specialBase = isBinary ? 2 : isOctal ? 8 : isHexaDecimal ? 16 : undefined;
         } else if (!isSpecial) { // int('9ba461594', 12)
             // can't possibly be special and float at the same time
-            isFloat = RegExp(/\./).test(x);
-            if (log) console.log(cc('cyan', `!isSpecial => isFloat = /./ in x = ${isFloat}`));
+            if (typeofx === 'string') {
+                isFloat = x.indexOf('.') !== -1;
+            } else {
+                isFloat = parseFloat(x) - parseInt(x) !== 0;
+            }
+            if (log) console.log(cc('cyan', `!isSpecial => isFloat = ${isFloat}`));
         }
         
         // **  Update base 0 to matching special base
@@ -210,7 +214,6 @@ export class Int extends Number {
         if (isSpecial && base === specialBase) {
             // TODO: what about int('+0b0')?
             x = x.slice(2);
-            // x = x.slice(2).split('_').join('');
             nosign = x;
             // with int('0o123', 0): updates from 0 to 83 (good)
             // int('0o', 8): 0 => NaN
@@ -218,13 +221,12 @@ export class Int extends Number {
             // int('0b2', 2): 0 => NaN
             // int('0b11', 0): 0 => 3 (good)
             // breakpoint: isNaN(parsedInt)? !isNaN(parseInt(x, base)): parsedInt !== parseInt(x, base)
-            // parsedInt = parseInt(x.split('_').join(''), <number>base);
             parsedInt = parseInt(x, <number>base);
             
         }
         
         
-        const mod1 = x % 1;
+        // const mod1 = x % 1;
         if (typeofx === 'string') {
             if (log) {
                 console.log(cc('blue', "typeofx === 'string'"));
@@ -240,7 +242,7 @@ export class Int extends Number {
                     specialBase,
                     base,
                     origbase,
-                    mod1,
+                    // mod1,
                     isFloat,
                     parsedInt,
                     'Number(x)': Number(x),
@@ -275,19 +277,13 @@ export class Int extends Number {
             }
             if (Number.isInteger(parsedInt)) { // int('9ba461594', 12)
                 super(parsedInt);
-                // super(parseInt(x.split('_').join(''), base));
                 if (log) console.log(cc('bright magenta', `if Number.isInteger(parsedInt), super(parsedInt = ${parsedInt}) and return. this: ${this}`));
                 return
             }
             
-            if (!RegExp(/\d/).test(x) ||
-                /*!RegExp(/\d/).test(x)
-                || // empty strings
-                isNaN(mod1)
-                */
-                x.includes(' ')
-            ) { // int("+ 314")
-                if (log) console.log(cc('bright yellow', `isNaN(mod1 = ${mod1}) or x = '${x}' is /\d/, ValueError`));
+            if (!RegExp(/\d/).test(x) ||    // empty strings
+                x.includes(' ')) { // int("+ 314")
+                if (log) console.log(cc('bright yellow', `x.includes(' ') no /\d/ in x, ValueError`));
                 throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
             }
             
