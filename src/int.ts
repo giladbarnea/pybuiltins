@@ -137,17 +137,19 @@ export class Int extends Number {
             // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
             if (log) console.log(cc('cyan', `parsedInt = parseInt(x, base) = ${parsedInt}`));
         } catch (e) {
-            // may not be string, no .trim()
+            if (!(e instanceof TypeError)) // Failed not because number doesn't have 'startsWith' function
+                throw e
         }
         // **  Underscore
         try {
             
             if (x.startsWith('_') || x.includes('__') || x.endsWith('_')) {
-                if (log) console.log(cc('bright yellow', `Bad underscore, ValueError`));
+                if (log) console.log(cc('bright yellow', `Starts / ends / multiple underscore, ValueError`));
                 throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
             }
         } catch (e) {
-            if (!(e instanceof TypeError)) throw e
+            if (!(e instanceof TypeError)) // Failed not because number doesn't have 'startsWith' function
+                throw e
         }
         // **  Special number handling
         let prefix = null;
