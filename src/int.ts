@@ -140,7 +140,20 @@ export class Int extends Number {
             if (!(e instanceof TypeError)) // Failed not because number doesn't have 'trim' function
                 throw e
         }
-        
+        // **  Underscore
+        try {
+            if (x.includes('_')) {
+                if (log) console.log(cc('blue', "x.includes('_')"));
+                if (x.startsWith('_') || x.includes('__') || x.endsWith('_')) {
+                    if (log) console.log(cc('bright yellow', `Leading / trailing / multiple underscore, ValueError`));
+                    throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+                }
+                if (log) console.log(cc('blue', "No leading / trailing / multiple underscore"));
+            }
+        } catch (e) {
+            if (!(e instanceof TypeError)) // Failed not because number doesn't have 'includes' function
+                throw e
+        }
         // ***  Special number handling
         let prefix = null;
         let isBinary = false;
@@ -174,37 +187,29 @@ export class Int extends Number {
                 base = 10;
             } else {
                 if (log) console.log(cc('blue', `nosign[0] === '0'`));
-                if (isHexaDecimal) {
+                if (isHexaDecimal) { // int('0x123', 0), int('0x', 0) ValueError, int('0xffff_ffff', 0)
                     if (log) console.log(cc('cyan', `isHexaDecimal => base = 16`));
                     base = 16;
                 } else {
                     if (log) console.log(cc('blue', `!isHexaDecimal`));
-                    if (isOctal) {
+                    if (isOctal) { // int('0o123', 0), int('0o', 0) ValueError, int('0o5_7_7', 0)
                         if (log) console.log(cc('cyan', `isOctal => base = 8`));
                         base = 8;
-                    } else if (isBinary) {
+                    } else if (isBinary) { // int('0b', 0) ValueError, int('0b100', 0), int('0b_0', 0)
                         if (log) console.log(cc('cyan', `isBinary => base = 2`));
                         base = 2;
+                    } else {
+                    
                     }
                 }
             }
             // updating parsedInt here never changes anything, so don't
         }
-        // **  Underscore
-        try {
-            if (x.includes('_')) {
-                
-                if (x.startsWith('_') || x.includes('__') || x.endsWith('_')) {
-                    if (log) console.log(cc('bright yellow', `Leading / trailing / multiple underscore, ValueError`));
-                    throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
-                }
-            }
-        } catch (e) {
-            if (!(e instanceof TypeError)) // Failed not because number doesn't have 'includes' function
-                throw e
-        }
+        
+        // **  Slice
         // equivalent to big cond in longobject.c:2160
         if (isSpecial && base === specialBase) {
+            // TODO: what about int('+0b0')?
             x = x.slice(2);
             nosign = x;
             // with int('0o123', 0): updates from 0 to 83 (good)
