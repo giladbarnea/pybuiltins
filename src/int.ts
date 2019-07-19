@@ -185,23 +185,20 @@ export class Int extends Number {
             if (nosign[0] !== '0') { // int('711', 0), int('11', 0)
                 if (log) console.log(cc('cyan', `nosign[0] !== '0' => base = 10`));
                 base = 10;
-            } else {
+            } else if (isSpecial) {
                 if (log) console.log(cc('blue', `nosign[0] === '0'`));
                 if (isHexaDecimal) { // int('0x123', 0), int('0x', 0) ValueError, int('0xffff_ffff', 0)
                     if (log) console.log(cc('cyan', `isHexaDecimal => base = 16`));
                     base = 16;
-                } else {
-                    if (log) console.log(cc('blue', `!isHexaDecimal`));
-                    if (isOctal) { // int('0o123', 0), int('0o', 0) ValueError, int('0o5_7_7', 0)
-                        if (log) console.log(cc('cyan', `isOctal => base = 8`));
-                        base = 8;
-                    } else if (isBinary) { // int('0b', 0) ValueError, int('0b100', 0), int('0b_0', 0)
-                        if (log) console.log(cc('cyan', `isBinary => base = 2`));
-                        base = 2;
-                    } else {
-                    
-                    }
+                } else if (isOctal) { // int('0o123', 0), int('0o', 0) ValueError, int('0o5_7_7', 0)
+                    if (log) console.log(cc('cyan', `isOctal => base = 8`));
+                    base = 8;
+                } else if (isBinary) { // int('0b', 0) ValueError, int('0b100', 0), int('0b_0', 0)
+                    if (log) console.log(cc('cyan', `isBinary => base = 2`));
+                    base = 2;
                 }
+            } else { // int('000', 0), int('0_0_0', 0), int('-01', 0), int('0c11', 0), int('1b11', 0), int('07', 0), int('0_7', 0), int('0 if 1_Else 1', 0), int('0_b0', 0), int('0_xa', 0),
+                if (log) console.log(cc('blue', `base === 0 but !isSpecial`));
             }
             // updating parsedInt here never changes anything, so don't
         }
