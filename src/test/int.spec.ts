@@ -37,7 +37,7 @@ describe('CPython Tests', () => {
         expect(int(-3.9)).toEqual(-3);
         expect(int(3.5)).toEqual(3);
         expect(int(-3.5)).toEqual(-3);
-        test('int("-3")', () => expect(int("-3")).toEqual(-3));
+        test('int("-3")', () => expect(int("-3", undefined, true)).toEqual(-3));
         test('int(" -3 ")', () => expect(int(" -3 ", undefined)).toEqual(-3));
         test('int("10", 16)', () => expect(int("10", 16)).toEqual(16));
         
@@ -141,10 +141,10 @@ describe('CPython Tests', () => {
         
         describe('base 0', () => {
             test("int(' 0o123  ', 0)", () => expect(int(' 0o123  ', 0)).toEqual(83));
-            test("int('000', 0)", () => expect(int('000', 0)).toEqual(0));
+            test("int('000', 0)", () => expect(int('000', 0, true)).toEqual(0));
             test("int('0o123', 0)", () => expect(int('0o123', 0)).toEqual(83));
             test("int('0x123', 0)", () => expect(int('0x123', 0)).toEqual(291));
-            test("int('0b100', 0)", () => expect(int('0b100', 0)).toEqual(4));
+            test("int('0b100', 0)", () => expect(int('0b100', 0, true)).toEqual(4));
             test("int(' 0O123   ', 0)", () => expect(int(' 0O123   ', 0)).toEqual(83));
             test("int(' 0X123  ', 0)", () => expect(int(' 0X123  ', 0)).toEqual(291));
             test("int(' 0B100 ', 0)", () => expect(int(' 0B100 ', 0)).toEqual(4));
@@ -165,18 +165,20 @@ describe('CPython Tests', () => {
         
         
         describe('special checks for the first character after the type prefix', () => {
-            test(`int('0b2', 2)`, () => expect(() => int('0b2', 2)).toThrow(ValueError));
-            test(`int('0b02', 2)`, () => expect(() => int('0b02', 2)).toThrow(ValueError));
-            test(`int('0B2', 2)`, () => expect(() => int('0B2', 2)).toThrow(ValueError));
-            test(`int('0B02', 2)`, () => expect(() => int('0B02', 2)).toThrow(ValueError));
-            test(`int('0o8', 8)`, () => expect(() => int('0o8', 8)).toThrow(ValueError));
-            test(`int('0o08', 8)`, () => expect(() => int('0o08', 8)).toThrow(ValueError));
-            test(`int('0O8', 8)`, () => expect(() => int('0O8', 8)).toThrow(ValueError));
-            test(`int('0O08', 8)`, () => expect(() => int('0O08', 8)).toThrow(ValueError));
-            test(`int('0xg', 16)`, () => expect(() => int('0xg', 16)).toThrow(ValueError));
-            test(`int('0x0g', 16)`, () => expect(() => int('0x0g', 16)).toThrow(ValueError));
-            test(`int('0Xg', 16)`, () => expect(() => int('0Xg', 16)).toThrow(ValueError));
-            test(`int('0X0g', 16)`, () => expect(() => int('0X0g', 16)).toThrow(ValueError));
+            // 2 >= base 2
+            test(`int('0b2', 0) ValueError`, () => expect(() => int('0b2', 0)).toThrow(ValueError));
+            test(`int('0b2', 2) ValueError`, () => expect(() => int('0b2', 2)).toThrow(ValueError));
+            test(`int('0b02', 2) ValueError`, () => expect(() => int('0b02', 2)).toThrow(ValueError));
+            test(`int('0B2', 2) ValueError`, () => expect(() => int('0B2', 2)).toThrow(ValueError));
+            test(`int('0B02', 2) ValueError`, () => expect(() => int('0B02', 2)).toThrow(ValueError));
+            test(`int('0o8', 8) ValueError`, () => expect(() => int('0o8', 8)).toThrow(ValueError));
+            test(`int('0o08', 8) ValueError`, () => expect(() => int('0o08', 8)).toThrow(ValueError));
+            test(`int('0O8', 8) ValueError`, () => expect(() => int('0O8', 8)).toThrow(ValueError));
+            test(`int('0O08', 8) ValueError`, () => expect(() => int('0O08', 8)).toThrow(ValueError));
+            test(`int('0xg', 16) ValueError`, () => expect(() => int('0xg', 16)).toThrow(ValueError));
+            test(`int('0x0g', 16) ValueError`, () => expect(() => int('0x0g', 16)).toThrow(ValueError));
+            test(`int('0Xg', 16) ValueError`, () => expect(() => int('0Xg', 16)).toThrow(ValueError));
+            test(`int('0X0g', 16) ValueError`, () => expect(() => int('0X0g', 16)).toThrow(ValueError));
         });
         
         describe('2**32 + 1 (4294967297)', () => {
@@ -319,10 +321,10 @@ describe('CPython Tests', () => {
             describe('Old-style octal', () => {
                 test(`int('0_7', 0) ValueError`, () => expect(() => int('0_7', 0, true)).toThrow(ValueError));
                 test(`int('07', 0) ValueError`, () => expect(() => int('07', 0, true)).toThrow(ValueError));
-                test(`int('0_7')`, () => expect(int('0_7', undefined, true)).toEqual(7));
-                test(`int('07')`, () => expect(int('07', undefined, true)).toEqual(7));
-                test(`int('1_7', 0)`, () => expect(int('1_7', 0, true)).toEqual(17));
-                test(`int('19_99', 0)`, () => expect(int('19_99', 0, true)).toEqual(1999));
+                test(`int('0_7') == 7`, () => expect(int('0_7', undefined, true)).toEqual(7));
+                test(`int('07') == 7`, () => expect(int('07', undefined, true)).toEqual(7));
+                test(`int('1_7', 0) == 17`, () => expect(int('1_7', 0, true)).toEqual(17));
+                test(`int('19_99', 0) == 1999`, () => expect(int('19_99', 0, true)).toEqual(1999));
                 test(`int('09_99', 0) ValueError`, () => expect(() => int('09_99', 0)).toThrow(ValueError));
             });
             describe('Multiple consecutive underscores', () => {

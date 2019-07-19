@@ -165,7 +165,7 @@ export class Int extends Number {
         
         // **  isSpecial
         if (nosign[0] === '0' && nosign[1] && RegExp(/[box]/, 'i').test(nosign[1])) {
-            if (log) console.log(cc('cyan', `nosign[0] === '0', nosign[1] is [a-zA-Z] => prefix = nosign[1] = '${nosign[1]}'`));
+            if (log) console.log(cc('cyan', `nosign[0] === '0', nosign[1] is [boxBOX] => prefix = nosign[1] = '${nosign[1]}'`));
             prefix = nosign[1];
             isBinary = prefix === 'b' || prefix === 'B';
             isOctal = prefix === 'o' || prefix === 'O';
@@ -215,7 +215,7 @@ export class Int extends Number {
             // int('0b2', 2): 0 => NaN
             // int('0b11', 0): 0 => 3 (good)
             // breakpoint: isNaN(parsedInt)? !isNaN(parseInt(x, base)): parsedInt !== parseInt(x, base)
-            parsedInt = parseInt(x, <number>base);
+            parsedInt = parseInt(x.split('_').join(''), <number>base);
             
         }
         
@@ -227,7 +227,6 @@ export class Int extends Number {
                 console.table({
                     'nosign[0]': nosign[0],
                     prefix,
-                    'nosign[2]': nosign[2],
                     x,
                     nosign,
                     isBinary,
@@ -257,7 +256,6 @@ export class Int extends Number {
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
             }
             
-            
             for (let c of x) {
                 let convertedC;
                 if (RegExp(/[a-zA-Z]/).test(c)) {
@@ -266,16 +264,15 @@ export class Int extends Number {
                 } else {
                     convertedC = c;
                 }
-                if (convertedC >= base && c != '0') { // int("07", 0), int("0c11"), int("0c11", 0), int("0c12", 2),
-                    if (log) console.log(cc('bright yellow', `${convertedC} is bigger than base ${base}, ValueError`));
+                if (convertedC >= base && c !== '0') { // int("07", 0), int("0c11"), int("0c11", 0), int("0c12", 2),
+                    if (log) console.log(cc('bright yellow', `${convertedC} is >= base ${base}, ValueError`));
                     throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
                 }
             }
-            
-            
             if (Number.isInteger(parsedInt)) { // int('9ba461594', 12)
-                super(parsedInt);
-                if (log) console.log(cc('bright magenta', `if (parsedInt), super(parsedInt = ${parsedInt}) and return. this: ${this}`));
+                // super(parsedInt);
+                super(parseInt(x.split('_').join(''), base));
+                if (log) console.log(cc('bright magenta', `if Number.isInteger(parsedInt), super(parsedInt = ${parsedInt}) and return. this: ${this}`));
                 return
             }
             
