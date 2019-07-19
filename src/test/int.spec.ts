@@ -233,14 +233,20 @@ describe('CPython Tests', () => {
             test("int('0xffff_ffff', 0)", () => expect(int('0xffff_ffff', 0, true)).toEqual(4294967295));
             test("int('0o5_7_7', 0)", () => expect(int('0o5_7_7', 0, true)).toEqual(383));
             
+            test("int('0b0', 0)", () => expect(int('0b0', 0)).toEqual(0));
             test("int('0b_0', 0)", () => expect(int('0b_0', 0, true)).toEqual(0));
-            test("int('0b_0', 2)", () => expect(int('0b_0', 2, true)).toEqual(0));
-            test("int('0b_0', 11)", () => expect(() => int('0b_0', 11, true)).toThrow(ValueError));
-            test("int('0b_0', 12)", () => expect(int('0b_0', 12, true)).toEqual(132));
-            
             test("int('0_b0', 0)", () => expect(() => int('0_b0', 0, true)).toThrow(ValueError));
+            
+            test("int('0b0', 2)", () => expect(int('0b0', 2, true)).toEqual(0));
+            test("int('0b_0', 2)", () => expect(int('0b_0', 2, true)).toEqual(0));
             test("int('0_b0', 2)", () => expect(() => int('0_b0', 2, true)).toThrow(ValueError));
+            
+            test("int('0b0', 11)", () => expect(() => int('0b0', 11, true)).toThrow(ValueError));
+            test("int('0b_0', 11)", () => expect(() => int('0b_0', 11, true)).toThrow(ValueError));
             test("int('0_b0', 11)", () => expect(() => int('0_b0', 11, true)).toThrow(ValueError));
+            
+            test("int('0b0', 12)", () => expect(int('0b0', 12, true)).toEqual(132));
+            test("int('0b_0', 12)", () => expect(int('0b_0', 12, true)).toEqual(132));
             test("int('0_b0', 12)", () => expect(int('0_b0', 12, true)).toEqual(132));
             
             test("int('0x_f', 0)", () => expect(int('0x_f', 0, true)).toEqual(15));
@@ -253,7 +259,7 @@ describe('CPython Tests', () => {
             test("int('0b10010100', 0)", () => expect(int('0b10010100', 0)).toEqual(148));
             test("int('0xffffffff', 0)", () => expect(int('0xffffffff', 0)).toEqual(4294967295));
             test("int('0o577', 0)", () => expect(int('0o577', 0)).toEqual(383));
-            test("int('0b0', 0)", () => expect(int('0b0', 0)).toEqual(0));
+            
             test("int('0xf', 0)", () => expect(int('0xf', 0)).toEqual(15));
             test("int('0o5', 0)", () => expect(int('0o5', 0)).toEqual(5));
             
