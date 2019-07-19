@@ -535,7 +535,6 @@ describe('Bitwise', () => {
         test("int('1c11', 0) ValueError", () => expect(() => int('1c11', 0)).toThrow(_valerr('1c11')));
         test("int('11', 0)", () => expect(int('11', 0)).toEqual(11));
     });
-    
     describe('base 2 works only if all digits < 2 (including letters), or if letter - then only true binary of 0b[0-1]', () => {
         let _valerr = literal => valerr(literal, 2);
         describe(`0{foo}11 only bin and '11' don't ValueError`, () => {
@@ -583,8 +582,6 @@ describe('Bitwise', () => {
         let base = chance.integer({min: 2, max: 36});
         test(`int('11', ${base})`, () => expect(int('11', base)).toEqual(parseInt('11', base)));
     });
-    
-    
     describe('binary numbers', () => {
         test('int(0b11)', () => expect(int(0b11)).toEqual(3));
         test('int(0b11, 0), TypeError', () => expect(() => int(0b11, 0)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
@@ -640,6 +637,16 @@ describe('Bitwise', () => {
         test("int('0x1', 2) ValueError", () => expect(() => int('0x1', 2)).toThrow(new ValueError(`invalid literal for int() with base 2: '0x1'`)));
         test("int('0x1') ValueError", () => expect(() => int('0x1')).toThrow(new ValueError(`invalid literal for int() with base 10: '0x1'`)));
         test("int('0x1', 3) ValueError", () => expect(() => int('0x1', 3)).toThrow(new ValueError(`invalid literal for int() with base 3: '0x1'`)));
+    });
+    describe('Native special numbers', () => {
+        test("int(0o123)", () => expect(int(0o123)).toEqual(83));
+        test("int(0o123, 0) TypeError", () => expect(() => int(0o123, 0)).toThrow(TypeError));
+        
+        test("int(0b11)", () => expect(int(0b11)).toEqual(3));
+        test("int(0b11, 0) TypeError", () => expect(() => int(0b11, 0)).toThrow(TypeError));
+        
+        test("int(0x123)", () => expect(int(0x123)).toEqual(291));
+        test("int(0x123, 0) TypeError", () => expect(() => int(0x123, 0)).toThrow(TypeError));
     });
 });
 

@@ -122,10 +122,10 @@ export class Int extends Number {
         const orig = x;
         let sign = undefined;
         let nosign = x;
-        // **  Trim
-        try {
+        
+        if (typeofx === 'string') {
             // don't remove in-between spaces: '+314' valid, '+ 314' invalid
-            
+            // **  Trim
             x = x.trim(); // " + 314 " => "+ 314"
             nosign = x;
             if (log && orig !== x) console.log(cc('cyan', `after x.trim(): '${x}'`));
@@ -135,12 +135,8 @@ export class Int extends Number {
                 if (log) console.log(cc('cyan', `x[0] is '${x[0]}', sign is: ${sign}', nosign is: '${nosign}'`));
             }
             // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
-        } catch (e) {
-            if (!(e instanceof TypeError)) // Failed not because number doesn't have 'trim' function
-                throw e
-        }
-        // **  Underscore
-        try {
+            
+            // **  Underscore
             if (x.includes('_')) {
                 if (log) console.log(cc('blue', "x.includes('_')"));
                 if (x.startsWith('_') || nosign.startsWith('_') || x.includes('__') || x.endsWith('_')) {
@@ -152,10 +148,8 @@ export class Int extends Number {
                 parsedInt = parseInt(x, <number>base);
                 if (log) console.log(cc('blue', "No leading / trailing / multiple underscore"));
             }
-        } catch (e) {
-            if (!(e instanceof TypeError)) // Failed not because number doesn't have 'includes' function
-                throw e
         }
+        
         // ***  Special number handling
         let prefix = null;
         let isBinary = false;
