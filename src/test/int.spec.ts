@@ -239,7 +239,7 @@ describe('CPython Tests', () => {
             
             test("int('0b1001_0100', 0)", () => expect(int('0b1001_0100', 0, true)).toEqual(148));
             test("int('0_b10010100', 0) ValueError", () => expect(() => int('0_b10010100', 0)).toThrow(ValueError));
-            test("int('0b_10010100', 0)", () => expect(int('0b_10010100', 0)).toEqual(148));
+            test("int('0b_10010100', 0)", () => expect(int('0b_10010100', 0, true)).toEqual(148));
             test("int('0b10010100', 0)", () => expect(int('0b10010100', 0)).toEqual(148));
             
             test("int('0xffff_ffff', 0)", () => expect(int('0xffff_ffff', 0, true)).toEqual(4294967295));
@@ -374,7 +374,7 @@ describe('CPython Tests', () => {
             test('int("1_00", 3)', () => expect(int("1_00", 3, true)).toEqual(9));
             test('int("0_100")', () => expect(int("0_100", undefined, true)).toEqual(100));  // not valid as a literal!
             test('int("_100") ValueError', () => expect(() => int("_100")).toThrow(ValueError));
-            test('"int("+_100") ValueError', () => expect(() => int("+_100")).toThrow(ValueError));
+            test('"int("+_100") ValueError', () => expect(() => int("+_100", undefined, true)).toThrow(ValueError));
             test('int("1__00") ValueError', () => expect(() => int("1__00")).toThrow(ValueError));
             test('int("100_") ValueError', () => expect(() => int("100_")).toThrow(ValueError))
         });
