@@ -639,15 +639,34 @@ describe('Bitwise', () => {
         test("int('0x1', 3) ValueError", () => expect(() => int('0x1', 3)).toThrow(new ValueError(`invalid literal for int() with base 3: '0x1'`)));
     });
     describe('Native special numbers', () => {
-        test("int(0o123)", () => expect(int(0o123)).toEqual(83));
-        test("int(0o123, 0) TypeError", () => expect(() => int(0o123, 0)).toThrow(TypeError));
-        
         test("int(0b11)", () => expect(int(0b11)).toEqual(3));
         test("int(0b11, 0) TypeError", () => expect(() => int(0b11, 0)).toThrow(TypeError));
+        
+        test("int(0o123)", () => expect(int(0o123)).toEqual(83));
+        test("int(0o123, 0) TypeError", () => expect(() => int(0o123, 0)).toThrow(TypeError));
         
         test("int(0x123)", () => expect(int(0x123)).toEqual(291));
         test("int(0x123, 0) TypeError", () => expect(() => int(0x123, 0)).toThrow(TypeError));
     });
+    describe('Signs', () => {
+        test("int(+0b11)", () => expect(int(+0b11)).toEqual(3));
+        test("int(-0b11)", () => expect(int(-0b11)).toEqual(-3));
+        
+        test("int(+0b11, 0) TypeError", () => expect(() => int(+0b11, 0)).toThrow(TypeError));
+        test("int(-0b11, 0) TypeError", () => expect(() => int(-0b11, 0)).toThrow(TypeError));
+        
+        test("int('+0b11') ValueError", () => expect(() => int('+0b11')).toThrow(ValueError));
+        test("int('-0b11') ValueError", () => expect(() => int('-0b11')).toThrow(ValueError));
+        
+        test("int('+0b11', 0)", () => expect(int('+0b11', 0)).toEqual(3));
+        test("int('-0b11', 0)", () => expect(int('-0b11', 0)).toEqual(-3));
+        
+        test("int('+0b11', 2)", () => expect(int('+0b11', 2)).toEqual(3));
+        test("int('-0b11', 2)", () => expect(int('-0b11', 2)).toEqual(-3));
+        
+        test("int('+0b11', 12)", () => expect(int('+0b11', 12)).toEqual(1597));
+        test("int('-0b11', 12)", () => expect(int('-0b11', 12)).toEqual(-1597));
+    })
 });
 
 describe('Literal string numbers with bases just on the limit', () => {
