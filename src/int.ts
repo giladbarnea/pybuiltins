@@ -137,21 +137,11 @@ export class Int extends Number {
             // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
             if (log) console.log(cc('cyan', `parsedInt = parseInt(x, base) = ${parsedInt}`));
         } catch (e) {
-            if (!(e instanceof TypeError)) // Failed not because number doesn't have 'startsWith' function
+            if (!(e instanceof TypeError)) // Failed not because number doesn't have 'trim' function
                 throw e
         }
-        // **  Underscore
-        try {
-            
-            if (x.startsWith('_') || x.includes('__') || x.endsWith('_')) {
-                if (log) console.log(cc('bright yellow', `Starts / ends / multiple underscore, ValueError`));
-                throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
-            }
-        } catch (e) {
-            if (!(e instanceof TypeError)) // Failed not because number doesn't have 'startsWith' function
-                throw e
-        }
-        // **  Special number handling
+        
+        // ***  Special number handling
         let prefix = null;
         let isBinary = false;
         let isOctal = false;
@@ -160,7 +150,7 @@ export class Int extends Number {
         let specialBase = undefined;
         let isFloat = false;
         
-        
+        // **  isSpecial
         if (nosign[0] === '0' && nosign[1] && RegExp(/[a-zA-Z]/).test(nosign[1])) {
             if (log) console.log(cc('cyan', `nosign[0] === '0', nosign[1] is [a-zA-Z] => prefix = nosign[1] = '${nosign[1]}'`));
             prefix = nosign[1];
@@ -175,7 +165,7 @@ export class Int extends Number {
             if (log) console.log(cc('cyan', `!isSpecial => isFloat = /./ in x = ${isFloat}`));
         }
         
-        
+        // **  Update base 0 to matching special base
         if (base === 0) { // int(000, 0)
             if (log) console.log(cc('blue', `base === 0`));
             // CPython Objects\longobject.c.PyLong_FromString (lineno 2144)
@@ -200,7 +190,19 @@ export class Int extends Number {
             }
             // updating parsedInt here never changes anything, so don't
         }
-        
+        // **  Underscore
+        try {
+            if (x.includes('_')) {
+                
+                if (x.startsWith('_') || x.includes('__') || x.endsWith('_')) {
+                    if (log) console.log(cc('bright yellow', `Leading / trailing / multiple underscore, ValueError`));
+                    throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+                }
+            }
+        } catch (e) {
+            if (!(e instanceof TypeError)) // Failed not because number doesn't have 'includes' function
+                throw e
+        }
         // equivalent to big cond in longobject.c:2160
         if (isSpecial && base === specialBase) {
             x = x.slice(2);
