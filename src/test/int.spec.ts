@@ -380,6 +380,13 @@ describe('CPython Tests', () => {
         });
         
     });
+    describe('test_keyword_args', () => {
+        test("int('100', {base: 2})", () => expect(int('100', {base: 2, log: true})).toEqual(4));
+        test("int({x: '100', base: 2})", () => expect(int({x: '100', base: 2, log: true})).toEqual(1));
+        test("int({x: 1.2})", () => expect(int({x: 1.2, log: true})).toEqual(1));
+        test("int({base: 10})", () => expect(() => int({base: 10, log: true})).toThrow(TypeError));
+        test("int({base: 0})", () => expect(() => int({base: 0, log: true})).toThrow(TypeError));
+    });
     describe('longobject.c', () => {
         // Objects\longobject.c.PyLong_FromString (2117)
         test('PyLong_FromString', () => {
@@ -658,11 +665,11 @@ describe('Bitwise', () => {
         test("int('+0b11') ValueError", () => expect(() => int('+0b11')).toThrow(ValueError));
         test("int('-0b11') ValueError", () => expect(() => int('-0b11')).toThrow(ValueError));
         
-        test("int('+0b11', 0)", () => expect(int('+0b11', 0, true)).toEqual(3));
-        test("int('-0b11', 0)", () => expect(int('-0b11', 0, true)).toEqual(-3));
+        test("int('+0b11', 0)", () => expect(int('+0b11', 0)).toEqual(3));
+        test("int('-0b11', 0)", () => expect(int('-0b11', 0)).toEqual(-3));
         
-        test("int('+0b11', 2)", () => expect(int('+0b11', 2, true)).toEqual(3));
-        test("int('-0b11', 2)", () => expect(int('-0b11', 2, true)).toEqual(-3));
+        test("int('+0b11', 2)", () => expect(int('+0b11', 2)).toEqual(3));
+        test("int('-0b11', 2)", () => expect(int('-0b11', 2)).toEqual(-3));
         
         test("int('+0b11', 12)", () => expect(int('+0b11', 12)).toEqual(1597));
         test("int('-0b11', 12)", () => expect(int('-0b11', 12)).toEqual(-1597));
