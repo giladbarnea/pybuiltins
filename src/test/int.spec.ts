@@ -263,60 +263,60 @@ describe('CPython Tests', () => {
                 
             });
             describe('Underscores in the base selector', () => {
-                test(`int('0_b0', 0) ValueError`, () => expect(() => int('0_b0', 0, true)).toThrow(ValueError));
-                test(`int('0_xf', 0) ValueError`, () => expect(() => int('0_xf', 0, true)).toThrow(ValueError));
-                test(`int('0_o5', 0) ValueError`, () => expect(() => int('0_o5', 0, true)).toThrow(ValueError));
+                test(`int('0_b0', 0) ValueError`, () => expect(() => int('0_b0', 0)).toThrow(ValueError));
+                test(`int('0_xf', 0) ValueError`, () => expect(() => int('0_xf', 0)).toThrow(ValueError));
+                test(`int('0_o5', 0) ValueError`, () => expect(() => int('0_o5', 0)).toThrow(ValueError));
             });
             describe('Old-style octal', () => {
-                test(`int('0_7', 0) ValueError`, () => expect(() => int('0_7', 0, true)).toThrow(ValueError));
-                test(`int('09_99', 0) ValueError`, () => expect(() => int('09_99', 0, true)).toThrow(ValueError));
+                test(`int('0_7', 0) ValueError`, () => expect(() => int('0_7', 0)).toThrow(ValueError));
+                test(`int('09_99', 0) ValueError`, () => expect(() => int('09_99', 0)).toThrow(ValueError));
             });
             describe('Multiple consecutive underscores', () => {
                 test(`int('4_______2', 0) ValueError`, () => expect(() => int('4_______2', 0, true)).toThrow(ValueError));
-                test(`int('0.1__4', 0) ValueError`, () => expect(() => int('0.1__4', 0, true)).toThrow(ValueError));
-                test(`int('0.1__4j', 0) ValueError`, () => expect(() => int('0.1__4j', 0, true)).toThrow(ValueError));
+                test(`int('0.1__4', 0) ValueError`, () => expect(() => int('0.1__4', 0)).toThrow(ValueError));
+                test(`int('0.1__4j', 0) ValueError`, () => expect(() => int('0.1__4j', 0)).toThrow(ValueError));
                 test(`int('0b1001__0100', 0) ValueError`, () => expect(() => int('0b1001__0100', 0, true)).toThrow(ValueError));
                 test(`int('0xffff__ffff', 0) ValueError`, () => expect(() => int('0xffff__ffff', 0, true)).toThrow(ValueError));
-                test(`int('0x___', 0) ValueError`, () => expect(() => int('0x___', 0, true)).toThrow(ValueError));
+                test(`int('0x___', 0) ValueError`, () => expect(() => int('0x___', 0)).toThrow(ValueError));
                 test(`int('0o5__77', 0) ValueError`, () => expect(() => int('0o5__77', 0, true)).toThrow(ValueError));
-                test(`int('1e1__0', 0) ValueError`, () => expect(() => int('1e1__0', 0, true)).toThrow(ValueError));
-                test(`int('1e1__0j', 0) ValueError`, () => expect(() => int('1e1__0j', 0, true)).toThrow(ValueError));
+                test(`int('1e1__0', 0) ValueError`, () => expect(() => int('1e1__0', 0)).toThrow(ValueError));
+                test(`int('1e1__0j', 0) ValueError`, () => expect(() => int('1e1__0j', 0)).toThrow(ValueError));
             });
             describe('Underscore right before a dot', () => {
                 
-                test(`int('1_.4', 0) ValueError`, () => expect(() => int('1_.4', 0, true)).toThrow(ValueError));
-                test(`int('1_.4j', 0) ValueError`, () => expect(() => int('1_.4j', 0, true)).toThrow(ValueError));
+                test(`int('1_.4', 0) ValueError`, () => expect(() => int('1_.4', 0)).toThrow(ValueError));
+                test(`int('1_.4j', 0) ValueError`, () => expect(() => int('1_.4j', 0)).toThrow(ValueError));
             });
             describe('Underscore right after a dot', () => {
                 
-                test(`int('1._4', 0) ValueError`, () => expect(() => int('1._4', 0, true)).toThrow(ValueError));
-                test(`int('1._4j', 0) ValueError`, () => expect(() => int('1._4j', 0, true)).toThrow(ValueError));
-                test(`int('._5', 0) ValueError`, () => expect(() => int('._5', 0, true)).toThrow(ValueError));
-                test(`int('._5j', 0) ValueError`, () => expect(() => int('._5j', 0, true)).toThrow(ValueError));
+                test(`int('1._4', 0) ValueError`, () => expect(() => int('1._4', 0)).toThrow(ValueError));
+                test(`int('1._4j', 0) ValueError`, () => expect(() => int('1._4j', 0)).toThrow(ValueError));
+                test(`int('._5', 0) ValueError`, () => expect(() => int('._5', 0)).toThrow(ValueError));
+                test(`int('._5j', 0) ValueError`, () => expect(() => int('._5j', 0)).toThrow(ValueError));
             });
             describe('Underscore right after a sign', () => {
                 
-                test(`int('1.0e+_1', 0) ValueError`, () => expect(() => int('1.0e+_1', 0, true)).toThrow(ValueError));
-                test(`int('1.0e+_1j', 0) ValueError`, () => expect(() => int('1.0e+_1j', 0, true)).toThrow(ValueError));
+                test(`int('1.0e+_1', 0) ValueError`, () => expect(() => int('1.0e+_1', 0)).toThrow(ValueError));
+                test(`int('1.0e+_1j', 0) ValueError`, () => expect(() => int('1.0e+_1j', 0)).toThrow(ValueError));
             });
             describe('Underscore right before j', () => {
-                test(`int('1.4_j', 0) ValueError`, () => expect(() => int('1.4_j', 0, true)).toThrow(ValueError));
-                test(`int('1.4e5_j', 0) ValueError`, () => expect(() => int('1.4e5_j', 0, true)).toThrow(ValueError));
+                test(`int('1.4_j', 0) ValueError`, () => expect(() => int('1.4_j', 0)).toThrow(ValueError));
+                test(`int('1.4e5_j', 0) ValueError`, () => expect(() => int('1.4e5_j', 0)).toThrow(ValueError));
             });
             describe('Underscore right before e', () => {
-                test(`int('1_e1', 0) ValueError`, () => expect(() => int('1_e1', 0, true)).toThrow(ValueError));
-                test(`int('1.4_e1', 0) ValueError`, () => expect(() => int('1.4_e1', 0, true)).toThrow(ValueError));
-                test(`int('1.4_e1j', 0) ValueError`, () => expect(() => int('1.4_e1j', 0, true)).toThrow(ValueError));
+                test(`int('1_e1', 0) ValueError`, () => expect(() => int('1_e1', 0)).toThrow(ValueError));
+                test(`int('1.4_e1', 0) ValueError`, () => expect(() => int('1.4_e1', 0)).toThrow(ValueError));
+                test(`int('1.4_e1j', 0) ValueError`, () => expect(() => int('1.4_e1j', 0)).toThrow(ValueError));
             });
             describe('Complex cases with parens', () => {
-                test(`int('(1+1.5_j_)', 0) ValueError`, () => expect(() => int('(1+1.5_j_)', 0, true)).toThrow(ValueError));
-                test(`int('(1+1.5_j)', 0) ValueError`, () => expect(() => int('(1+1.5_j)', 0, true)).toThrow(ValueError));
+                test(`int('(1+1.5_j_)', 0) ValueError`, () => expect(() => int('(1+1.5_j_)', 0)).toThrow(ValueError));
+                test(`int('(1+1.5_j)', 0) ValueError`, () => expect(() => int('(1+1.5_j)', 0)).toThrow(ValueError));
             });
             
         });
         describe('Additional test cases with bases != 0, only for the constructor', () => {
             test('int("1_00", 3)', () => expect(int("1_00", 3, true)).toEqual(9));
-            test('int("0_100")', () => expect(int("0_100")).toEqual(100));  // not valid as a literal!
+            test('int("0_100")', () => expect(int("0_100", undefined, true)).toEqual(100));  // not valid as a literal!
             test('int("_100") ValueError', () => expect(() => int("_100")).toThrow(ValueError));
             test('"int("+_100") ValueError', () => expect(() => int("+_100")).toThrow(ValueError));
             test('int("1__00") ValueError', () => expect(() => int("1__00", undefined, true)).toThrow(ValueError));
