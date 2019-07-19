@@ -2,7 +2,6 @@ import {int, Int} from "../int";
 import {bool} from "../bool";
 import {ValueError, ZeroDivisionError} from "../exceptions"
 import {Chance} from 'chance';
-import each from 'jest-each';
 
 const chance = new Chance();
 
@@ -227,14 +226,23 @@ describe('CPython Tests', () => {
             
             
             // \Lib\test\test_grammar.py
-            
-            test("int('0_0_0', 0)", () => expect(int('0_0_0', 0)).toEqual(0));
+            test("int('0_0_0', 0)", () => expect(int('0_0_0', 0, true)).toEqual(0));
             test("int('4_2', 0)", () => expect(int('4_2', 0, true)).toEqual(42));
             test("int('1_0000_0000', 0)", () => expect(int('1_0000_0000', 0, true)).toEqual(100000000));
             test("int('0b1001_0100', 0)", () => expect(int('0b1001_0100', 0, true)).toEqual(148));
             test("int('0xffff_ffff', 0)", () => expect(int('0xffff_ffff', 0, true)).toEqual(4294967295));
             test("int('0o5_7_7', 0)", () => expect(int('0o5_7_7', 0, true)).toEqual(383));
+            
             test("int('0b_0', 0)", () => expect(int('0b_0', 0, true)).toEqual(0));
+            test("int('0b_0', 2)", () => expect(int('0b_0', 2, true)).toEqual(0));
+            test("int('0b_0', 11)", () => expect(() => int('0b_0', 11, true)).toThrow(ValueError));
+            test("int('0b_0', 12)", () => expect(int('0b_0', 12, true)).toEqual(132));
+            
+            test("int('0_b0', 0)", () => expect(() => int('0_b0', 0, true)).toThrow(ValueError));
+            test("int('0_b0', 2)", () => expect(() => int('0_b0', 2, true)).toThrow(ValueError));
+            test("int('0_b0', 11)", () => expect(() => int('0_b0', 11, true)).toThrow(ValueError));
+            test("int('0_b0', 12)", () => expect(int('0_b0', 12, true)).toEqual(132));
+            
             test("int('0x_f', 0)", () => expect(int('0x_f', 0, true)).toEqual(15));
             test("int('0o_5', 0)", () => expect(int('0o_5', 0, true)).toEqual(5));
             
@@ -252,6 +260,16 @@ describe('CPython Tests', () => {
             
         });
         describe('Invalid underscore literals', () => {
+            describe('Leading underscore', () => {
+                test(`int('_0', 0) ValueError`, () => expect(() => int('_0', 0, true)).toThrow(ValueError));
+                test(`int('_42', 0) ValueError`, () => expect(() => int('_42', 0, true)).toThrow(ValueError));
+                test(`int('_0x', 0) ValueError`, () => expect(() => int('_0x', 0, true)).toThrow(ValueError));
+                test(`int('_0b1', 0) ValueError`, () => expect(() => int('_0b1', 0, true)).toThrow(ValueError));
+                test(`int('_0xf', 0) ValueError`, () => expect(() => int('_0xf', 0, true)).toThrow(ValueError));
+                test(`int('_0o5', 0) ValueError`, () => expect(() => int('_0o5', 0, true)).toThrow(ValueError));
+                test(`int('_0 if 1_Else 1', 0) ValueError`, () => expect(() => int('_0 if 1_Else 1', 0, true)).toThrow(ValueError));
+                
+            });
             describe('Trailing underscore', () => {
                 test(`int('0_', 0) ValueError`, () => expect(() => int('0_', 0, true)).toThrow(ValueError));
                 test(`int('42_', 0) ValueError`, () => expect(() => int('42_', 0, true)).toThrow(ValueError));

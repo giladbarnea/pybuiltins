@@ -84,24 +84,27 @@ export class Int extends Number {
     
     
     constructor(x = undefined, base?: string | number | Function, log?: boolean) {
-        
         let parsedInt = parseInt(x, <number>base); // NaN if fails
         const origbase = base;
         if (log) console.log(cc(`black underscore`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
         
         if (x === undefined || x === false) {
-            if (log) console.log(cc('bright magenta', 'x is undefined or false, super(0) return'));
             super(0);
+            if (log) console.log(cc('bright magenta', 'x is undefined or false, super(0) return. this: ${this}'));
             return
         }
         const typeofx = typeof x;
+        if (typeofx !== 'number' && typeofx !== 'string') {
+            if (log) console.log(cc('bright yellow', 'typeof x isnt number or string, TypeError'));
+            throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
+        }
         if (base === undefined) {
             base = 10;
             // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
             if (log) console.log(cc('cyan', `base === undefined => base=10, parsedInt=${parsedInt}`));
         } else {
             if (base === null) {
-                if (log) console.log('base === null, TypeError');
+                if (log) console.log(cc('bright yellow', 'base === null, TypeError'));
                 throw new TypeError(`'null' object cannot be interpreted as an integer`);
             }
             if (base !== 0 && base < 2 || base > 36) {
@@ -116,16 +119,13 @@ export class Int extends Number {
         }
         
         
-        if (typeofx !== 'number' && typeofx !== 'string') {
-            if (log) console.log(cc('bright yellow', 'typeof x isnt number or string, TypeError'));
-            throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
-        }
-        
         const orig = x;
         let sign = undefined;
         let nosign = x;
+        // **  Trim
         try {
             // don't remove in-between spaces: '+314' valid, '+ 314' invalid
+            
             x = x.trim(); // " + 314 " => "+ 314"
             nosign = x;
             if (log && orig !== x) console.log(cc('cyan', `after x.trim(): '${x}'`));
@@ -139,8 +139,17 @@ export class Int extends Number {
         } catch (e) {
             // may not be string, no .trim()
         }
-        
-        // *  Special number handling
+        // **  Underscore
+        try {
+            
+            if (x.includes('__') || x.endsWith('_')) {
+                if (log) console.log(cc('bright yellow', `Bad underscore, ValueError`));
+                throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
+            }
+        } catch (e) {
+            if (!(e instanceof TypeError)) throw e
+        }
+        // **  Special number handling
         let prefix = null;
         let isBinary = false;
         let isOctal = false;
@@ -259,8 +268,8 @@ export class Int extends Number {
             
             
             if (Number.isInteger(parsedInt)) { // int('9ba461594', 12)
-                if (log) console.log(cc('bright magenta', `if (parsedInt), super(parsedInt = ${parsedInt}) and return`));
                 super(parsedInt);
+                if (log) console.log(cc('bright magenta', `if (parsedInt), super(parsedInt = ${parsedInt}) and return. this: ${this}`));
                 return
             }
             
@@ -277,21 +286,21 @@ export class Int extends Number {
         if (isFloat) { // 3.14
             
             if (x < 0) {
-                if (log) console.log(cc('bright magenta', `x < 0, super(Math.ceil(${x})) return`));
                 super(Math.ceil(x));
+                if (log) console.log(cc('bright magenta', `x < 0, super(Math.ceil(${x})) return. this: ${this}`));
             } else {
-                if (log) console.log(cc('bright magenta', `x >= 0, super(Math.floor(${x})) return`));
                 super(Math.floor(x));
+                if (log) console.log(cc('bright magenta', `x >= 0, super(Math.floor(${x})) return. this: ${this}`));
             }
             return
         }
         
         if (base !== 10) { // int("10", 16)
-            if (log) console.log(cc('bright magenta', `base !== 10, super(parsedInt = ${parsedInt}}) return`));
             super(parsedInt);
+            if (log) console.log(cc('bright magenta', `base !== 10, super(parsedInt = ${parsedInt}}) return. this: ${this}`));
         } else { // int(314)
-            if (log) console.log(cc('bright magenta', `base === 10, super(${x}) return`));
             super(x);
+            if (log) console.log(cc('bright magenta', `base === 10, super(${x}) return. this: ${this}`));
         }
     }
     
