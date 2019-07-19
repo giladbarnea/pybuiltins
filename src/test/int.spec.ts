@@ -222,68 +222,90 @@ describe('CPython Tests', () => {
     });
     //\Lib\test\test_int.py.test_underscores()
     describe('test_underscore', () => {
-        describe('Valid underscore literals', () => {
+        describe('Various underscore literals', () => {
             
             
-            // \Lib\test\test_grammar.py
-            test("int('0_0_0', 0)", () => expect(int('0_0_0', 0, true)).toEqual(0));
-            test("int('4_2', 0)", () => expect(int('4_2', 0, true)).toEqual(42));
-            test("int('1_0000_0000', 0)", () => expect(int('1_0000_0000', 0, true)).toEqual(100000000));
-            test("int('0b1001_0100', 0)", () => expect(int('0b1001_0100', 0, true)).toEqual(148));
-            test("int('0xffff_ffff', 0)", () => expect(int('0xffff_ffff', 0, true)).toEqual(4294967295));
-            test("int('0o5_7_7', 0)", () => expect(int('0o5_7_7', 0, true)).toEqual(383));
-            
-            test("int('0b0', 0)", () => expect(int('0b0', 0)).toEqual(0));
-            test("int('0b_0', 0)", () => expect(int('0b_0', 0, true)).toEqual(0));
-            test("int('0_b0', 0)", () => expect(() => int('0_b0', 0, true)).toThrow(ValueError));
-            
-            test("int('0b0', 2)", () => expect(int('0b0', 2, true)).toEqual(0));
-            test("int('0b_0', 2)", () => expect(int('0b_0', 2, true)).toEqual(0));
-            test("int('0_b0', 2)", () => expect(() => int('0_b0', 2, true)).toThrow(ValueError));
-            
-            test("int('0b0', 11)", () => expect(() => int('0b0', 11, true)).toThrow(ValueError));
-            test("int('0b_0', 11)", () => expect(() => int('0b_0', 11, true)).toThrow(ValueError));
-            test("int('0_b0', 11)", () => expect(() => int('0_b0', 11, true)).toThrow(ValueError));
-            
-            test("int('0b0', 12)", () => expect(int('0b0', 12, true)).toEqual(132));
-            test("int('0b_0', 12)", () => expect(int('0b_0', 12, true)).toEqual(132));
-            test("int('0_b0', 12)", () => expect(int('0_b0', 12, true)).toEqual(132));
-            
-            test("int('0x_f', 0)", () => expect(int('0x_f', 0, true)).toEqual(15));
-            test("int('0o_5', 0)", () => expect(int('0o_5', 0, true)).toEqual(5));
-            
-            
+            // **  Base 0, different underscores
+            test("int('0_0_0', 0)", () => expect(int('0_0_0', 0)).toEqual(0));
             test("int('000', 0)", () => expect(int('000', 0)).toEqual(0));
+            
+            test("int('4_2', 0)", () => expect(int('4_2', 0)).toEqual(42));
             test("int('42', 0)", () => expect(int('42', 0)).toEqual(42));
+            
+            test("int('1_0000_0000', 0)", () => expect(int('1_0000_0000', 0)).toEqual(100000000));
             test("int('100000000', 0)", () => expect(int('100000000', 0)).toEqual(100000000));
+            
+            test("int('0b1001_0100', 0)", () => expect(int('0b1001_0100', 0)).toEqual(148));
+            test("int('0_b10010100', 0) ValueError", () => expect(() => int('0_b10010100', 0)).toThrow(ValueError));
+            test("int('0b_10010100', 0)", () => expect(int('0b_10010100', 0)).toEqual(148));
             test("int('0b10010100', 0)", () => expect(int('0b10010100', 0)).toEqual(148));
+            
+            test("int('0xffff_ffff', 0)", () => expect(int('0xffff_ffff', 0)).toEqual(4294967295));
+            test("int('0x_ffff_ffff', 0)", () => expect(int('0x_ffff_ffff', 0)).toEqual(4294967295));
+            test("int('0_xffffffff', 0) ValueError", () => expect(() => int('0_xffffffff', 0)).toThrow(ValueError));
             test("int('0xffffffff', 0)", () => expect(int('0xffffffff', 0)).toEqual(4294967295));
+            
+            test("int('0o5_7_7', 0)", () => expect(int('0o5_7_7', 0)).toEqual(383));
             test("int('0o577', 0)", () => expect(int('0o577', 0)).toEqual(383));
             
-            test("int('0xf', 0)", () => expect(int('0xf', 0)).toEqual(15));
+            // **  Hexa
+            // *  Underscore after selector, different bases
+            test("int('0xa', 0)", () => expect(int('0xf', 0)).toEqual(10));
+            test("int('0x_a', 0)", () => expect(int('0x_a', 0)).toEqual(10));
+            test("int('0x_a', 16)", () => expect(int('0x_a', 16)).toEqual(10));
+            test("int('0x_a', 33) ValueError", () => expect(() => int('0x_a', 33)).toThrow(ValueError));
+            test("int('0x_a', 34)", () => expect(int('0x_a', 34)).toEqual(1132));
+            
+            // *  Underscore inside selector, different bases (does not throw only when base > selector)
+            test("int('0_xa', 0) ValueError", () => expect(() => int('0_xa', 0)).toThrow(ValueError));
+            test("int('0_xa', 16) ValueError", () => expect(() => int('0_xa', 16)).toThrow(ValueError));
+            test("int('0_xa', 33) ValueError", () => expect(() => int('0_xa', 33)).toThrow(ValueError));
+            test("int('0_xa', 34)", () => expect(int('0_xa', 34)).toEqual(1132));
+            
+            // **  Binary
+            // *  Base 0 (throws only with inside underscore)
+            test("int('0b0', 0)", () => expect(int('0b0', 0)).toEqual(0));
+            test("int('0b_0', 0)", () => expect(int('0b_0', 0)).toEqual(0));
+            test("int('0_b0', 0) ValueError", () => expect(() => int('0_b0', 0)).toThrow(ValueError));
+            
+            // *  Base 2 (throws only with inside underscore)
+            test("int('0b0', 2)", () => expect(int('0b0', 2)).toEqual(0));
+            test("int('0b_0', 2)", () => expect(int('0b_0', 2)).toEqual(0));
+            test("int('0_b0', 2) ValueError", () => expect(() => int('0_b0', 2)).toThrow(ValueError));
+            
+            // *  Base 11 (all throw because of base, not underscore)
+            test("int('0b0', 11) ValueError", () => expect(() => int('0b0', 11)).toThrow(ValueError));
+            test("int('0b_0', 11) ValueError", () => expect(() => int('0b_0', 11)).toThrow(ValueError));
+            test("int('0_b0', 11) ValueError", () => expect(() => int('0_b0', 11)).toThrow(ValueError));
+            
+            // *  Base 12 (does not throw)
+            test("int('0b0', 12)", () => expect(int('0b0', 12)).toEqual(132));
+            test("int('0b_0', 12)", () => expect(int('0b_0', 12)).toEqual(132));
+            test("int('0_b0', 12)", () => expect(int('0_b0', 12)).toEqual(132));
+            
+            test("int('0o_5', 0)", () => expect(int('0o_5', 0)).toEqual(5));
+            test("int('0_o5', 0) ValueError", () => expect(() => int('0_o5', 0)).toThrow(ValueError));
             test("int('0o5', 0)", () => expect(int('0o5', 0)).toEqual(5));
-            
-            
         });
         describe('Invalid underscore literals', () => {
             describe('Leading underscore', () => {
-                test(`int('_0', 0) ValueError`, () => expect(() => int('_0', 0, true)).toThrow(ValueError));
-                test(`int('_42', 0) ValueError`, () => expect(() => int('_42', 0, true)).toThrow(ValueError));
-                test(`int('_0x', 0) ValueError`, () => expect(() => int('_0x', 0, true)).toThrow(ValueError));
-                test(`int('_0b1', 0) ValueError`, () => expect(() => int('_0b1', 0, true)).toThrow(ValueError));
-                test(`int('_0xf', 0) ValueError`, () => expect(() => int('_0xf', 0, true)).toThrow(ValueError));
-                test(`int('_0o5', 0) ValueError`, () => expect(() => int('_0o5', 0, true)).toThrow(ValueError));
-                test(`int('_0 if 1_Else 1', 0) ValueError`, () => expect(() => int('_0 if 1_Else 1', 0, true)).toThrow(ValueError));
+                test(`int('_0', 0) ValueError`, () => expect(() => int('_0', 0)).toThrow(ValueError));
+                test(`int('_42', 0) ValueError`, () => expect(() => int('_42', 0)).toThrow(ValueError));
+                test(`int('_0x', 0) ValueError`, () => expect(() => int('_0x', 0)).toThrow(ValueError));
+                test(`int('_0b1', 0) ValueError`, () => expect(() => int('_0b1', 0)).toThrow(ValueError));
+                test(`int('_0xf', 0) ValueError`, () => expect(() => int('_0xf', 0)).toThrow(ValueError));
+                test(`int('_0o5', 0) ValueError`, () => expect(() => int('_0o5', 0)).toThrow(ValueError));
+                test(`int('_0 if 1_Else 1', 0) ValueError`, () => expect(() => int('_0 if 1_Else 1', 0)).toThrow(ValueError));
                 
             });
             describe('Trailing underscore', () => {
-                test(`int('0_', 0) ValueError`, () => expect(() => int('0_', 0, true)).toThrow(ValueError));
-                test(`int('42_', 0) ValueError`, () => expect(() => int('42_', 0, true)).toThrow(ValueError));
-                test(`int('0x_', 0) ValueError`, () => expect(() => int('0x_', 0, true)).toThrow(ValueError));
-                test(`int('0b1_', 0) ValueError`, () => expect(() => int('0b1_', 0, true)).toThrow(ValueError));
-                test(`int('0xf_', 0) ValueError`, () => expect(() => int('0xf_', 0, true)).toThrow(ValueError));
-                test(`int('0o5_', 0) ValueError`, () => expect(() => int('0o5_', 0, true)).toThrow(ValueError));
-                test(`int('0 if 1_Else 1', 0) ValueError`, () => expect(() => int('0 if 1_Else 1', 0, true)).toThrow(ValueError));
+                test(`int('0_', 0) ValueError`, () => expect(() => int('0_', 0)).toThrow(ValueError));
+                test(`int('42_', 0) ValueError`, () => expect(() => int('42_', 0)).toThrow(ValueError));
+                test(`int('0x_', 0) ValueError`, () => expect(() => int('0x_', 0)).toThrow(ValueError));
+                test(`int('0b1_', 0) ValueError`, () => expect(() => int('0b1_', 0)).toThrow(ValueError));
+                test(`int('0xf_', 0) ValueError`, () => expect(() => int('0xf_', 0)).toThrow(ValueError));
+                test(`int('0o5_', 0) ValueError`, () => expect(() => int('0o5_', 0)).toThrow(ValueError));
+                test(`int('0 if 1_Else 1', 0) ValueError`, () => expect(() => int('0 if 1_Else 1', 0)).toThrow(ValueError));
                 
             });
             describe('Underscores in the base selector', () => {
@@ -296,13 +318,13 @@ describe('CPython Tests', () => {
                 test(`int('09_99', 0) ValueError`, () => expect(() => int('09_99', 0)).toThrow(ValueError));
             });
             describe('Multiple consecutive underscores', () => {
-                test(`int('4_______2', 0) ValueError`, () => expect(() => int('4_______2', 0, true)).toThrow(ValueError));
+                test(`int('4_______2', 0) ValueError`, () => expect(() => int('4_______2', 0)).toThrow(ValueError));
                 test(`int('0.1__4', 0) ValueError`, () => expect(() => int('0.1__4', 0)).toThrow(ValueError));
                 test(`int('0.1__4j', 0) ValueError`, () => expect(() => int('0.1__4j', 0)).toThrow(ValueError));
-                test(`int('0b1001__0100', 0) ValueError`, () => expect(() => int('0b1001__0100', 0, true)).toThrow(ValueError));
-                test(`int('0xffff__ffff', 0) ValueError`, () => expect(() => int('0xffff__ffff', 0, true)).toThrow(ValueError));
+                test(`int('0b1001__0100', 0) ValueError`, () => expect(() => int('0b1001__0100', 0)).toThrow(ValueError));
+                test(`int('0xffff__ffff', 0) ValueError`, () => expect(() => int('0xffff__ffff', 0)).toThrow(ValueError));
                 test(`int('0x___', 0) ValueError`, () => expect(() => int('0x___', 0)).toThrow(ValueError));
-                test(`int('0o5__77', 0) ValueError`, () => expect(() => int('0o5__77', 0, true)).toThrow(ValueError));
+                test(`int('0o5__77', 0) ValueError`, () => expect(() => int('0o5__77', 0)).toThrow(ValueError));
                 test(`int('1e1__0', 0) ValueError`, () => expect(() => int('1e1__0', 0)).toThrow(ValueError));
                 test(`int('1e1__0j', 0) ValueError`, () => expect(() => int('1e1__0j', 0)).toThrow(ValueError));
             });
@@ -339,12 +361,12 @@ describe('CPython Tests', () => {
             
         });
         describe('Additional test cases with bases != 0, only for the constructor', () => {
-            test('int("1_00", 3)', () => expect(int("1_00", 3, true)).toEqual(9));
-            test('int("0_100")', () => expect(int("0_100", undefined, true)).toEqual(100));  // not valid as a literal!
+            test('int("1_00", 3)', () => expect(int("1_00", 3)).toEqual(9));
+            test('int("0_100")', () => expect(int("0_100", undefined)).toEqual(100));  // not valid as a literal!
             test('int("_100") ValueError', () => expect(() => int("_100")).toThrow(ValueError));
             test('"int("+_100") ValueError', () => expect(() => int("+_100")).toThrow(ValueError));
-            test('int("1__00") ValueError', () => expect(() => int("1__00", undefined, true)).toThrow(ValueError));
-            test('int("100_") ValueError', () => expect(() => int("100_", undefined, true)).toThrow(ValueError))
+            test('int("1__00") ValueError', () => expect(() => int("1__00", undefined)).toThrow(ValueError));
+            test('int("100_") ValueError', () => expect(() => int("100_", undefined)).toThrow(ValueError))
         });
         
     });
@@ -493,7 +515,7 @@ describe('Bitwise', () => {
     });
     describe('base 0 works only if true bin/hex/oct, otherwise only if x[0] !== "0" and all char < 10 (base:=10)', () => {
         let _valerr = literal => valerr(literal, 0);
-        test("int('0711', 0) ValueError", () => expect(() => int('0711', 0, true)).toThrow(_valerr('0711')));
+        test("int('0711', 0) ValueError", () => expect(() => int('0711', 0)).toThrow(_valerr('0711')));
         test("int('711', 0)", () => expect(int('711', 0)).toEqual(711));
         test("int('0b11', 0)", () => expect(int('0b11', 0)).toEqual(3));
         test("int('1b11', 0) ValueError", () => expect(() => int('1b11', 0)).toThrow(_valerr('1b11')));
