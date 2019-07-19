@@ -142,7 +142,7 @@ export class Int extends Number {
         // **  Underscore
         try {
             
-            if (x.includes('__') || x.endsWith('_')) {
+            if (x.startsWith('_') || x.includes('__') || x.endsWith('_')) {
                 if (log) console.log(cc('bright yellow', `Bad underscore, ValueError`));
                 throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
             }
@@ -273,9 +273,9 @@ export class Int extends Number {
                 return
             }
             
-            if (!RegExp(/\d/).test(x) || // int('0x', 16) int('0o', 8) int('0b', 2)
+            if (!RegExp(/\d/).test(x) || // int('0x', 16) int('0o', 8) int('0b', 2), int('_0', 0)
                 isNaN(mod1)) { // int("+ 314")
-                if (log) console.log(cc('bright yellow', `isNaN(mod1) or '${x}' is /\d/, ValueError`));
+                if (log) console.log(cc('bright yellow', `isNaN(mod1 = ${mod1}) or x = '${x}' is /\d/, ValueError`));
                 throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
             }
             

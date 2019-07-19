@@ -289,12 +289,12 @@ describe('CPython Tests', () => {
         });
         describe('Invalid underscore literals', () => {
             describe('Leading underscore', () => {
-                test(`int('_0', 0) ValueError`, () => expect(() => int('_0', 0)).toThrow(ValueError));
-                test(`int('_42', 0) ValueError`, () => expect(() => int('_42', 0)).toThrow(ValueError));
-                test(`int('_0x', 0) ValueError`, () => expect(() => int('_0x', 0)).toThrow(ValueError));
-                test(`int('_0b1', 0) ValueError`, () => expect(() => int('_0b1', 0)).toThrow(ValueError));
-                test(`int('_0xf', 0) ValueError`, () => expect(() => int('_0xf', 0)).toThrow(ValueError));
-                test(`int('_0o5', 0) ValueError`, () => expect(() => int('_0o5', 0)).toThrow(ValueError));
+                test(`int('_0', 0) ValueError`, () => expect(() => int('_0', 0, true)).toThrow(ValueError));
+                test(`int('_42', 0) ValueError`, () => expect(() => int('_42', 0, true)).toThrow(ValueError));
+                test(`int('_0x', 0) ValueError`, () => expect(() => int('_0x', 0, true)).toThrow(ValueError));
+                test(`int('_0b1', 0) ValueError`, () => expect(() => int('_0b1', 0, true)).toThrow(ValueError));
+                test(`int('_0xf', 0) ValueError`, () => expect(() => int('_0xf', 0, true)).toThrow(ValueError));
+                test(`int('_0o5', 0) ValueError`, () => expect(() => int('_0o5', 0, true)).toThrow(ValueError));
                 test(`int('_0 if 1_Else 1', 0) ValueError`, () => expect(() => int('_0 if 1_Else 1', 0)).toThrow(ValueError));
                 
             });
