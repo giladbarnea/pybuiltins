@@ -164,7 +164,7 @@ export class Int extends Number {
         let isFloat = false;
         
         // **  isSpecial
-        if (nosign[0] === '0' && nosign[1] && RegExp(/[a-zA-Z]/).test(nosign[1])) {
+        if (nosign[0] === '0' && nosign[1] && RegExp(/[box]/, 'i').test(nosign[1])) {
             if (log) console.log(cc('cyan', `nosign[0] === '0', nosign[1] is [a-zA-Z] => prefix = nosign[1] = '${nosign[1]}'`));
             prefix = nosign[1];
             isBinary = prefix === 'b' || prefix === 'B';
