@@ -229,14 +229,14 @@ describe('CPython Tests', () => {
             // \Lib\test\test_grammar.py
             
             test("int('0_0_0', 0)", () => expect(int('0_0_0', 0)).toEqual(0));
-            test("int('4_2', 0)", () => expect(int('4_2', 0)).toEqual(42));
-            test("int('1_0000_0000', 0)", () => expect(int('1_0000_0000', 0)).toEqual(100000000));
-            test("int('0b1001_0100', 0)", () => expect(int('0b1001_0100', 0)).toEqual(148));
-            test("int('0xffff_ffff', 0)", () => expect(int('0xffff_ffff', 0)).toEqual(4294967295));
-            test("int('0o5_7_7', 0)", () => expect(int('0o5_7_7', 0)).toEqual(383));
-            test("int('0b_0', 0)", () => expect(int('0b_0', 0)).toEqual(0));
-            test("int('0x_f', 0)", () => expect(int('0x_f', 0)).toEqual(15));
-            test("int('0o_5', 0)", () => expect(int('0o_5', 0)).toEqual(5));
+            test("int('4_2', 0)", () => expect(int('4_2', 0, true)).toEqual(42));
+            test("int('1_0000_0000', 0)", () => expect(int('1_0000_0000', 0, true)).toEqual(100000000));
+            test("int('0b1001_0100', 0)", () => expect(int('0b1001_0100', 0, true)).toEqual(148));
+            test("int('0xffff_ffff', 0)", () => expect(int('0xffff_ffff', 0, true)).toEqual(4294967295));
+            test("int('0o5_7_7', 0)", () => expect(int('0o5_7_7', 0, true)).toEqual(383));
+            test("int('0b_0', 0)", () => expect(int('0b_0', 0, true)).toEqual(0));
+            test("int('0x_f', 0)", () => expect(int('0x_f', 0, true)).toEqual(15));
+            test("int('0o_5', 0)", () => expect(int('0o_5', 0, true)).toEqual(5));
             
             
             test("int('000', 0)", () => expect(int('000', 0)).toEqual(0));
