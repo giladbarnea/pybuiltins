@@ -85,6 +85,11 @@ export class Int extends Number {
     
     constructor(x = undefined, base?: string | number | Function, log?: boolean) {
         console.log({x, base, log, arguments});
+        const typeofx = typeof x;
+        const typeofbase = typeof base;
+        if(typeofx === 'object'){
+        
+        }
         let parsedInt = parseInt(x, <number>base); // NaN if fails
         const origbase = base;
         if (log) console.log(cc(`black`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
@@ -94,7 +99,7 @@ export class Int extends Number {
             if (log) console.log(cc('bright magenta', 'x is undefined or false, super(0) return. this: ${this}'));
             return
         }
-        const typeofx = typeof x;
+        
         if (typeofx !== 'number' && typeofx !== 'string') {
             if (log) console.log(cc('bright yellow', 'typeof x isnt number or string, TypeError'));
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
