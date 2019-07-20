@@ -111,12 +111,16 @@ export class Int extends Number {
                 }
                 console.log(cc('bright yellow', `xinbase, TypeError`));
                 // int('100', {x: '100'})
+                // TODO: position (2)
                 throw new TypeError(`Argument given by name ('x') and position (1)`)
             }
-            if (baseinbase) {
+            if (baseinbase) { // int('100', {base: 2})
                 console.log(cc('blue', `baseinbase`));
                 return [x, base.base];
             }
+            // int('100', {nothing: 2})
+            console.log(cc('blue', `!xinbase && !baseinbase`));
+            return [x, undefined]
         }
         
         return [x, base]
@@ -142,9 +146,9 @@ export class Int extends Number {
             1: {x, base}            x = [1].x; base = [1].base;
         
         0: x, 1: {object}
-            1: {undefined}          base = [1].base;
+            1: {undefined} DONE          base = [1].base;
             1: {x} DONE             TypeError: Argument given by name ('x') and position (1)
-            1: {base}               base = [1].base;
+            1: {base} DONE          base = [1].base;
             1: {x, base} DONE       TypeError: int() takes at most 2 arguments (3 given)
         
         0: {object}, 1: base
