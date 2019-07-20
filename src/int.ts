@@ -95,10 +95,39 @@ export class Int extends Number {
             return [base.x, base.base]
         }
         console.log(cc('blue', `neither x nor base are undefined`), {x, base, typeofx, typeofbase});
-        if (typeofx === 'string' || typeofx === "number") { // all int(x, {object}) tests
+        let xinbase = false;
+        let baseinbase = false;
+        let xinx = false;
+        let baseinx = false;
+        // at least one must be primitive, parseArgs is called when either is object
+        const isXObject = typeofx !== 'string' && typeofx !== "number";
+        const isBaseObject = typeofbase !== 'string' && typeofbase !== "number";
+        if (isXObject) {
+            xinx = 'x' in x;
+            baseinx = 'base' in x;
             
-            const xinbase = 'x' in base;
-            const baseinbase = 'base' in base;
+        }
+        if (isBaseObject) {
+            xinbase = 'x' in base;
+            baseinbase = 'base' in base;
+        }
+        if (isXObject && isBaseObject) {
+            // all int({object}, {object}) tests
+            console.log(cc('blue', `base and x are both objects`), {xinbase, baseinbase, xinx, baseinx});
+            if ((xinbase && xinx) || (baseinbase && baseinx)) { // int({x: 0, base: 10}, {x: 1})
+                console.log(cc('bright yellow', `keyword argument repeated, TypeError`));
+                throw new SyntaxError("keyword argument repeated")
+            }
+            console.log(cc('blue', `No repeated kwarg`));
+            if (xinbase) { // int({base: 2}, {x: '100'})
+                console.log(cc('magenta', `xinbase, returning [base.x, x.base]`));
+                return [base.x, x.base]
+            }
+            // int({x: '100'}, {base: 2})
+            console.log(cc('magenta', `xinx, returning [x.x, base.base]`));
+            return [x.x, base.base]
+        }
+        if (isBaseObject) { // all int(x, {object}) tests
             console.log(cc('blue', `x is primitive. base is object.`), {xinbase, baseinbase});
             if (xinbase) {
                 
@@ -122,10 +151,8 @@ export class Int extends Number {
             return [x, undefined]
         }
         console.log(cc('blue', `x is an object`));
-        if (typeofbase === 'string' || typeofbase === "number") { // all int({object}, base) tests
-            
-            const xinx = 'x' in x;
-            const baseinx = 'base' in x;
+        
+        if (isXObject) { // all int({object}, base) tests
             console.log(cc('blue', `base is primitive`), {xinx, baseinx});
             if (baseinx) {
                 console.log(cc('blue', `baseinx`));
@@ -140,24 +167,7 @@ export class Int extends Number {
             console.log(cc('magenta', `returning [x.x, base]`));
             return [x.x, base]
         }
-        // all int({object}, {object}) tests
-        const xinbase = 'x' in base;
-        const baseinbase = 'base' in base;
-        const xinx = 'x' in x;
-        const baseinx = 'base' in x;
-        console.log(cc('blue', `base and x are both objects`), {xinbase, baseinbase, xinx, baseinx});
-        if ((xinbase && xinx) || (baseinbase && baseinx)) { // int({x: 0, base: 10}, {x: 1})
-            console.log(cc('bright yellow', `keyword argument repeated, TypeError`));
-            throw new SyntaxError("keyword argument repeated")
-        }
-        console.log(cc('blue', `No repeated kwarg`));
-        if (xinbase) { // int({base: 2}, {x: '100'})
-            console.log(cc('magenta', `xinbase, returning [base.x, x.base]`));
-            return [base.x, x.base]
-        } else { // int({x: '100'}, {base: 2})
-            console.log(cc('magenta', `xinx, returning [x.x, base.base]`));
-            return [x.x, base.base]
-        }
+        
         // NOTHING REACHES HERE
         
         
