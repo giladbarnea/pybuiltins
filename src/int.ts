@@ -83,14 +83,14 @@ export class Int extends Number {
     }
     
     
-    constructor(x = undefined, base?: string | number | Function, log?: boolean) {
+    constructor(x: string | number | IntOptions = undefined, base?: string | number | IntOptions, log?: boolean) {
         console.log({x, base, log, arguments});
         const typeofx = typeof x;
         const typeofbase = typeof base;
-        if(typeofx === 'object'){
-        
+        if (typeofx === 'object' || typeofbase === 'object') {
+            console.log(cc('blue'), `typeofx === 'object' || typeofbase === 'object'`);
         }
-        let parsedInt = parseInt(x, <number>base); // NaN if fails
+        let parsedInt = parseInt(x, base); // NaN if fails
         const origbase = base;
         if (log) console.log(cc(`black`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
         
@@ -151,7 +151,7 @@ export class Int extends Number {
                 }
                 x = x.split('_').join('');
                 // don't update or set nosign here
-                parsedInt = parseInt(x, <number>base);
+                parsedInt = parseInt(x, base);
                 if (log) console.log(cc('cyan', `No leading / trailing / multiple underscore => x = '${x}', parsedInt = ${parsedInt}`));
             }
         }
@@ -220,10 +220,10 @@ export class Int extends Number {
             // breakpoint: isNaN(parsedInt)? !isNaN(parseInt(x, base)): parsedInt !== parseInt(x, base)
             if (sign === undefined) {
                 x = x.slice(2);
-                parsedInt = parseInt(x, <number>base);
+                parsedInt = parseInt(x, base);
             } else {
                 x = x.slice(3);
-                parsedInt = parseInt(x * sign, <number>base);
+                parsedInt = parseInt(x * sign, base);
             }
             nosign = x;
             if (log) console.log(cc('cyan', `isSpecial && base === specialBase => x = '${x}', nosign = '${nosign}', parsedInt = ${parsedInt}`));
@@ -320,7 +320,13 @@ export class Int extends Number {
     
 }
 
-export function int(x = undefined, base?: string | number | Function, log?: boolean): Int {
+interface IntOptions {
+    x?: string | number,
+    base?: number,
+    log?: boolean
+}
+
+export function int(x: string | number | IntOptions = undefined, base?: string | number | IntOptions, log?: boolean): Int {
     return new Int(x, base, log)
 }
 
