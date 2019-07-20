@@ -153,15 +153,16 @@ export class Int extends Number {
     
     constructor(x: string | number | IntOptions = undefined, base?: string | number | IntOptions, log?: boolean) {
         // console.log({x, base, log, arguments});
-        const typeofx = typeof x;
-        const typeofbase = typeof base;
-        if ((typeofx === 'object' || typeofbase === 'object') &&
+        if ((typeof x === 'object' || typeof base === 'object') &&
             x !== null && base !== null &&
             !Array.isArray(x) && !Array.isArray(base)) {
-            console.log(cc('blue'), `typeofx === 'object' || typeofbase === 'object'`);
+            console.log(cc('blue'), `Got objects, calling parseArgs(x, base)`);
             [x, base] = Int.parseArgs(x, base);
+            console.log(cc('cyan'), `x: ${x}, base: ${base}`);
             
         }
+        const typeofx = typeof x;
+        const typeofbase = typeof base;
         let parsedInt = parseInt(x, base); // NaN if fails
         const origbase = base;
         if (log) console.log(cc(`black`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
