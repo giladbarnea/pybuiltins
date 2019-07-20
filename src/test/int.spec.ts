@@ -803,7 +803,7 @@ describe('ValueError misc', () => {
         test('int(` `) ValueError', () => expect(() => int(` `)).toThrow(valerr(' ')));
         test(`int('  \t\t  ') ValueError`, () => expect(() => int('  \t\t  ')).toThrow(valerr('  \t\t  ')));
         test(`int("+314").toEqual(314)`, () => expect(int("+314", undefined)).toEqual(314));
-        test(`int("+ 314") ValueError`, () => expect(() => int("+ 314", undefined)).toThrow(valerr('+ 314')));
+        test(`int("+ 314") ValueError`, () => expect(() => int("+ 314")).toThrow(valerr('+ 314')));
         test(`int("+ 314", undefined) ValueError`, () => expect(() => int("+ 314", undefined)).toThrow(valerr('+ 314')));
         test(`int("+ 314", 25) ValueError`, () => expect(() => int("+ 314", 25)).toThrow(valerr('+ 314', 25)));
         test(`int("+ 314", 10) ValueError`, () => expect(() => int("+ 314", 10)).toThrow(valerr('+ 314')));
@@ -842,6 +842,8 @@ describe('TypeError misc', () => {
         const typeerr = typeofobj => new TypeError(`'${typeofobj}' object cannot be interpreted as an integer`);
         test('int("100", null)', () => expect(() => int("100", null)).toThrow(typeerr('object')));
         test('int("100", "2")', () => expect(() => int("100", "2")).toThrow(typeerr('string')));
+        test('int("100", 5.5)', () => expect(() => int("100", 5.5, true)).toThrow(typeerr('number')));
+        test('int("100", .5)', () => expect(() => int("100", .5, true)).toThrow(typeerr('number')));
         test('int("100", ()=>{})', () => expect(() => int("100", () => {
         })).toThrow(typeerr('function')));
     });

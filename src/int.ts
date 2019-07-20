@@ -293,7 +293,7 @@ export class Int extends Number {
             // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
             if (log) console.log(cc('cyan', `base === undefined => base=10`));
         } else {
-            if (typeofbase !== 'number') {
+            if (typeofbase !== 'number' || parseFloat(base) - parseInt(base) !== 0) {
                 if (log) console.log(cc('bright yellow', `typeofbase !== 'number', TypeError`));
                 throw new TypeError(`'${typeofbase}' object cannot be interpreted as an integer`);
             }
@@ -442,7 +442,7 @@ export class Int extends Number {
                 },);
             }
             
-            if (isFloat) { // int('1.5')
+            if (isFloat) { // int('1.5'), int('15.0')
                 
                 if (log) console.log(cc('bright yellow', 'isFloat, ValueError'));
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
