@@ -383,9 +383,18 @@ describe('CPython Tests', () => {
     describe('test_keyword_args', () => {
         describe('int({object})', () => {
             test("int({FOO: '100', BAR: 2})", () => expect(int({FOO: '100', BAR: 2})).toEqual(0));
+            test("int({x: undefined, base: undefined})", () => expect(int({x: undefined, base: undefined})).toEqual(0));
             test("int({x: '100', base: 2})", () => expect(int({x: '100', base: 2})).toEqual(4));
+            test("int({x: '100', BAR: 2})", () => expect(int({x: '100', BAR: 2})).toEqual(100));
+            test("int({x: '100', base: undefined})", () => expect(int({x: '100', base: undefined})).toEqual(100));
             test("int({base: 2, x: '100'})", () => expect(int({base: 2, x: '100'})).toEqual(4));
             test("int({x: 1.2})", () => expect(int({x: 1.2})).toEqual(1));
+            
+            test("int({FOO: '100', base: 10}) TypeError", () =>
+                expect(() => int({FOO: '100', base: 10})).toThrow(new TypeError("int() missing string argument")));
+            
+            test("int({x: undefined, base: 10}) TypeError", () =>
+                expect(() => int({x: undefined, base: 10})).toThrow(new TypeError("int() missing string argument")));
             
             test("int({base: 10}) TypeError", () =>
                 expect(() => int({base: 10})).toThrow(new TypeError("int() missing string argument")));
