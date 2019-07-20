@@ -57,6 +57,11 @@ Number.prototype = oldProto;
 });
 */
 
+interface IntOptions {
+    x?: string | number,
+    base?: number,
+    log?: boolean
+}
 
 export class Int extends Number {
     toString(radix?: number): string {
@@ -82,11 +87,12 @@ export class Int extends Number {
         }
     }
     
-    static parseKwargs(x, base) {
+    static parseKwargs(x: string | number | IntOptions, base: string | number | IntOptions): [string | number, string | number] {
         const typeofx = typeof x;
         const typeofbase = typeof base;
         if (base === undefined) { // all int({object}) tests
             console.log(cc('magenta', `base === undefined, returning [x.x, x.base]`));
+            x = x as IntOptions;
             return [x.x, x.base];
         }
         if (x === undefined) { // TODO: nothing reaches here
@@ -99,20 +105,20 @@ export class Int extends Number {
         let baseinbase = false;
         let xinx = false;
         let baseinx = false;
+        
+        
         // at least one must be primitive, parseKwargs is called when either is object
         const isXObject = typeofx !== 'string' && typeofx !== "number";
         const isBaseObject = typeofbase !== 'string' && typeofbase !== "number";
-        if (isXObject) {
-            xinx = 'x' in x;
-            baseinx = 'base' in x;
-            
-        }
-        if (isBaseObject) {
-            xinbase = 'x' in base;
-            baseinbase = 'base' in base;
-        }
+        
         if (isXObject && isBaseObject) {
             // all int({object}, {object}) tests
+            base = base as IntOptions;
+            x = x as IntOptions;
+            xinx = 'x' in x;
+            baseinx = 'base' in x;
+            xinbase = 'x' in base;
+            baseinbase = 'base' in base;
             console.log(cc('blue', `base and x are both objects`), {xinbase, baseinbase, xinx, baseinx});
             if ((xinbase && xinx) || (baseinbase && baseinx)) { // int({x: 0, base: 10}, {x: 1})
                 console.log(cc('bright yellow', `keyword argument repeated, TypeError`));
@@ -128,6 +134,10 @@ export class Int extends Number {
             return [x.x, base.base]
         }
         if (isBaseObject) { // all int(x, {object}) tests
+            base = base as IntOptions;
+            x = x as string | number;
+            xinbase = 'x' in base;
+            baseinbase = 'base' in base;
             console.log(cc('blue', `x is primitive. base is object.`), {xinbase, baseinbase});
             if (xinbase) {
                 
@@ -150,25 +160,24 @@ export class Int extends Number {
             console.log(cc('magenta', `!xinbase && !baseinbase, returning [x, undefined]`));
             return [x, undefined]
         }
-        console.log(cc('blue', `x is an object`));
-        
-        if (isXObject) { // all int({object}, base) tests
-            console.log(cc('blue', `base is primitive`), {xinx, baseinx});
-            if (baseinx) {
-                console.log(cc('blue', `baseinx`));
-                if (xinx) { // int({x: '100', base: 2}, 3)
-                    console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
-                    throw new TypeError(`int() takes at most 2 arguments (3 given)`)
-                }
-                // int({base: 2}, 3)
-                console.log(cc('bright yellow', `baseinx, TypeError`));
-                throw new TypeError(`Argument given by name ('base') and position (1)`)
+        // all int({object}, base) tests
+        x = x as IntOptions;
+        base = base as string | number;
+        xinx = 'x' in x;
+        baseinx = 'base' in x;
+        console.log(cc('blue', `base is primitive. x is object`), {xinx, baseinx});
+        if (baseinx) {
+            console.log(cc('blue', `baseinx`));
+            if (xinx) { // int({x: '100', base: 2}, 3)
+                console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
+                throw new TypeError(`int() takes at most 2 arguments (3 given)`)
             }
-            console.log(cc('magenta', `returning [x.x, base]`));
-            return [x.x, base]
+            // int({base: 2}, 3)
+            console.log(cc('bright yellow', `baseinx, TypeError`));
+            throw new TypeError(`Argument given by name ('base') and position (1)`)
         }
-        
-        // NOTHING REACHES HERE
+        console.log(cc('magenta', `returning [x.x, base]`));
+        return [x.x, base]
         
         
         /*
@@ -480,11 +489,6 @@ export class Int extends Number {
     
 }
 
-interface IntOptions {
-    x?: string | number,
-    base?: number,
-    log?: boolean
-}
 
 export function int(x: string | number | IntOptions = undefined, base?: string | number | IntOptions, log?: boolean): Int {
     return new Int(x, base, log)
