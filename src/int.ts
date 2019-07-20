@@ -84,7 +84,7 @@ export class Int extends Number {
     
     
     constructor(x = undefined, base?: string | number | Function, log?: boolean) {
-        if (log) console.log(arguments);
+        console.log({x, base, log, arguments});
         let parsedInt = parseInt(x, <number>base); // NaN if fails
         const origbase = base;
         if (log) console.log(cc(`black`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));

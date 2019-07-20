@@ -382,10 +382,23 @@ describe('CPython Tests', () => {
     });
     describe('test_keyword_args', () => {
         test("int('100', {base: 2})", () => expect(int('100', {base: 2, log: true})).toEqual(4));
-        test("int({x: '100', base: 2})", () => expect(int({x: '100', base: 2, log: true})).toEqual(1));
+        test("int({x: '100', base: 2})", () => expect(int({x: '100', base: 2, log: true})).toEqual(4));
+        test("int({base: 2, x: '100'})", () => expect(int({base: 2, x: '100', log: true})).toEqual(4));
         test("int({x: 1.2})", () => expect(int({x: 1.2, log: true})).toEqual(1));
-        test("int({base: 10})", () => expect(() => int({base: 10, log: true})).toThrow(TypeError));
-        test("int({base: 0})", () => expect(() => int({base: 0, log: true})).toThrow(TypeError));
+        test("int({x: '100'}, {base: 2})", () => expect(int({x: '100'}, {base: 2, log: true})).toEqual(4));
+        test("int({base: 2}, {x: '100'})", () => expect(int({base: 2}, {x: '100', log: true})).toEqual(4));
+        
+        test("int({base: 10}) TypeError", () =>
+            expect(() => int({base: 10, log: true})).toThrow(new TypeError("int() missing string argument")));
+        test("int({base: 0}) TypeError", () =>
+            expect(() => int({base: 0, log: true})).toThrow(new TypeError("int() missing string argument")));
+        
+        test("int({base: 0, base: 1}) SyntaxError", () =>
+            expect(() => int({base: 0, base: 1, log: true})).toThrow(new SyntaxError("keyword argument repeated")));
+        test("int({x: 0, x: 1}) SyntaxError", () =>
+            expect(() => int({x: 0, x: 1, log: true})).toThrow(new SyntaxError("keyword argument repeated")));
+        test("int({x: 0, base: 10, x: 1}) SyntaxError", () =>
+            expect(() => int({x: 0, base: 10, x: 1, log: true})).toThrow(new SyntaxError("keyword argument repeated")));
     });
     describe('longobject.c', () => {
         // Objects\longobject.c.PyLong_FromString (2117)
