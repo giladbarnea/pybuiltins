@@ -402,7 +402,7 @@ describe('CPython Tests', () => {
             test("int({base: 0}) TypeError", () =>
                 expect(() => int({base: 0})).toThrow(new TypeError("int() missing string argument")));
             
-            test("int({base: 0, base: 1}) SyntaxError", () =>
+            test("int({base: 0, base: 1}) TypeError", () =>
                 expect(() => int({base: 0, base: 1})).toThrow(new TypeError("int() missing string argument")));
             
             test("int({x: 0, x: 1})", () =>
@@ -426,6 +426,11 @@ describe('CPython Tests', () => {
                 base: 2
             }, 3, true)).toThrow(new TypeError("Argument given by name ('base') and position (1)")));
             
+            test("int({x: undefined}, 2) TypeError", () =>
+                expect(() => int({x: undefined}, 2)).toThrow(new TypeError("int() missing string argument")));
+            
+            test("int({FOO: '100'}, 2) TypeError", () =>
+                expect(() => int({FOO: '100'}, 2)).toThrow(new TypeError("int() missing string argument")));
             
         });
         describe('int(x, {object})', () => {
