@@ -88,15 +88,17 @@ export class Int extends Number {
         // let parsedX = x;
         // let parsedBase = base;
         if (base === undefined) { // x is object
-            console.log(cc('blue', `x: ${x}, typeofx === '${typeofx}'`));
+            const xinx = 'x' in x;
+            const baseinx = 'base' in x;
+            console.log(cc('blue', `base === undefined'`), {x, typeofx, xinx, baseinx});
             return [x.x, x.base];
             // parsedX = x.x;
             // parsedBase = x.base;
             // let {x, base} = x;
         }
         if (x === undefined) { // base is object
-            console.log(cc('blue', `base: ${base}, typeofbase === '${typeofbase}'`));
-            return [x, base]
+            console.log(cc('blue', `x === undefined`), {base, typeofbase});
+            return [base.x, base.base]
         }
         console.log(cc('blue', `neither x nor base are undefined`), {x, base, typeofx, typeofbase});
         if (typeofx === 'string' || typeofx === "number") {
@@ -118,7 +120,7 @@ export class Int extends Number {
                 console.log(cc('blue', `baseinbase`));
                 return [x, base.base];
             }
-            // int('100', {nothing: 2})
+            // int('100', {FOO: 2})
             console.log(cc('blue', `!xinbase && !baseinbase`));
             return [x, undefined]
         }
@@ -134,10 +136,10 @@ export class Int extends Number {
         0: x, 1: base               OK
         
         0: {object}, 1: undefined
-            0: {undefined}          x = [0].x; base = [0].base;
-            0: {x}                  x = [0].x; base = [0].base;
-            0: {base}               x = [0].x; base = [0].base;
-            0: {x, base}            x = [0].x; base = [0].base;
+            0: {undefined} DONE     x = [0].x; base = [0].base;
+            0: {x} DONE             x = [0].x; base = [0].base;
+            0: {base} DONE          x = [0].x; base = [0].base;
+            0: {x, base} DONE       x = [0].x; base = [0].base;
             
         0: undefined, 1: {object}
             1: {undefined}          x = [1].x; base = [1].base;
@@ -197,7 +199,17 @@ export class Int extends Number {
         const origbase = base;
         if (log) console.log(cc(`black`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
         
-        if (x === undefined || x === false) {
+        if (x === undefined) {
+            if (log) console.log(cc(`blue`, `x === undefined`));
+            
+            if (typeofbase === 'number') {
+                if (log) console.log(cc('bright yellow', `x === undefined, typeofbase === 'number'. TypeError`));
+                throw new TypeError("int() missing string argument")
+            }
+            super(0);
+            if (log) console.log(cc('bright magenta', 'x is undefined or false, super(0) return. this: ${this}'));
+            return
+        } else if (x === false) {
             super(0);
             if (log) console.log(cc('bright magenta', 'x is undefined or false, super(0) return. this: ${this}'));
             return
