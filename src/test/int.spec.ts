@@ -457,6 +457,11 @@ describe('CPython Tests', () => {
                 expect(() => int({x: 0, base: 10}, {
                     x: 1,
                 })).toThrow(new SyntaxError("keyword argument repeated")));
+            
+            test("int({x: 0, base: 10}, {base: 11}) SyntaxError", () =>
+                expect(() => int({x: 0, base: 10}, {
+                    base: 11,
+                })).toThrow(new SyntaxError("keyword argument repeated")));
         });
         
         
