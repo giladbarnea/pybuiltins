@@ -89,6 +89,61 @@ export class Int extends Number {
         const typeofbase = typeof base;
         if (typeofx === 'object' || typeofbase === 'object') {
             console.log(cc('blue'), `typeofx === 'object' || typeofbase === 'object'`);
+            /*
+            0: undefined, 1: undefined  OK (0)
+            
+            0: undefined, 1: base       ?
+            
+            0: x, 1: undefined          OK
+            
+            0: x, 1: base               OK
+            
+            0: {object}, 1: undefined
+                0: {undefined}          x = x.x; base = x.base;
+                0: {x}                  x = x.x; base = x.base;
+                0: {base}               x = x.x; base = x.base;
+                0: {x, base}            x = x.x; base = x.base;
+                
+            0: undefined, 1: {object}
+                1: {undefined}          x = base.x; base = base.base;
+                1: {x}                  x = base.x; base = base.base;
+                1: {base}               x = base.x; base = base.base;
+                1: {x, base}            x = base.x; base = base.base;
+            
+            0: x, 1: {object}
+                1: {undefined}          base = base.base;
+                1: {x}                  TypeError: Argument given by name ('x') and position (1)
+                1: {base}               base = base.base;
+                1: {x, base}            TypeError: int() takes at most 2 arguments (3 given)
+            
+            0: {object}, 1: base
+                0: {undefined}          x = x.x;
+                0: {x}                  x = x.x;
+                0: {base}               SyntaxError: keyword argument repeated
+                0: {x, base}            SyntaxError: keyword argument repeated
+                
+            0: {object}, 1: {object}
+                0: {undefined}
+                    1: {x}              x = base.x; base = base.base;
+                    1: {base}           x = x.x; base = base.base;
+                    1: {x, base}        x = x.x; base = base.base;
+                0: {x}
+                    1: {undefined}      x = x.x; base = base.base;
+                    1: {x}              SyntaxError: keyword argument repeated
+                    1: {base}           x = x.x; base = base.base;
+                    1: {x, base}        SyntaxError: keyword argument repeated
+                0: {base}
+                    1: {undefined}      x = x.x; base = x.base;
+                    1: {x}              x = base.x; base = x.base;
+                    1: {base}           SyntaxError: keyword argument repeated
+                    1: {x, base}        SyntaxError: keyword argument repeated
+                0: {x, base}
+                    1: {undefined}      x = x.x; baes = x.base;
+                    1: {x}              SyntaxError: keyword argument repeated
+                    1: {base}           SyntaxError: keyword argument repeated
+                    1: {x, base}        SyntaxError: keyword argument repeated
+                  
+             */
         }
         let parsedInt = parseInt(x, base); // NaN if fails
         const origbase = base;
