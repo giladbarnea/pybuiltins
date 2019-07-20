@@ -417,10 +417,16 @@ describe('CPython Tests', () => {
         });
         describe('int({object}, base)', () => {
             test("int({x: '100'}, 2)", () => expect(int({x: '100'}, 2, true)).toEqual(4));
-            test("int({x: '100', base: 2}, 2) TypeError", () => expect(() => int({
+            test("int({x: '100', base: 2}, 3) TypeError", () => expect(() => int({
                 x: '100',
                 base: 2
             }, 3, true)).toThrow(new TypeError("int() takes at most 2 arguments (3 given)")));
+            
+            test("int({base: 2}, 3) TypeError", () => expect(() => int({
+                base: 2
+            }, 3, true)).toThrow(new TypeError("Argument given by name ('base') and position (1)")));
+            
+            
         });
         describe('int(x, {object})', () => {
             test("int('100', {base: 2})", () => expect(int('100', {base: 2})).toEqual(4));

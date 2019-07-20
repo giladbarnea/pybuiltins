@@ -130,8 +130,13 @@ export class Int extends Number {
             const baseinx = 'base' in x;
             console.log(cc('blue', `typeofbase is either string or number`), {xinx, baseinx});
             if (baseinx) {
-                console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
-                throw new TypeError(`int() takes at most 2 arguments (3 given)`)
+                console.log(cc('blue', `baseinx`));
+                if (xinx) {
+                    console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
+                    throw new TypeError(`int() takes at most 2 arguments (3 given)`)
+                }
+                console.log(cc('bright yellow', `baseinx, TypeError`));
+                throw new TypeError(`Argument given by name ('base') and position (1)`)
             }
             return [x.x, base]
         }
