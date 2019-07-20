@@ -315,6 +315,7 @@ export class Int extends Number {
         let nosign = x;
         
         if (typeofx === 'string') {
+            x = x as string;
             // don't remove in-between spaces: '+314' valid, '+ 314' invalid
             // **  Trim
             x = x.trim(); // " + 314 " => "+ 314"
@@ -377,17 +378,15 @@ export class Int extends Number {
                 if (log) console.log(cc('cyan', `nosign[0] !== '0' => base = 10`));
                 base = 10;
             } else if (isSpecial) {
-                if (log) console.log(cc('blue', `nosign[0] === '0'`));
-                if (isHexaDecimal) { // int('0x123', 0), int('0x', 0) ValueError, int('0xffff_ffff', 0)
-                    if (log) console.log(cc('cyan', `isHexaDecimal => base = 16`));
+                if (log) console.log(cc('blue', `nosign[0] === '0' && isSpecial`));
+                if (isHexaDecimal)  // int('0x123', 0), int('0x', 0) ValueError, int('0xffff_ffff', 0)
                     base = 16;
-                } else if (isOctal) { // int('0o123', 0), int('0o', 0) ValueError, int('0o5_7_7', 0)
-                    if (log) console.log(cc('cyan', `isOctal => base = 8`));
+                else if (isOctal)  // int('0o123', 0), int('0o', 0) ValueError, int('0o5_7_7', 0)
                     base = 8;
-                } else if (isBinary) { // int('0b', 0) ValueError, int('0b100', 0), int('0b_0', 0)
-                    if (log) console.log(cc('cyan', `isBinary => base = 2`));
+                else if (isBinary)  // int('0b', 0) ValueError, int('0b100', 0), int('0b_0', 0)
                     base = 2;
-                }
+                
+                if (log) console.log(cc('cyan', `${isBinary ? 'isBinary' : isOctal ? 'isOctal' : isHexaDecimal ? 'isHexaDecimal' : ''} => base = ${base}`));
             } else { // int('000', 0), int('0_0_0', 0), int('-01', 0), int('0c11', 0), int('1b11', 0), int('07', 0), int('0_7', 0), int('0 if 1_Else 1', 0), int('0_b0', 0), int('0_xa', 0),
                 if (log) console.log(cc('blue', `base === 0 but !isSpecial`));
             }
@@ -397,6 +396,7 @@ export class Int extends Number {
         // **  Slice
         // equivalent to big cond in longobject.c:2160
         if (isSpecial && base === specialBase) {
+            x = x as string;
             // with int('0o123', 0): updates from 0 to 83 (good)
             // int('0o', 8): 0 => NaN
             // int('0b100', 0): 0 => 4 (good)
@@ -418,6 +418,7 @@ export class Int extends Number {
         
         // const mod1 = x % 1;
         if (typeofx === 'string') {
+            x = x as string;
             if (log) {
                 console.log(cc('blue', "typeofx === 'string'"));
                 console.table({

@@ -416,15 +416,15 @@ describe('CPython Tests', () => {
                 })).toThrow(new TypeError("int() can't convert non-string with explicit base")));
         });
         describe('int({object}, base)', () => {
-            test("int({x: '100'}, 2)", () => expect(int({x: '100'}, 2, true)).toEqual(4));
+            test("int({x: '100'}, 2)", () => expect(int({x: '100'}, 2)).toEqual(4));
             test("int({x: '100', base: 2}, 3) TypeError", () => expect(() => int({
                 x: '100',
                 base: 2
-            }, 3, true)).toThrow(new TypeError("int() takes at most 2 arguments (3 given)")));
+            }, 3)).toThrow(new TypeError("int() takes at most 2 arguments (3 given)")));
             
             test("int({base: 2}, 3) TypeError", () => expect(() => int({
                 base: 2
-            }, 3, true)).toThrow(new TypeError("Argument given by name ('base') and position (1)")));
+            }, 3)).toThrow(new TypeError("Argument given by name ('base') and position (1)")));
             
             test("int({x: undefined}, 2) TypeError", () =>
                 expect(() => int({x: undefined}, 2)).toThrow(new TypeError("int() missing string argument")));
@@ -450,8 +450,8 @@ describe('CPython Tests', () => {
                 })).toThrow(new TypeError("Argument given by name ('x') and position (1)")));
         });
         describe('int({object}, {object})', () => {
-            test("int({x: '100'}, {base: 2})", () => expect(int({x: '100'}, {base: 2}, true)).toEqual(4));
-            test("int({base: 2}, {x: '100'})", () => expect(int({base: 2}, {x: '100'}, true)).toEqual(4));
+            test("int({x: '100'}, {base: 2})", () => expect(int({x: '100'}, {base: 2})).toEqual(4));
+            test("int({base: 2}, {x: '100'})", () => expect(int({base: 2}, {x: '100'})).toEqual(4));
             
             test("int({x: 0, base: 10}, {x: 1}) SyntaxError", () =>
                 expect(() => int({x: 0, base: 10}, {
@@ -832,10 +832,10 @@ describe('TypeError misc', () => {
     describe('Bad x, "argument must be..."', () => {
         const typeerr = typeofobj => new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofobj}'`);
         test("int(int) TypeError", () => expect(() => int(int)).toThrow(typeerr('function')));
-        test("int(null) TypeError", () => expect(() => int(null, undefined, true)).toThrow(typeerr('object')));
-        test("int([]) TypeError", () => expect(() => int([], undefined, true)).toThrow(typeerr('object')));
+        test("int(null) TypeError", () => expect(() => int(null)).toThrow(typeerr('object')));
+        test("int([]) TypeError", () => expect(() => int([])).toThrow(typeerr('object')));
         test("int(()=>{}) TypeError", () => expect(() => int(() => {
-        }, undefined, true)).toThrow(typeerr('function')));
+        })).toThrow(typeerr('function')));
         
     });
     describe('Bad base, "{typeof base} cannot be interpreted as an integer"', () => {
