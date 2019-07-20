@@ -381,50 +381,59 @@ describe('CPython Tests', () => {
         
     });
     describe('test_keyword_args', () => {
-        test("int({FOO: '100', BAR: 2})", () => expect(int({FOO: '100', BAR: 2})).toEqual(0));
-        test("int({x: '100', base: 2})", () => expect(int({x: '100', base: 2})).toEqual(4));
-        test("int('100', {base: 2})", () => expect(int('100', {base: 2})).toEqual(4));
-        test("int('100', {FOO: 2})", () => expect(int('100', {FOO: 2})).toEqual(100));
-        test("int({base: 2, x: '100'})", () => expect(int({base: 2, x: '100'})).toEqual(4));
-        test("int({x: 1.2})", () => expect(int({x: 1.2})).toEqual(1));
-        test("int({x: '100'}, {base: 2})", () => expect(int({x: '100'}, {base: 2}, true)).toEqual(4));
-        test("int({base: 2}, {x: '100'})", () => expect(int({base: 2}, {x: '100'}, true)).toEqual(4));
-        test("int({x: '100'}, 2)", () => expect(int({x: '100'}, 2, true)).toEqual(4));
+        describe('int({object})', () => {
+            test("int({FOO: '100', BAR: 2})", () => expect(int({FOO: '100', BAR: 2})).toEqual(0));
+            test("int({x: '100', base: 2})", () => expect(int({x: '100', base: 2})).toEqual(4));
+            test("int({base: 2, x: '100'})", () => expect(int({base: 2, x: '100'})).toEqual(4));
+            test("int({x: 1.2})", () => expect(int({x: 1.2})).toEqual(1));
+            
+            test("int({base: 10}) TypeError", () =>
+                expect(() => int({base: 10})).toThrow(new TypeError("int() missing string argument")));
+            
+            test("int({base: 0}) TypeError", () =>
+                expect(() => int({base: 0})).toThrow(new TypeError("int() missing string argument")));
+            
+            test("int({base: 0, base: 1}) SyntaxError", () =>
+                expect(() => int({base: 0, base: 1})).toThrow(new TypeError("int() missing string argument")));
+            
+            test("int({x: 0, x: 1})", () =>
+                expect(int({x: 0, x: 1})).toEqual(1));
+            
+            test("int({x: 0, base: 10, x: 1}) TypeError", () =>
+                expect(() => int({
+                    x: 0,
+                    base: 10,
+                    x: 1
+                })).toThrow(new TypeError("int() can't convert non-string with explicit base")));
+        });
+        describe('int({object}, base)', () => {
+            test("int({x: '100'}, 2)", () => expect(int({x: '100'}, 2, true)).toEqual(4));
+        });
+        describe('int(x, {object})', () => {
+            test("int('100', {base: 2})", () => expect(int('100', {base: 2})).toEqual(4));
+            test("int('100', {FOO: 2})", () => expect(int('100', {FOO: 2})).toEqual(100));
+            
+            test("int('100', {x: '100', base: 10}) TypeError", () =>
+                expect(() => int('100', {
+                    x: '100',
+                    base: 10,
+                })).toThrow(new TypeError("int() takes at most 2 arguments (3 given)")));
+            
+            test("int('100', {x: '100'}) TypeError", () =>
+                expect(() => int('100', {
+                    x: '100',
+                })).toThrow(new TypeError("Argument given by name ('x') and position (1)")));
+        });
+        describe('int({object}, {object})', () => {
+            test("int({x: '100'}, {base: 2})", () => expect(int({x: '100'}, {base: 2}, true)).toEqual(4));
+            test("int({base: 2}, {x: '100'})", () => expect(int({base: 2}, {x: '100'}, true)).toEqual(4));
+            
+            test("int({x: 0, base: 10}, {x: 1}) SyntaxError", () =>
+                expect(() => int({x: 0, base: 10}, {
+                    x: 1,
+                })).toThrow(new SyntaxError("keyword argument repeated")));
+        });
         
-        test("int({base: 10}) TypeError", () =>
-            expect(() => int({base: 10})).toThrow(new TypeError("int() missing string argument")));
-        
-        test("int('100', {x: '100', base: 10}) TypeError", () =>
-            expect(() => int('100', {
-                x: '100',
-                base: 10,
-            })).toThrow(new TypeError("int() takes at most 2 arguments (3 given)")));
-        
-        test("int('100', {x: '100'}) TypeError", () =>
-            expect(() => int('100', {
-                x: '100',
-            })).toThrow(new TypeError("Argument given by name ('x') and position (1)")));
-        
-        test("int({base: 0}) TypeError", () =>
-            expect(() => int({base: 0})).toThrow(new TypeError("int() missing string argument")));
-        
-        test("int({base: 0, base: 1}) SyntaxError", () =>
-            expect(() => int({base: 0, base: 1})).toThrow(new TypeError("int() missing string argument")));
-        
-        test("int({x: 0, x: 1})", () =>
-            expect(int({x: 0, x: 1})).toEqual(1));
-        
-        test("int({x: 0, base: 10, x: 1}) TypeError", () =>
-            expect(() => int({
-                x: 0,
-                base: 10,
-                x: 1
-            })).toThrow(new TypeError("int() can't convert non-string with explicit base")));
-        
-        test("int({x: 0, base: 10}, {x: 1}) SyntaxError", () =>
-            expect(() => int({x: 0, base: 10}, {
-                x: 1,
-            })).toThrow(new SyntaxError("keyword argument repeated")));
         
     });
     describe('longobject.c', () => {
