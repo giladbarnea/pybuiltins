@@ -409,11 +409,18 @@ describe('CPython Tests', () => {
             expect(() => int({base: 0})).toThrow(new TypeError("int() missing string argument")));
         
         test("int({base: 0, base: 1}) SyntaxError", () =>
-            expect(() => int({base: 0, base: 1})).toThrow(new SyntaxError("keyword argument repeated")));
-        test("int({x: 0, x: 1}) SyntaxError", () =>
-            expect(() => int({x: 0, x: 1})).toThrow(new SyntaxError("keyword argument repeated")));
-        test("int({x: 0, base: 10, x: 1}) SyntaxError", () =>
-            expect(() => int({x: 0, base: 10, x: 1})).toThrow(new SyntaxError("keyword argument repeated")));
+            expect(() => int({base: 0, base: 1})).toThrow(new TypeError("int() missing string argument")));
+        
+        test("int({x: 0, x: 1})", () =>
+            expect(int({x: 0, x: 1})).toEqual(1));
+        
+        test("int({x: 0, base: 10, x: 1}) TypeError", () =>
+            expect(() => int({
+                x: 0,
+                base: 10,
+                x: 1
+            })).toThrow(new TypeError("int() can't convert non-string with explicit base")));
+        
         test("int({x: 0, base: 10}, {x: 1}) SyntaxError", () =>
             expect(() => int({x: 0, base: 10}, {
                 x: 1,

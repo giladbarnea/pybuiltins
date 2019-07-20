@@ -124,7 +124,19 @@ export class Int extends Number {
             console.log(cc('blue', `!xinbase && !baseinbase`));
             return [x, undefined]
         }
-        
+        console.log(cc('blue', `x is an object`));
+        if (typeofbase === 'string' || typeofbase === "number") {
+            console.log(cc('blue', `typeofbase is either string or number`));
+            
+        }
+        console.log(cc('blue', `base and x are both objects`));
+        const xinbase = 'x' in base;
+        const baseinbase = 'base' in base;
+        const xinx = 'x' in x;
+        const baseinx = 'base' in x;
+        if ((xinbase && xinx) || (baseinbase && baseinx)) {
+            throw new SyntaxError("keyword argument repeated")
+        }
         return [x, base]
         /*
         0: undefined, 1: undefined  OK (0)
