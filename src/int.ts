@@ -63,6 +63,8 @@ interface IntOptions {
     log?: boolean
 }
 
+type IntParam = string | number | IntOptions;
+
 export class Int extends Number {
     toString(radix?: number): string {
         let ret = super.toString(radix);
@@ -90,10 +92,10 @@ export class Int extends Number {
     
     private static get OptionsParser() {
         return {
-            isOptions(obj: string | number | IntOptions): boolean {
+            isOptions(obj: IntParam): boolean {
                 return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
             },
-            parse(x: string | number | IntOptions, base: string | number | IntOptions, log?: boolean): [string | number, string | number] {
+            parse(x: IntParam, base: IntParam, log?: boolean): [string | number, string | number] {
                 const typeofx = typeof x;
                 const typeofbase = typeof base;
                 if (base === undefined) { // all int({object}) tests
@@ -250,22 +252,14 @@ export class Int extends Number {
         }
     }
     
-    constructor(x: string | number | IntOptions = undefined, base?: string | number | IntOptions, log?: boolean) {
+    constructor(x: IntParam = undefined, base?: IntParam, log?: boolean) {
         // console.log({x, base, log, arguments});
         if (Int.OptionsParser.isOptions(x) || Int.OptionsParser.isOptions(base)) {
             if (log) console.log(cc('blue'), `Got objects, calling parseKwargs(x, base)`);
             [x, base] = Int.OptionsParser.parse(x, base, log);
             if (log) console.log(cc('cyan'), `parseKwargs => x: ${x}, base: ${base}`);
         }
-        /*if ((typeof x === 'object' || typeof base === 'object') &&
-            x !== null && base !== null &&
-            !Array.isArray(x) && !Array.isArray(base)) {
-            if (log) console.log(cc('blue'), `Got objects, calling parseKwargs(x, base)`);
-            [x, base] = Int.parseKwargs(x, base, log);
-            if (log) console.log(cc('cyan'), `parseKwargs => x: ${x}, base: ${base}`);
-            
-        }
-        */
+        
         const typeofx = typeof x;
         const typeofbase = typeof base;
         let parsedInt = parseInt(x, base); // NaN if fails
@@ -280,11 +274,11 @@ export class Int extends Number {
                 throw new TypeError("int() missing string argument")
             }
             super(0);
-            if (log) console.log(cc('bright magenta', 'x is undefined or false, super(0) return. this: ${this}'));
+            if (log) console.log(cc('bright magenta', `x is undefined or false, super(0) return. this: ${this}`));
             return
         } else if (x === false) {
             super(0);
-            if (log) console.log(cc('bright magenta', 'x is undefined or false, super(0) return. this: ${this}'));
+            if (log) console.log(cc('bright magenta', `x is undefined or false, super(0) return. this: ${this}`));
             return
         }
         
