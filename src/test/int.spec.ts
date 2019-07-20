@@ -387,12 +387,12 @@ describe('CPython Tests', () => {
         test("int('100', {FOO: 2})", () => expect(int('100', {FOO: 2})).toEqual(100));
         test("int({base: 2, x: '100'})", () => expect(int({base: 2, x: '100'})).toEqual(4));
         test("int({x: 1.2})", () => expect(int({x: 1.2})).toEqual(1));
-        test("int({x: '100'}, {base: 2})", () => expect(int({x: '100'}, {base: 2})).toEqual(4));
-        test("int({base: 2}, {x: '100'})", () => expect(int({base: 2}, {x: '100'})).toEqual(4));
+        test("int({x: '100'}, {base: 2})", () => expect(int({x: '100'}, {base: 2}, true)).toEqual(4));
+        test("int({base: 2}, {x: '100'})", () => expect(int({base: 2}, {x: '100'}, true)).toEqual(4));
         test("int({x: '100'}, 2)", () => expect(int({x: '100'}, 2, true)).toEqual(4));
         
         test("int({base: 10}) TypeError", () =>
-            expect(() => int({base: 10}, undefined, true)).toThrow(new TypeError("int() missing string argument")));
+            expect(() => int({base: 10})).toThrow(new TypeError("int() missing string argument")));
         
         test("int('100', {x: '100', base: 10}) TypeError", () =>
             expect(() => int('100', {

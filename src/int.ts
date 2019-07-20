@@ -127,17 +127,27 @@ export class Int extends Number {
         console.log(cc('blue', `x is an object`));
         if (typeofbase === 'string' || typeofbase === "number") {
             console.log(cc('blue', `typeofbase is either string or number`));
-            
+            return [x.x, base]
         }
-        console.log(cc('blue', `base and x are both objects`));
         const xinbase = 'x' in base;
         const baseinbase = 'base' in base;
         const xinx = 'x' in x;
         const baseinx = 'base' in x;
+        console.log(cc('blue', `base and x are both objects`), {xinbase, baseinbase, xinx, baseinx});
         if ((xinbase && xinx) || (baseinbase && baseinx)) {
+            console.log(cc('bright yellow', `keyword argument repeated, TypeError`));
             throw new SyntaxError("keyword argument repeated")
         }
-        return [x, base]
+        console.log(cc('blue', `No repeated kwarg`));
+        if (xinbase) {
+            console.log(cc('blue', `xinbase, returning [base.x, x.base]`));
+            return [base.x, x.base]
+        } else {
+            console.log(cc('blue', `xinx, returning [x.x, base.base]`));
+            return [x.x, base.base]
+        }
+        
+        // return [x, base]
         /*
         0: undefined, 1: undefined  OK (0)
         
