@@ -378,7 +378,19 @@ describe('CPython Tests', () => {
             test('int("1__00") ValueError', () => expect(() => int("1__00")).toThrow(ValueError));
             test('int("100_") ValueError', () => expect(() => int("100_")).toThrow(ValueError))
         });
-        
+        describe('issue 31619', () => {
+            test("int('1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1', 2)",
+                () => expect(int('1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1', 2)).toEqual(0b1010101010101010101010101010101));
+            
+            test("int('1_2_3_4_5_6_7_0_1_2_3', 8)",
+                () => expect(int('1_2_3_4_5_6_7_0_1_2_3', 8)).toEqual(0o12345670123));
+            
+            test("int('1_2_3_4_5_6_7_8_9', 16)",
+                () => expect(int('1_2_3_4_5_6_7_8_9', 16)).toEqual(0x123456789));
+            
+            test("int('1_2_3_4_5_6_7', 32)",
+                () => expect(int('1_2_3_4_5_6_7', 32)).toEqual(1144132807))
+        });
     });
     describe('test_keyword_args', () => {
         describe('int({object})', () => {
@@ -794,26 +806,35 @@ describe('ValueError misc', () => {
         
     });
     
-    describe('invalid literal', () => {
-        test(`int("") ValueError`, () => expect(() => int("")).toThrow(valerr('')));
-        test(`int('') ValueError`, () => expect(() => int('')).toThrow(valerr('')));
-        test('int(``) ValueError', () => expect(() => int(``)).toThrow(valerr('')));
-        test(`int(" ") ValueError`, () => expect(() => int(" ")).toThrow(valerr(' ')));
-        test(`int(' ') ValueError`, () => expect(() => int(' ')).toThrow(valerr(' ')));
-        test('int(` `) ValueError', () => expect(() => int(` `)).toThrow(valerr(' ')));
-        test(`int('  \t\t  ') ValueError`, () => expect(() => int('  \t\t  ')).toThrow(valerr('  \t\t  ')));
-        test(`int("+314").toEqual(314)`, () => expect(int("+314", undefined)).toEqual(314));
-        test(`int("+ 314") ValueError`, () => expect(() => int("+ 314")).toThrow(valerr('+ 314')));
-        test(`int("+ 314", undefined) ValueError`, () => expect(() => int("+ 314", undefined)).toThrow(valerr('+ 314')));
-        test(`int("+ 314", 25) ValueError`, () => expect(() => int("+ 314", 25)).toThrow(valerr('+ 314', 25)));
-        test(`int("+ 314", 10) ValueError`, () => expect(() => int("+ 314", 10)).toThrow(valerr('+ 314')));
-        test(`int("+ 314", 0) ValueError`, () => expect(() => int("+ 314", 0)).toThrow(valerr("+ 314", 0)));
+    describe('Invalid Literal', () => {
+        describe('Empty strings w/o spaces', () => {
+            
+            test(`int("") ValueError`, () => expect(() => int("")).toThrow(valerr('')));
+            test(`int('') ValueError`, () => expect(() => int('')).toThrow(valerr('')));
+            test('int(``) ValueError', () => expect(() => int(``)).toThrow(valerr('')));
+            test(`int(" ") ValueError`, () => expect(() => int(" ")).toThrow(valerr(' ')));
+            test(`int(' ') ValueError`, () => expect(() => int(' ')).toThrow(valerr(' ')));
+            test('int(` `) ValueError', () => expect(() => int(` `)).toThrow(valerr(' ')));
+            test(`int('  \t\t  ') ValueError`, () => expect(() => int('  \t\t  ')).toThrow(valerr('  \t\t  ')));
+        });
+        describe('Literals with bad spaces', () => {
+            
+            test(`int("+314").toEqual(314)`, () => expect(int("+314", undefined)).toEqual(314));
+            test(`int("+ 314") ValueError`, () => expect(() => int("+ 314")).toThrow(valerr('+ 314')));
+            test(`int("+ 314", undefined) ValueError`, () => expect(() => int("+ 314", undefined)).toThrow(valerr('+ 314')));
+            test(`int("+ 314", 25) ValueError`, () => expect(() => int("+ 314", 25)).toThrow(valerr('+ 314', 25)));
+            test(`int("+ 314", 10) ValueError`, () => expect(() => int("+ 314", 10)).toThrow(valerr('+ 314')));
+            test(`int("+ 314", 0) ValueError`, () => expect(() => int("+ 314", 0)).toThrow(valerr("+ 314", 0)));
+        });
+        describe('Float literals', () => {
+            test(`int('1.5') ValueError`, () => expect(() => int('1.5')).toThrow(valerr('1.5')));
+            test(`int('15.0') ValueError`, () => expect(() => int('15.0')).toThrow(valerr('15.0')));
+            test(`int('-1.5') ValueError`, () => expect(() => int('-1.5')).toThrow(valerr('-1.5')));
+            test(`int('-15.0') ValueError`, () => expect(() => int('-15.0')).toThrow(valerr('-15.0')));
+            
+        });
         test(`int('  1x') ValueError`, () => expect(() => int('  1x')).toThrow(valerr('  1x')));
         test(`int('_1') ValueError`, () => expect(() => int('_1')).toThrow(valerr('_1')));
-        test(`int('1.5') ValueError`, () => expect(() => int('1.5')).toThrow(valerr('1.5')));
-        test(`int('15.0') ValueError`, () => expect(() => int('15.0')).toThrow(valerr('15.0')));
-        test(`int('-1.5') ValueError`, () => expect(() => int('-1.5')).toThrow(valerr('-1.5')));
-        test(`int('-15.0') ValueError`, () => expect(() => int('-15.0')).toThrow(valerr('-15.0')));
         test(`int('hello5') ValueError`, () => expect(() => int('hello5')).toThrow(valerr('hello5')));
         // TODO:
         //  ['  1\02  ', ValueError],
