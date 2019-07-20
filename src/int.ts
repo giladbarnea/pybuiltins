@@ -83,15 +83,17 @@ export class Int extends Number {
     }
     
     static parseArgs(x, base) {
+        let parsedX = x;
+        let parsedBase = base;
         if (base === undefined) { // x is object
-            console.log(cc('blue'), `typeof x === 'object'`);
-            let {x, base} = x;
+            console.log(cc('blue'), `x: ${x}, typeof x === '${typeof x}'`);
+            parsedX = x.x;
+            parsedBase = x.base;
+            // let {x, base} = x;
         } else if (x === undefined) { // base is object
-            console.log(cc('blue'), `typeof base === 'object'`);
-        } else {
-            throw new Error('what');
+            console.log(cc('blue'), `base: ${base}, typeof base === '${typeof base}'`);
         }
-        return [x, base]
+        return [parsedX, parsedBase]
         /*
         0: undefined, 1: undefined  OK (0)
         
@@ -153,11 +155,13 @@ export class Int extends Number {
         // console.log({x, base, log, arguments});
         const typeofx = typeof x;
         const typeofbase = typeof base;
-        // if (typeofx === 'object' || typeofbase === 'object') {
-        //     console.log(cc('blue'), `typeofx === 'object' || typeofbase === 'object'`);
-        //     [x, base] = Int.parseArgs(x, base);
-        //
-        // }
+        if ((typeofx === 'object' || typeofbase === 'object') &&
+            x !== null && base !== null &&
+            !Array.isArray(x) && !Array.isArray(base)) {
+            console.log(cc('blue'), `typeofx === 'object' || typeofbase === 'object'`);
+            [x, base] = Int.parseArgs(x, base);
+            
+        }
         let parsedInt = parseInt(x, base); // NaN if fails
         const origbase = base;
         if (log) console.log(cc(`black`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));

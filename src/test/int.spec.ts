@@ -770,8 +770,11 @@ describe('ValueError misc', () => {
 describe('TypeError misc', () => {
     describe('argument must be', () => {
         test("int(int) TypeError", () => expect(() => int(int)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeof int}'`)));
-        test("int(null) TypeError", () => expect(() => int(null)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeof null}'`)));
-        test("int([]) TypeError", () => expect(() => int([])).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeof []}'`)));
+        test("int(null) TypeError", () => expect(() => int(null, undefined, true)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not 'object'`)));
+        test("int([]) TypeError", () => expect(() => int([], undefined, true)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not 'object'`)));
+        test("int(()=>{}) TypeError",
+            () => expect(() => int(() => {
+            }, undefined, true)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not 'function'`)));
         
     });
     test('cannot be interpreted', () =>
