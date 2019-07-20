@@ -269,20 +269,22 @@ export class Int extends Number {
         if (x === undefined) {
             if (log) console.log(cc(`blue`, `x === undefined`));
             
-            if (typeofbase === 'number') {
+            if (typeofbase === 'number') { // all kwargs tests with x: undefined or FOO: 2 etc
                 if (log) console.log(cc('bright yellow', `x === undefined, typeofbase === 'number'. TypeError`));
                 throw new TypeError("int() missing string argument")
             }
+            // int(), int({x: undefined, base: undefined})
             super(0);
-            if (log) console.log(cc('bright magenta', `x is undefined or false, super(0) return. this: ${this}`));
+            if (log) console.log(cc('bright magenta', `x is undefined, super(0) return. this: ${this}`));
             return
         } else if (x === false) {
             super(0);
-            if (log) console.log(cc('bright magenta', `x is undefined or false, super(0) return. this: ${this}`));
+            if (log) console.log(cc('bright magenta', `x is false, super(0) return. this: ${this}`));
             return
         }
         
-        if (typeofx !== 'number' && typeofx !== 'string') {
+        // Keep after undefined/false check
+        if (typeofx !== 'number' && typeofx !== 'string') { // int(int), int(null), int([]), int(()=>{})
             if (log) console.log(cc('bright yellow', 'typeof x isnt number or string, TypeError'));
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
         }
@@ -291,10 +293,11 @@ export class Int extends Number {
             // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
             if (log) console.log(cc('cyan', `base === undefined => base=10`));
         } else {
-            if (base === null) {
-                if (log) console.log(cc('bright yellow', 'base === null, TypeError'));
-                throw new TypeError(`'null' object cannot be interpreted as an integer`);
+            if (typeofbase !== 'number') {
+                if (log) console.log(cc('bright yellow', `typeofbase !== 'number', TypeError`));
+                throw new TypeError(`'${typeofbase}' object cannot be interpreted as an integer`);
             }
+            
             if (base !== 0 && base < 2 || base > 36) {
                 if (log) console.log(cc('bright yellow', 'base out of range, ValueError'));
                 throw new ValueError("int() base must be >= 2 and <= 36, or 0");

@@ -829,17 +829,22 @@ describe('ValueError misc', () => {
     
 });
 describe('TypeError misc', () => {
-    describe('argument must be', () => {
-        test("int(int) TypeError", () => expect(() => int(int)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeof int}'`)));
-        test("int(null) TypeError", () => expect(() => int(null, undefined, true)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not 'object'`)));
-        test("int([]) TypeError", () => expect(() => int([], undefined, true)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not 'object'`)));
-        test("int(()=>{}) TypeError",
-            () => expect(() => int(() => {
-            }, undefined, true)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not 'function'`)));
+    describe('Bad x, "argument must be..."', () => {
+        const typeerr = typeofobj => new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofobj}'`);
+        test("int(int) TypeError", () => expect(() => int(int)).toThrow(typeerr('function')));
+        test("int(null) TypeError", () => expect(() => int(null, undefined, true)).toThrow(typeerr('object')));
+        test("int([]) TypeError", () => expect(() => int([], undefined, true)).toThrow(typeerr('object')));
+        test("int(()=>{}) TypeError", () => expect(() => int(() => {
+        }, undefined, true)).toThrow(typeerr('function')));
         
     });
-    test('cannot be interpreted', () =>
-        expect(() => int("+ 314", null)).toThrow(new TypeError(`'null' object cannot be interpreted as an integer`)));
+    describe('Bad base, "{typeof base} cannot be interpreted as an integer"', () => {
+        const typeerr = typeofobj => new TypeError(`'${typeofobj}' object cannot be interpreted as an integer`);
+        test('int("100", null)', () => expect(() => int("100", null)).toThrow(typeerr('object')));
+        test('int("100", "2")', () => expect(() => int("100", "2")).toThrow(typeerr('string')));
+        test('int("100", ()=>{})', () => expect(() => int("100", () => {
+        })).toThrow(typeerr('function')));
+    });
     
     test(`can't convert`, () =>
         expect(() => int(5, 5)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
