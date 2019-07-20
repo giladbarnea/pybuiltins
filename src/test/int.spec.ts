@@ -768,31 +768,17 @@ describe('ValueError misc', () => {
     
 });
 describe('TypeError misc', () => {
-    test('argument must be', () => {
-        const badargs = [
-            [int],
-            [null],
-            [[]],
-        ];
-        for (let [val, base] of badargs) {
-            expect(() => int(val, base))
-                .toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeof val}'`));
-        }
-    });
-    test('cannot be interpreted', () => {
-        expect(() => int("+ 314", null))
-            .toThrow(new TypeError(`'null' object cannot be interpreted as an integer`));
+    describe('argument must be', () => {
+        test("int(int) TypeError", () => expect(() => int(int)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeof int}'`)));
+        test("int(null) TypeError", () => expect(() => int(null)).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeof null}'`)));
+        test("int([]) TypeError", () => expect(() => int([])).toThrow(new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeof []}'`)));
         
     });
-    test(`can't convert`, () => {
-        const badargs = [
-            [5, 5],
-        ];
-        for (let [val, base] of badargs) {
-            expect(() => int(val, base))
-                .toThrow(new TypeError(`int() can't convert non-string with explicit base`));
-        }
-    });
+    test('cannot be interpreted', () =>
+        expect(() => int("+ 314", null)).toThrow(new TypeError(`'null' object cannot be interpreted as an integer`)));
+    
+    test(`can't convert`, () =>
+        expect(() => int(5, 5)).toThrow(new TypeError(`int() can't convert non-string with explicit base`)));
     
     
 });

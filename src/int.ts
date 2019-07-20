@@ -82,69 +82,82 @@ export class Int extends Number {
         }
     }
     
+    static parseArgs(x, base) {
+        if (base === undefined) { // x is object
+            console.log(cc('blue'), `typeof x === 'object'`);
+            let {x, base} = x;
+        } else if (x === undefined) { // base is object
+            console.log(cc('blue'), `typeof base === 'object'`);
+        } else {
+            throw new Error('what');
+        }
+        return [x, base]
+        /*
+        0: undefined, 1: undefined  OK (0)
+        
+        0: undefined, 1: base       ?
+        
+        0: x, 1: undefined          OK
+        
+        0: x, 1: base               OK
+        
+        0: {object}, 1: undefined
+            0: {undefined}          x = [0].x; base = [0].base;
+            0: {x}                  x = [0].x; base = [0].base;
+            0: {base}               x = [0].x; base = [0].base;
+            0: {x, base}            x = [0].x; base = [0].base;
+            
+        0: undefined, 1: {object}
+            1: {undefined}          x = [1].x; base = [1].base;
+            1: {x}                  x = [1].x; base = [1].base;
+            1: {base}               x = [1].x; base = [1].base;
+            1: {x, base}            x = [1].x; base = [1].base;
+        
+        0: x, 1: {object}
+            1: {undefined}          base = [1].base;
+            1: {x}                  TypeError: Argument given by name ('x') and position (1)
+            1: {base}               base = [1].base;
+            1: {x, base}            TypeError: int() takes at most 2 arguments (3 given)
+        
+        0: {object}, 1: base
+            0: {undefined}          x = [0].x;
+            0: {x}                  x = [0].x;
+            0: {base}               SyntaxError: keyword argument repeated
+            0: {x, base}            SyntaxError: keyword argument repeated
+            
+        0: {object}, 1: {object}
+            0: {undefined}
+                1: {x}              x = [1].x; base = [1].base;
+                1: {base}           x = [0].x; base = [1].base;
+                1: {x, base}        x = [0].x; base = [1].base;
+            0: {x}
+                1: {undefined}      x = [0].x; base = [1].base;
+                1: {x}              SyntaxError: keyword argument repeated
+                1: {base}           x = [0].x; base = [1].base;
+                1: {x, base}        SyntaxError: keyword argument repeated
+            0: {base}
+                1: {undefined}      x = [0].x; base = [0].base;
+                1: {x}              x = [1].x; base = [0].base;
+                1: {base}           SyntaxError: keyword argument repeated
+                1: {x, base}        SyntaxError: keyword argument repeated
+            0: {x, base}
+                1: {undefined}      x = [0].x; base = [0].base;
+                1: {x}              SyntaxError: keyword argument repeated
+                1: {base}           SyntaxError: keyword argument repeated
+                1: {x, base}        SyntaxError: keyword argument repeated
+              
+         */
+    }
     
     constructor(x: string | number | IntOptions = undefined, base?: string | number | IntOptions, log?: boolean) {
-        console.log({x, base, log, arguments});
+        // console.log({x, base, log, arguments});
         const typeofx = typeof x;
         const typeofbase = typeof base;
-        if (typeofx === 'object' || typeofbase === 'object') {
-            console.log(cc('blue'), `typeofx === 'object' || typeofbase === 'object'`);
-            /*
-            0: undefined, 1: undefined  OK (0)
-            
-            0: undefined, 1: base       ?
-            
-            0: x, 1: undefined          OK
-            
-            0: x, 1: base               OK
-            
-            0: {object}, 1: undefined
-                0: {undefined}          x = [0].x; base = [0].base;
-                0: {x}                  x = [0].x; base = [0].base;
-                0: {base}               x = [0].x; base = [0].base;
-                0: {x, base}            x = [0].x; base = [0].base;
-                
-            0: undefined, 1: {object}
-                1: {undefined}          x = [1].x; base = [1].base;
-                1: {x}                  x = [1].x; base = [1].base;
-                1: {base}               x = [1].x; base = [1].base;
-                1: {x, base}            x = [1].x; base = [1].base;
-            
-            0: x, 1: {object}
-                1: {undefined}          base = [1].base;
-                1: {x}                  TypeError: Argument given by name ('x') and position (1)
-                1: {base}               base = [1].base;
-                1: {x, base}            TypeError: int() takes at most 2 arguments (3 given)
-            
-            0: {object}, 1: base
-                0: {undefined}          x = [0].x;
-                0: {x}                  x = [0].x;
-                0: {base}               SyntaxError: keyword argument repeated
-                0: {x, base}            SyntaxError: keyword argument repeated
-                
-            0: {object}, 1: {object}
-                0: {undefined}
-                    1: {x}              x = [1].x; base = [1].base;
-                    1: {base}           x = [0].x; base = [1].base;
-                    1: {x, base}        x = [0].x; base = [1].base;
-                0: {x}
-                    1: {undefined}      x = [0].x; base = [1].base;
-                    1: {x}              SyntaxError: keyword argument repeated
-                    1: {base}           x = [0].x; base = [1].base;
-                    1: {x, base}        SyntaxError: keyword argument repeated
-                0: {base}
-                    1: {undefined}      x = [0].x; base = [0].base;
-                    1: {x}              x = [1].x; base = [0].base;
-                    1: {base}           SyntaxError: keyword argument repeated
-                    1: {x, base}        SyntaxError: keyword argument repeated
-                0: {x, base}
-                    1: {undefined}      x = [0].x; base = [0].base;
-                    1: {x}              SyntaxError: keyword argument repeated
-                    1: {base}           SyntaxError: keyword argument repeated
-                    1: {x, base}        SyntaxError: keyword argument repeated
-                  
-             */
-        }
+        // if (typeofx === 'object' || typeofbase === 'object') {
+        //     console.log(cc('blue'), `typeofx === 'object' || typeofbase === 'object'`);
+        //     [x, base] = Int.parseArgs(x, base);
+        //
+        // }
         let parsedInt = parseInt(x, base); // NaN if fails
         const origbase = base;
         if (log) console.log(cc(`black`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
