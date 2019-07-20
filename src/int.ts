@@ -85,35 +85,35 @@ export class Int extends Number {
     static parseArgs(x, base) {
         const typeofx = typeof x;
         const typeofbase = typeof base;
-        // let parsedX = x;
-        // let parsedBase = base;
-        if (base === undefined) { // x is object
+        if (base === undefined) { // all int({object}) tests
             const xinx = 'x' in x;
             const baseinx = 'base' in x;
             console.log(cc('blue', `base === undefined'`), {x, typeofx, xinx, baseinx});
+            
             return [x.x, x.base];
-            // parsedX = x.x;
-            // parsedBase = x.base;
-            // let {x, base} = x;
         }
-        if (x === undefined) { // base is object
+        if (x === undefined) { // TODO: nothing reaches here
+            throw new Error('what');
             console.log(cc('blue', `x === undefined`), {base, typeofbase});
             return [base.x, base.base]
         }
         console.log(cc('blue', `neither x nor base are undefined`), {x, base, typeofx, typeofbase});
-        if (typeofx === 'string' || typeofx === "number") {
+        if (typeofx === 'string' || typeofx === "number") { // all int(x, {object}) tests
+            
             console.log(cc('blue', `typeofx is either string or number. base is object.`));
             const xinbase = 'x' in base;
             const baseinbase = 'base' in base;
             if (xinbase) {
+                
                 console.log(cc('blue', `xinbase`));
                 if (baseinbase) { // int('100', {x: '100', base: 10})
+                    
                     console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
                     throw new TypeError(`int() takes at most 2 arguments (3 given)`)
                 }
-                console.log(cc('bright yellow', `xinbase, TypeError`));
                 // int('100', {x: '100'})
                 // TODO: position (2)
+                console.log(cc('bright yellow', `xinbase, TypeError`));
                 throw new TypeError(`Argument given by name ('x') and position (1)`)
             }
             if (baseinbase) { // int('100', {base: 2})
@@ -125,38 +125,42 @@ export class Int extends Number {
             return [x, undefined]
         }
         console.log(cc('blue', `x is an object`));
-        if (typeofbase === 'string' || typeofbase === "number") {
+        if (typeofbase === 'string' || typeofbase === "number") { // all int({object}, base) tests
+            
             const xinx = 'x' in x;
             const baseinx = 'base' in x;
             console.log(cc('blue', `typeofbase is either string or number`), {xinx, baseinx});
             if (baseinx) {
                 console.log(cc('blue', `baseinx`));
-                if (xinx) {
+                if (xinx) { // int({x: '100', base: 2}, 3)
                     console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
                     throw new TypeError(`int() takes at most 2 arguments (3 given)`)
                 }
+                // int({base: 2}, 3)
                 console.log(cc('bright yellow', `baseinx, TypeError`));
                 throw new TypeError(`Argument given by name ('base') and position (1)`)
             }
             return [x.x, base]
         }
+        // all int({object}, {object}) tests
         const xinbase = 'x' in base;
         const baseinbase = 'base' in base;
         const xinx = 'x' in x;
         const baseinx = 'base' in x;
         console.log(cc('blue', `base and x are both objects`), {xinbase, baseinbase, xinx, baseinx});
-        if ((xinbase && xinx) || (baseinbase && baseinx)) {
+        if ((xinbase && xinx) || (baseinbase && baseinx)) { // int({x: 0, base: 10}, {x: 1})
             console.log(cc('bright yellow', `keyword argument repeated, TypeError`));
             throw new SyntaxError("keyword argument repeated")
         }
         console.log(cc('blue', `No repeated kwarg`));
-        if (xinbase) {
+        if (xinbase) { // int({base: 2}, {x: '100'})
             console.log(cc('blue', `xinbase, returning [base.x, x.base]`));
             return [base.x, x.base]
-        } else {
+        } else { // int({x: '100'}, {base: 2})
             console.log(cc('blue', `xinx, returning [x.x, base.base]`));
             return [x.x, base.base]
         }
+        throw new Error('what');
         
         // return [x, base]
         /*

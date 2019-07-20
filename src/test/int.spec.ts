@@ -462,6 +462,8 @@ describe('CPython Tests', () => {
                 expect(() => int({x: 0, base: 10}, {
                     base: 11,
                 })).toThrow(new SyntaxError("keyword argument repeated")));
+            
+            //     TODO: decide behavior in case like int({x: 0, base: 10}, {base: undefined})
         });
         
         
