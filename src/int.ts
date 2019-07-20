@@ -83,17 +83,43 @@ export class Int extends Number {
     }
     
     static parseArgs(x, base) {
-        let parsedX = x;
-        let parsedBase = base;
+        const typeofx = typeof x;
+        const typeofbase = typeof base;
+        // let parsedX = x;
+        // let parsedBase = base;
         if (base === undefined) { // x is object
-            console.log(cc('blue'), `x: ${x}, typeof x === '${typeof x}'`);
-            parsedX = x.x;
-            parsedBase = x.base;
+            console.log(cc('blue', `x: ${x}, typeofx === '${typeofx}'`));
+            return [x.x, x.base];
+            // parsedX = x.x;
+            // parsedBase = x.base;
             // let {x, base} = x;
-        } else if (x === undefined) { // base is object
-            console.log(cc('blue'), `base: ${base}, typeof base === '${typeof base}'`);
         }
-        return [parsedX, parsedBase]
+        if (x === undefined) { // base is object
+            console.log(cc('blue', `base: ${base}, typeofbase === '${typeofbase}'`));
+            return [x, base]
+        }
+        console.log(cc('blue', `neither x nor base are undefined`), {x, base, typeofx, typeofbase});
+        if (typeofx === 'string' || typeofx === "number") {
+            console.log(cc('blue', `typeofx is either string or number. base is object.`));
+            const xinbase = 'x' in base;
+            const baseinbase = 'base' in base;
+            if (xinbase) {
+                console.log(cc('blue', `xinbase`));
+                if (baseinbase) { // int('100', {x: '100', base: 10})
+                    console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
+                    throw new TypeError(`int() takes at most 2 arguments (3 given)`)
+                }
+                console.log(cc('bright yellow', `xinbase, TypeError`));
+                // int('100', {x: '100'})
+                throw new TypeError(`Argument given by name ('x') and position (1)`)
+            }
+            if (baseinbase) {
+                console.log(cc('blue', `baseinbase`));
+                return [x, base.base];
+            }
+        }
+        
+        return [x, base]
         /*
         0: undefined, 1: undefined  OK (0)
         
@@ -117,9 +143,9 @@ export class Int extends Number {
         
         0: x, 1: {object}
             1: {undefined}          base = [1].base;
-            1: {x}                  TypeError: Argument given by name ('x') and position (1)
+            1: {x} DONE             TypeError: Argument given by name ('x') and position (1)
             1: {base}               base = [1].base;
-            1: {x, base}            TypeError: int() takes at most 2 arguments (3 given)
+            1: {x, base} DONE       TypeError: int() takes at most 2 arguments (3 given)
         
         0: {object}, 1: base
             0: {undefined}          x = [0].x;

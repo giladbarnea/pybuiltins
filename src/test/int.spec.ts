@@ -391,6 +391,20 @@ describe('CPython Tests', () => {
         
         test("int({base: 10}) TypeError", () =>
             expect(() => int({base: 10, log: true})).toThrow(new TypeError("int() missing string argument")));
+        
+        test("int('100', {x: '100', base: 10}) TypeError", () =>
+            expect(() => int('100', {
+                x: '100',
+                base: 10,
+                log: true
+            })).toThrow(new TypeError("int() takes at most 2 arguments (3 given)")));
+        
+        test("int('100', {x: '100'}) TypeError", () =>
+            expect(() => int('100', {
+                x: '100',
+                log: true
+            })).toThrow(new TypeError("Argument given by name ('x') and position (1)")));
+        
         test("int({base: 0}) TypeError", () =>
             expect(() => int({base: 0, log: true})).toThrow(new TypeError("int() missing string argument")));
         
