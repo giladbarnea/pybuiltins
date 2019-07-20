@@ -82,7 +82,7 @@ export class Int extends Number {
         }
     }
     
-    static parseArgs(x, base) {
+    static parseKwargs(x, base) {
         const typeofx = typeof x;
         const typeofbase = typeof base;
         if (base === undefined) { // all int({object}) tests
@@ -99,7 +99,7 @@ export class Int extends Number {
         let baseinbase = false;
         let xinx = false;
         let baseinx = false;
-        // at least one must be primitive, parseArgs is called when either is object
+        // at least one must be primitive, parseKwargs is called when either is object
         const isXObject = typeofx !== 'string' && typeofx !== "number";
         const isBaseObject = typeofbase !== 'string' && typeofbase !== "number";
         if (isXObject) {
@@ -233,8 +233,8 @@ export class Int extends Number {
         if ((typeof x === 'object' || typeof base === 'object') &&
             x !== null && base !== null &&
             !Array.isArray(x) && !Array.isArray(base)) {
-            console.log(cc('blue'), `Got objects, calling parseArgs(x, base)`);
-            [x, base] = Int.parseArgs(x, base);
+            console.log(cc('blue'), `Got objects, calling parseKwargs(x, base)`);
+            [x, base] = Int.parseKwargs(x, base);
             console.log(cc('cyan'), `x: ${x}, base: ${base}`);
             
         }
