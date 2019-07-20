@@ -87,159 +87,177 @@ export class Int extends Number {
         }
     }
     
-    static parseKwargs(x: string | number | IntOptions, base: string | number | IntOptions, log?: boolean): [string | number, string | number] {
-        const typeofx = typeof x;
-        const typeofbase = typeof base;
-        if (base === undefined) { // all int({object}) tests
-            if (log) console.log(cc('magenta', `base === undefined, returning [x.x, x.base]`));
-            x = x as IntOptions;
-            return [x.x, x.base];
-        }
-        if (x === undefined) { // TODO: nothing reaches here
-            throw new Error('what');
-            if (log) console.log(cc('blue', `x === undefined`), {base, typeofbase});
-            return [base.x, base.base]
-        }
-        if (log) console.log(cc('blue', `neither x nor base are undefined`), {x, base, typeofx, typeofbase});
-        let xinbase = false;
-        let baseinbase = false;
-        let xinx = false;
-        let baseinx = false;
-        
-        
-        // at least one must be primitive, parseKwargs is called when either is object
-        const isXObject = typeofx !== 'string' && typeofx !== "number";
-        const isBaseObject = typeofbase !== 'string' && typeofbase !== "number";
-        
-        if (isXObject && isBaseObject) {
-            // all int({object}, {object}) tests
-            base = base as IntOptions;
-            x = x as IntOptions;
-            xinx = 'x' in x;
-            baseinx = 'base' in x;
-            xinbase = 'x' in base;
-            baseinbase = 'base' in base;
-            if (log) console.log(cc('blue', `base and x are both objects`), {xinbase, baseinbase, xinx, baseinx});
-            if ((xinbase && xinx) || (baseinbase && baseinx)) { // int({x: 0, base: 10}, {x: 1})
-                if (log) console.log(cc('bright yellow', `keyword argument repeated, TypeError`));
-                throw new SyntaxError("keyword argument repeated")
-            }
-            if (log) console.log(cc('blue', `No repeated kwarg`));
-            if (xinbase) { // int({base: 2}, {x: '100'})
-                if (log) console.log(cc('magenta', `xinbase, returning [base.x, x.base]`));
-                return [base.x, x.base]
-            }
-            // int({x: '100'}, {base: 2})
-            if (log) console.log(cc('magenta', `xinx, returning [x.x, base.base]`));
-            return [x.x, base.base]
-        }
-        if (isBaseObject) { // all int(x, {object}) tests
-            base = base as IntOptions;
-            x = x as string | number;
-            xinbase = 'x' in base;
-            baseinbase = 'base' in base;
-            if (log) console.log(cc('blue', `x is primitive. base is object.`), {xinbase, baseinbase});
-            if (xinbase) {
-                
-                if (log) console.log(cc('blue', `xinbase`));
-                if (baseinbase) { // int('100', {x: '100', base: 10})
-                    
-                    if (log) console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
-                    throw new TypeError(`int() takes at most 2 arguments (3 given)`)
+    
+    private static get OptionsParser() {
+        return {
+            isOptions(obj: string | number | IntOptions): boolean {
+                return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
+            },
+            parse(x: string | number | IntOptions, base: string | number | IntOptions, log?: boolean): [string | number, string | number] {
+                const typeofx = typeof x;
+                const typeofbase = typeof base;
+                if (base === undefined) { // all int({object}) tests
+                    if (log) console.log(cc('magenta', `base === undefined, returning [x.x, x.base]`));
+                    x = x as IntOptions;
+                    return [x.x, x.base];
                 }
-                // int('100', {x: '100'})
-                // TODO: position (2)
-                if (log) console.log(cc('bright yellow', `xinbase, TypeError`));
-                throw new TypeError(`Argument given by name ('x') and position (1)`)
+                if (x === undefined) { // TODO: nothing reaches here
+                    throw new Error('what');
+                    if (log) console.log(cc('blue', `x === undefined`), {base, typeofbase});
+                    return [base.x, base.base]
+                }
+                if (log) console.log(cc('blue', `neither x nor base are undefined`), {x, base, typeofx, typeofbase});
+                let xinbase = false;
+                let baseinbase = false;
+                let xinx = false;
+                let baseinx = false;
+                
+                
+                // at least one must be primitive, parseKwargs is called when either is object
+                const isXObject = typeofx !== 'string' && typeofx !== "number";
+                const isBaseObject = typeofbase !== 'string' && typeofbase !== "number";
+                
+                if (isXObject && isBaseObject) {
+                    // all int({object}, {object}) tests
+                    base = base as IntOptions;
+                    x = x as IntOptions;
+                    xinx = 'x' in x;
+                    baseinx = 'base' in x;
+                    xinbase = 'x' in base;
+                    baseinbase = 'base' in base;
+                    if (log) console.log(cc('blue', `base and x are both objects`), {
+                        xinbase,
+                        baseinbase,
+                        xinx,
+                        baseinx
+                    });
+                    if ((xinbase && xinx) || (baseinbase && baseinx)) { // int({x: 0, base: 10}, {x: 1})
+                        if (log) console.log(cc('bright yellow', `keyword argument repeated, TypeError`));
+                        throw new SyntaxError("keyword argument repeated")
+                    }
+                    if (log) console.log(cc('blue', `No repeated kwarg`));
+                    if (xinbase) { // int({base: 2}, {x: '100'})
+                        if (log) console.log(cc('magenta', `xinbase, returning [base.x, x.base]`));
+                        return [base.x, x.base]
+                    }
+                    // int({x: '100'}, {base: 2})
+                    if (log) console.log(cc('magenta', `xinx, returning [x.x, base.base]`));
+                    return [x.x, base.base]
+                }
+                if (isBaseObject) { // all int(x, {object}) tests
+                    base = base as IntOptions;
+                    x = x as string | number;
+                    xinbase = 'x' in base;
+                    baseinbase = 'base' in base;
+                    if (log) console.log(cc('blue', `x is primitive. base is object.`), {xinbase, baseinbase});
+                    if (xinbase) {
+                        
+                        if (log) console.log(cc('blue', `xinbase`));
+                        if (baseinbase) { // int('100', {x: '100', base: 10})
+                            
+                            if (log) console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
+                            throw new TypeError(`int() takes at most 2 arguments (3 given)`)
+                        }
+                        // int('100', {x: '100'})
+                        // TODO: position (2)
+                        if (log) console.log(cc('bright yellow', `xinbase, TypeError`));
+                        throw new TypeError(`Argument given by name ('x') and position (1)`)
+                    }
+                    if (baseinbase) { // int('100', {base: 2})
+                        if (log) console.log(cc('magenta', `baseinbase, returning [x, base.base]`));
+                        return [x, base.base];
+                    }
+                    // int('100', {FOO: 2})
+                    if (log) console.log(cc('magenta', `!xinbase && !baseinbase, returning [x, undefined]`));
+                    return [x, undefined]
+                }
+                // all int({object}, base) tests
+                x = x as IntOptions;
+                base = base as string | number;
+                xinx = 'x' in x;
+                baseinx = 'base' in x;
+                if (log) console.log(cc('blue', `base is primitive. x is object`), {xinx, baseinx});
+                if (baseinx) {
+                    if (log) console.log(cc('blue', `baseinx`));
+                    if (xinx) { // int({x: '100', base: 2}, 3)
+                        if (log) console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
+                        throw new TypeError(`int() takes at most 2 arguments (3 given)`)
+                    }
+                    // int({base: 2}, 3)
+                    if (log) console.log(cc('bright yellow', `baseinx, TypeError`));
+                    throw new TypeError(`Argument given by name ('base') and position (1)`)
+                }
+                if (log) console.log(cc('magenta', `returning [x.x, base]`));
+                return [x.x, base]
+                
+                
+                /*
+                0: undefined, 1: undefined  OK (0)
+                
+                0: undefined, 1: base       ?
+                
+                0: x, 1: undefined          OK
+                
+                0: x, 1: base               OK
+                
+                0: {object}, 1: undefined
+                    0: {undefined} DONE     x = [0].x; base = [0].base;
+                    0: {x} DONE             x = [0].x; base = [0].base;
+                    0: {base} DONE          x = [0].x; base = [0].base;
+                    0: {x, base} DONE       x = [0].x; base = [0].base;
+                    
+                0: undefined, 1: {object}
+                    1: {undefined}          x = [1].x; base = [1].base;
+                    1: {x}                  x = [1].x; base = [1].base;
+                    1: {base}               x = [1].x; base = [1].base;
+                    1: {x, base}            x = [1].x; base = [1].base;
+                
+                0: x, 1: {object}
+                    1: {undefined} DONE          base = [1].base;
+                    1: {x} DONE             TypeError: Argument given by name ('x') and position (1)
+                    1: {base} DONE          base = [1].base;
+                    1: {x, base} DONE       TypeError: int() takes at most 2 arguments (3 given)
+                
+                0: {object}, 1: base
+                    0: {undefined}          x = [0].x;
+                    0: {x}                  x = [0].x;
+                    0: {base}               SyntaxError: keyword argument repeated
+                    0: {x, base}            SyntaxError: keyword argument repeated
+                    
+                0: {object}, 1: {object}
+                    0: {undefined}
+                        1: {x}              x = [1].x; base = [1].base;
+                        1: {base}           x = [0].x; base = [1].base;
+                        1: {x, base}        x = [0].x; base = [1].base;
+                    0: {x}
+                        1: {undefined}      x = [0].x; base = [1].base;
+                        1: {x}              SyntaxError: keyword argument repeated
+                        1: {base}           x = [0].x; base = [1].base;
+                        1: {x, base}        SyntaxError: keyword argument repeated
+                    0: {base}
+                        1: {undefined}      x = [0].x; base = [0].base;
+                        1: {x}              x = [1].x; base = [0].base;
+                        1: {base}           SyntaxError: keyword argument repeated
+                        1: {x, base}        SyntaxError: keyword argument repeated
+                    0: {x, base}
+                        1: {undefined}      x = [0].x; base = [0].base;
+                        1: {x}              SyntaxError: keyword argument repeated
+                        1: {base}           SyntaxError: keyword argument repeated
+                        1: {x, base}        SyntaxError: keyword argument repeated
+                      
+                 */
             }
-            if (baseinbase) { // int('100', {base: 2})
-                if (log) console.log(cc('magenta', `baseinbase, returning [x, base.base]`));
-                return [x, base.base];
-            }
-            // int('100', {FOO: 2})
-            if (log) console.log(cc('magenta', `!xinbase && !baseinbase, returning [x, undefined]`));
-            return [x, undefined]
         }
-        // all int({object}, base) tests
-        x = x as IntOptions;
-        base = base as string | number;
-        xinx = 'x' in x;
-        baseinx = 'base' in x;
-        if (log) console.log(cc('blue', `base is primitive. x is object`), {xinx, baseinx});
-        if (baseinx) {
-            if (log) console.log(cc('blue', `baseinx`));
-            if (xinx) { // int({x: '100', base: 2}, 3)
-                if (log) console.log(cc('bright yellow', `xinbase && baseinbase, TypeError`));
-                throw new TypeError(`int() takes at most 2 arguments (3 given)`)
-            }
-            // int({base: 2}, 3)
-            if (log) console.log(cc('bright yellow', `baseinx, TypeError`));
-            throw new TypeError(`Argument given by name ('base') and position (1)`)
-        }
-        if (log) console.log(cc('magenta', `returning [x.x, base]`));
-        return [x.x, base]
-        
-        
-        /*
-        0: undefined, 1: undefined  OK (0)
-        
-        0: undefined, 1: base       ?
-        
-        0: x, 1: undefined          OK
-        
-        0: x, 1: base               OK
-        
-        0: {object}, 1: undefined
-            0: {undefined} DONE     x = [0].x; base = [0].base;
-            0: {x} DONE             x = [0].x; base = [0].base;
-            0: {base} DONE          x = [0].x; base = [0].base;
-            0: {x, base} DONE       x = [0].x; base = [0].base;
-            
-        0: undefined, 1: {object}
-            1: {undefined}          x = [1].x; base = [1].base;
-            1: {x}                  x = [1].x; base = [1].base;
-            1: {base}               x = [1].x; base = [1].base;
-            1: {x, base}            x = [1].x; base = [1].base;
-        
-        0: x, 1: {object}
-            1: {undefined} DONE          base = [1].base;
-            1: {x} DONE             TypeError: Argument given by name ('x') and position (1)
-            1: {base} DONE          base = [1].base;
-            1: {x, base} DONE       TypeError: int() takes at most 2 arguments (3 given)
-        
-        0: {object}, 1: base
-            0: {undefined}          x = [0].x;
-            0: {x}                  x = [0].x;
-            0: {base}               SyntaxError: keyword argument repeated
-            0: {x, base}            SyntaxError: keyword argument repeated
-            
-        0: {object}, 1: {object}
-            0: {undefined}
-                1: {x}              x = [1].x; base = [1].base;
-                1: {base}           x = [0].x; base = [1].base;
-                1: {x, base}        x = [0].x; base = [1].base;
-            0: {x}
-                1: {undefined}      x = [0].x; base = [1].base;
-                1: {x}              SyntaxError: keyword argument repeated
-                1: {base}           x = [0].x; base = [1].base;
-                1: {x, base}        SyntaxError: keyword argument repeated
-            0: {base}
-                1: {undefined}      x = [0].x; base = [0].base;
-                1: {x}              x = [1].x; base = [0].base;
-                1: {base}           SyntaxError: keyword argument repeated
-                1: {x, base}        SyntaxError: keyword argument repeated
-            0: {x, base}
-                1: {undefined}      x = [0].x; base = [0].base;
-                1: {x}              SyntaxError: keyword argument repeated
-                1: {base}           SyntaxError: keyword argument repeated
-                1: {x, base}        SyntaxError: keyword argument repeated
-              
-         */
     }
     
     constructor(x: string | number | IntOptions = undefined, base?: string | number | IntOptions, log?: boolean) {
         // console.log({x, base, log, arguments});
-        if ((typeof x === 'object' || typeof base === 'object') &&
+        if (Int.OptionsParser.isOptions(x) || Int.OptionsParser.isOptions(base)) {
+            if (log) console.log(cc('blue'), `Got objects, calling parseKwargs(x, base)`);
+            [x, base] = Int.OptionsParser.parse(x, base, log);
+            if (log) console.log(cc('cyan'), `parseKwargs => x: ${x}, base: ${base}`);
+        }
+        /*if ((typeof x === 'object' || typeof base === 'object') &&
             x !== null && base !== null &&
             !Array.isArray(x) && !Array.isArray(base)) {
             if (log) console.log(cc('blue'), `Got objects, calling parseKwargs(x, base)`);
@@ -247,6 +265,7 @@ export class Int extends Number {
             if (log) console.log(cc('cyan'), `parseKwargs => x: ${x}, base: ${base}`);
             
         }
+        */
         const typeofx = typeof x;
         const typeofbase = typeof base;
         let parsedInt = parseInt(x, base); // NaN if fails
