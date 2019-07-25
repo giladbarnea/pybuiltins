@@ -108,7 +108,7 @@ export class Int extends Number {
     }
     
     
-    private static get OptionsParser() {
+    private static get ArgsParser() {
         return {
             isOptions(obj: IntParam): boolean {
                 // Assumes !isIntable(obj)
@@ -122,7 +122,7 @@ export class Int extends Number {
                 const intable = '__int__' in x;
                 return intable;
             },
-            parse(x: IntParam, base: IntParam, log?: boolean): [string | number, string | number] {
+            parseOptions(x: IntParam, base: IntParam, log?: boolean): [string | number, string | number] {
                 const typeofx = typeof x;
                 const typeofbase = typeof base;
                 if (base === undefined) { // all int({object}) tests
@@ -283,20 +283,26 @@ export class Int extends Number {
     constructor(x: IntParam = undefined, base?: IntParam, log?: boolean) {
         globalLog = log;
         if (log) console.log({x, base, log});
-        if (Int.OptionsParser.isIntable(x)) {
+        if (Int.ArgsParser.isIntable(x)) {
             if (log) console.log(cc('blue', 'x is Intable'));
-            let number = x.__int__();
-            if (!util.isRoundNumber(number)) {
-                if (log) console.log(cc('bright yellow', `int(x.__int__()) !isRoundNumber. TypeError`));
-                throw new TypeError(`__int__ returned non-int (type ${typeof number})`)
+            const number = x.__int__();
+            let typeofnumber = typeof number;
+            if (typeofnumber === "number") {
+                if (parseFloat(number) - parseInt(number) === 0) {
+                    super(number);
+                    if (log) console.log(cc('bright magenta', `super(x.__int__()) and return. this: ${this}`));
+                    return
+                } else {
+                    typeofnumber = 'float';
+                }
             }
-            super(number);
-            if (log) console.log(cc('bright magenta', `super(x.__int__()) and return. this: ${this}`));
-            return
+            if (log) console.log(cc('bright yellow', `int(x.__int__()) !isRoundNumber. TypeError`));
+            throw new TypeError(`__int__ returned non-int (type ${typeofnumber})`);
+            
         }
-        if (Int.OptionsParser.isOptions(x) || Int.OptionsParser.isOptions(base)) { // keep after instanceof Int check
+        if (Int.ArgsParser.isOptions(x) || Int.ArgsParser.isOptions(base)) { // keep after instanceof Int check
             if (log) console.log(cc('blue', `Got objects, calling Int.OptionsParser.parse(x, base)`));
-            [x, base] = Int.OptionsParser.parse(x, base, log);
+            [x, base] = Int.ArgsParser.parseOptions(x, base, log);
             if (log) console.log(cc('cyan', `Int.OptionsParser.parse(x, base) => x: ${x}, base: ${base}`));
         }
         

@@ -1,7 +1,13 @@
 import * as perf from "./perf"
 
+function isFloat(x): boolean {
+    return typeof x === 'number' && parseFloat(x) - parseInt(x) !== 0
+}
+
+
 function isRoundNumber(x): boolean {
-    return (typeof x === 'number') && (parseFloat(x) - parseInt(x) === 0)
+    // TODO: refactor parseFloat.. with isFloat. after that, test if x==='number' is redundant.
+    return typeof x === 'number' && parseFloat(x) - parseInt(x) === 0
 }
 
 
@@ -52,4 +58,4 @@ function cc(val: string, ...args) {
     // return [words.map(c => colorsDict[c]).join('') + args[0], ...args.slice(1)]
 }
 
-export {perf, cc, isRoundNumber}
+export {perf, cc, isRoundNumber, isFloat}
