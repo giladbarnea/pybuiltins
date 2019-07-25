@@ -363,7 +363,7 @@ export class Int extends Number {
         
         const orig = x;
         let sign = undefined;
-        let nosign = x;
+        let nosign: string = <string>x;
         
         if (typeofx === 'string') {
             x = x as string;
@@ -504,7 +504,7 @@ export class Int extends Number {
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
             }
             
-            for (let c of x) {
+            for (let c of nosign) { // can iterate on x as well
                 let convertedC;
                 if (RegExp(/[a-zA-Z]/).test(c)) {
                     convertedC = parseInt(c, 36);
@@ -525,7 +525,7 @@ export class Int extends Number {
             
             if (!RegExp(/\d/).test(x) ||    // empty strings
                 x.includes(' ')) { // int("+ 314")
-                if (log) console.log(cc('bright yellow', `x.includes(' ') no /\d/ in x, ValueError`));
+                if (log) console.log(cc('bright yellow', `x.includes(' ') or no /\d/ in x, ValueError`));
                 throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
             }
             
