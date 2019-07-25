@@ -482,6 +482,8 @@ describe('CPython Tests', () => {
     });
     describe('test_int_subclass_with_int', () => {
         class MyInt extends Int {
+            
+            
             __int__(): number {
                 console.log('MyInt __int__ returning 42');
                 return 42;

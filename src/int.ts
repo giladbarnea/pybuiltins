@@ -57,7 +57,7 @@ Number.prototype = oldProto;
 });
 */
 
-type XType = string | number | Int;
+type XType = string | number | Int | Intable;
 
 interface IntOptions {
     x?: XType,
@@ -66,6 +66,11 @@ interface IntOptions {
 }
 
 type IntParam = XType | IntOptions ;
+
+interface Intable {
+    __int__(): number;
+}
+
 let globalLog = false;
 
 export class Int extends Number {
@@ -105,7 +110,16 @@ export class Int extends Number {
     private static get OptionsParser() {
         return {
             isOptions(obj: IntParam): boolean {
-                return typeof obj === 'object' && obj !== null && !Array.isArray(obj) && !(obj instanceof Int)
+                return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
+            },
+            
+            isIntable(x: IntParam): x is Intable {
+                if (typeof x !== "object" || x === null) // typeof null === 'object'
+                    return false;
+                x = x as Object;
+                const intable = '__int__' in x;
+                if (globalLog) console.log({intable});
+                return intable;
             },
             parse(x: IntParam, base: IntParam, log?: boolean): [string | number, string | number] {
                 const typeofx = typeof x;
@@ -260,14 +274,20 @@ export class Int extends Number {
                         1: {x, base}        SyntaxError: keyword argument repeated
                       
                  */
-            }
+            },
         }
     }
+    
     
     constructor(x: IntParam = undefined, base?: IntParam, log?: boolean) {
         globalLog = log;
         if (log) console.log({x, base, log});
-        if (Int.OptionsParser.isOptions(x) || Int.OptionsParser.isOptions(base)) {
+        if (Int.OptionsParser.isIntable(x)) {
+            super(x.__int__());
+            if (log) console.log(cc('bright magenta', `x is Intable, super(x.__int__()) and return. this: ${this}`));
+            return;
+        }
+        if (Int.OptionsParser.isOptions(x) || Int.OptionsParser.isOptions(base)) { // keep after instanceof Int check
             if (log) console.log(cc('blue', `Got objects, calling Int.OptionsParser.parse(x, base)`));
             [x, base] = Int.OptionsParser.parse(x, base, log);
             if (log) console.log(cc('cyan', `Int.OptionsParser.parse(x, base) => x: ${x}, base: ${base}`));
