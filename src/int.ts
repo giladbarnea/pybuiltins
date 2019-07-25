@@ -72,11 +72,11 @@ export class Int extends Number {
     
     toString(radix?: number): string {
         let ret = super.toString(radix);
-        if (globalLog) console.log(cc('bright magenta', `toString, returning: `), ret, {
-            'typeof ret': typeof ret,
-            this: this,
-            'typeof this': typeof this
-        });
+        // if (globalLog) console.log(cc('bright magenta', `toString, returning: `), ret, {
+        //     'typeof ret': typeof ret,
+        //     this: this,
+        //     'typeof this': typeof this
+        // });
         return ret
     }
     
