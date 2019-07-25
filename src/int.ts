@@ -122,7 +122,7 @@ export class Int extends Number {
                 const intable = '__int__' in x;
                 return intable;
             },
-            parseIntable(x: Intable, log?: boolean) {
+            parseIntable(x: Intable, log?: boolean): number {
                 const number = x.__int__();
                 let typeofnumber = typeof number;
                 if (typeofnumber === "number") {

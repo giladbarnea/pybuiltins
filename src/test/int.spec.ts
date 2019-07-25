@@ -481,11 +481,11 @@ describe('CPython Tests', () => {
         
     });
     describe('test_int_subclass_with_int', () => {
-        class MyInt extends Int {
+        class GoodInt extends Int {
             
             
             __int__(): number {
-                console.log('MyInt __int__ returning 42');
+                console.log('GoodInt __int__ returning 42');
                 return 42;
             }
         }
@@ -496,11 +496,11 @@ describe('CPython Tests', () => {
             }
         }
         
-        const myInt = new MyInt(7, undefined, true);
+        const goodInt = new GoodInt(7, undefined, true);
         
         
-        test('expect(myInt).toEqual(7)', () => expect(myInt).toEqual(7));
-        test('expect(int(myInt)).toEqual(42)', () => expect(int(myInt, undefined, true)).toEqual(42));
+        test('expect(goodInt).toEqual(7)', () => expect(goodInt).toEqual(7));
+        test('expect(int(goodInt)).toEqual(42)', () => expect(int(goodInt, undefined, true)).toEqual(42));
         test('int(new BadInt()) TypeError', () => expect(() => int(new BadInt(), undefined, true)).toThrow(new TypeError('__int__ returned non-int (type float)')));
     });
     describe.skip('test_int_returns_int_subclass', () => {
