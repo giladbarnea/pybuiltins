@@ -491,8 +491,8 @@ describe('CPython Tests', () => {
         }
         
         class BadInt extends Int {
-            valueOf(): number {
-                return 42.0;
+            __int__(): number {
+                return 42.5;
             }
         }
         
@@ -501,7 +501,7 @@ describe('CPython Tests', () => {
         
         test('expect(myInt).toEqual(7)', () => expect(myInt).toEqual(7));
         test('expect(int(myInt)).toEqual(42)', () => expect(int(myInt, undefined, true)).toEqual(42));
-        test('int(new BadInt()) TypeError', () => expect(() => int(new BadInt())).toThrow(new TypeError('__int__ returned non-int (type float)')));
+        test('int(new BadInt()) TypeError', () => expect(() => int(new BadInt(), undefined, true)).toThrow(new TypeError('__int__ returned non-int (type float)')));
     });
     describe.skip('test_int_returns_int_subclass', () => {
         

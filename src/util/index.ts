@@ -1,8 +1,10 @@
 import * as perf from "./perf"
 
-/*
+function isRoundNumber(x): boolean {
+    return typeof x === 'number' && parseFloat(x) - parseInt(x) === 0
+}
 
-*/
+
 function cc(val: string, ...args) {
     const colorsDict = {
         reset: '\x1b[0m',
@@ -50,4 +52,4 @@ function cc(val: string, ...args) {
     // return [words.map(c => colorsDict[c]).join('') + args[0], ...args.slice(1)]
 }
 
-export {perf, cc}
+export {perf, cc, isRoundNumber}

@@ -1,5 +1,5 @@
 import {ZeroDivisionError, ValueError} from "./exceptions"
-import {cc} from "./util";
+import {cc, isRoundNumber} from "./util";
 
 
 /**
@@ -57,7 +57,7 @@ Number.prototype = oldProto;
 });
 */
 
-type XType = string | number | Int | Intable;
+type XType = string | number | Intable;
 
 interface IntOptions {
     x?: XType,
@@ -110,6 +110,7 @@ export class Int extends Number {
     private static get OptionsParser() {
         return {
             isOptions(obj: IntParam): boolean {
+                // Assumes !isIntable(obj)
                 return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
             },
             
@@ -118,7 +119,6 @@ export class Int extends Number {
                     return false;
                 x = x as Object;
                 const intable = '__int__' in x;
-                if (globalLog) console.log({intable});
                 return intable;
             },
             parse(x: IntParam, base: IntParam, log?: boolean): [string | number, string | number] {
@@ -283,9 +283,16 @@ export class Int extends Number {
         globalLog = log;
         if (log) console.log({x, base, log});
         if (Int.OptionsParser.isIntable(x)) {
-            super(x.__int__());
-            if (log) console.log(cc('bright magenta', `x is Intable, super(x.__int__()) and return. this: ${this}`));
-            return;
+            if (log) console.log(cc('blue', 'x is Intable'));
+            const number = x.__int__();
+            try {
+                super(int(number));
+                if (log) console.log(cc('bright magenta', `super(x.__int__()) and return. this: ${this}`));
+                return
+            } catch (e) {
+                if (log) console.log(cc('bright yellow', `x.__int__() threw an error. Re-throwing it: `), e);
+                throw e
+            }
         }
         if (Int.OptionsParser.isOptions(x) || Int.OptionsParser.isOptions(base)) { // keep after instanceof Int check
             if (log) console.log(cc('blue', `Got objects, calling Int.OptionsParser.parse(x, base)`));
@@ -326,8 +333,9 @@ export class Int extends Number {
             // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
             if (log) console.log(cc('cyan', `base === undefined => base=10`));
         } else {
-            if (typeofbase !== 'number' || parseFloat(base) - parseInt(base) !== 0) {
-                if (log) console.log(cc('bright yellow', `typeofbase !== 'number', TypeError`));
+            // if (typeofbase !== 'number' || parseFloat(base) - parseInt(base) !== 0) {
+            if (!isRoundNumber(base)) {
+                if (log) console.log(cc('bright yellow', `!isRoundNumber(base)', TypeError`));
                 throw new TypeError(`'${typeofbase}' object cannot be interpreted as an integer`);
             }
             
