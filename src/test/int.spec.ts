@@ -522,6 +522,17 @@ describe('CPython Tests', () => {
         check(b'123\xbd', 10)*/
         
     });
+    describe('test_int_base_limits', () => {
+        const valerr = new ValueError('int() base must be >= 2 and <= 36, or 0');
+        test("int('0', 5)", () => expect(int('0', 5)).toEqual(0));
+        test("int('0', 1) ValueError", () => expect(() => int('0', 1)).toThrow(valerr));
+        test("int('0', 37) ValueError", () => expect(() => int('0', 37)).toThrow(valerr));
+        test("int('0', -909) ValueError", () => expect(() => int('0', -909)).toThrow(valerr));
+        test("int('0', {base: 0 - (2 ** 234)}) ValueError", () => expect(() => int('0', {base: 0 - (2 ** 234)})).toThrow(valerr));
+        test("int('0', {base: 2 ** 234}) ValueError", () => expect(() => int('0', {base: 2 ** 234})).toThrow(valerr));
+        
+    });
+    
     describe.skip('test_int_returns_int_subclass', () => {
         
         
