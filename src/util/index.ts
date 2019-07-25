@@ -1,7 +1,7 @@
 import * as perf from "./perf"
 
 function isRoundNumber(x): boolean {
-    return typeof x === 'number' && parseFloat(x) - parseInt(x) === 0
+    return (typeof x === 'number') && (parseFloat(x) - parseInt(x) === 0)
 }
 
 

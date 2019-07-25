@@ -1,5 +1,6 @@
-import {ZeroDivisionError, ValueError} from "./exceptions"
-import {cc, isRoundNumber} from "./util";
+import {ValueError, ZeroDivisionError} from "./exceptions"
+import * as util from "./util";
+import {cc} from "./util";
 
 
 /**
@@ -284,15 +285,14 @@ export class Int extends Number {
         if (log) console.log({x, base, log});
         if (Int.OptionsParser.isIntable(x)) {
             if (log) console.log(cc('blue', 'x is Intable'));
-            const number = x.__int__();
-            try {
-                super(int(number));
-                if (log) console.log(cc('bright magenta', `super(x.__int__()) and return. this: ${this}`));
-                return
-            } catch (e) {
-                if (log) console.log(cc('bright yellow', `x.__int__() threw an error. Re-throwing it: `), e);
-                throw e
+            let number = x.__int__();
+            if (!util.isRoundNumber(number)) {
+                if (log) console.log(cc('bright yellow', `int(x.__int__()) !isRoundNumber. TypeError`));
+                throw new TypeError(`__int__ returned non-int (type ${typeof number})`)
             }
+            super(number);
+            if (log) console.log(cc('bright magenta', `super(x.__int__()) and return. this: ${this}`));
+            return
         }
         if (Int.OptionsParser.isOptions(x) || Int.OptionsParser.isOptions(base)) { // keep after instanceof Int check
             if (log) console.log(cc('blue', `Got objects, calling Int.OptionsParser.parse(x, base)`));
@@ -334,7 +334,7 @@ export class Int extends Number {
             if (log) console.log(cc('cyan', `base === undefined => base=10`));
         } else {
             // if (typeofbase !== 'number' || parseFloat(base) - parseInt(base) !== 0) {
-            if (!isRoundNumber(base)) {
+            if (!util.isRoundNumber(base)) {
                 if (log) console.log(cc('bright yellow', `!isRoundNumber(base)', TypeError`));
                 throw new TypeError(`'${typeofbase}' object cannot be interpreted as an integer`);
             }
