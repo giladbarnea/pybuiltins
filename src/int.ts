@@ -57,13 +57,15 @@ Number.prototype = oldProto;
 });
 */
 
+type XType = string | number | Int;
+
 interface IntOptions {
-    x?: string | number,
+    x?: XType,
     base?: number,
     log?: boolean
 }
 
-type IntParam = string | number | IntOptions;
+type IntParam = XType | IntOptions ;
 let globalLog = false;
 
 export class Int extends Number {
@@ -519,7 +521,7 @@ export class Int extends Number {
 }
 
 
-export function int(x: string | number | IntOptions = undefined, base?: string | number | IntOptions, log?: boolean): Int {
+export function int(x: IntParam = undefined, base?: IntParam, log?: boolean): Int {
     return new Int(x, base, log)
 }
 

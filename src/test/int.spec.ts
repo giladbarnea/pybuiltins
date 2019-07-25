@@ -498,7 +498,7 @@ describe('CPython Tests', () => {
         
         
         test('expect(myInt).toEqual(7)', () => expect(myInt).toEqual(7));
-        test('expect(int(myInt)).toEqual(42)', () => expect(int(myInt)).toEqual(42));
+        test('expect(int(myInt)).toEqual(42)', () => expect(int(myInt, undefined, true)).toEqual(42));
         test('int(new BadInt()) TypeError', () => expect(() => int(new BadInt())).toThrow(TypeError));
     });
     describe.skip('test_int_returns_int_subclass', () => {
