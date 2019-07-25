@@ -122,6 +122,20 @@ export class Int extends Number {
                 const intable = '__int__' in x;
                 return intable;
             },
+            parseIntable(x: Intable, log?: boolean) {
+                const number = x.__int__();
+                let typeofnumber = typeof number;
+                if (typeofnumber === "number") {
+                    if (parseFloat(number) - parseInt(number) === 0) {
+                        if (log) console.log(cc('magenta', `\tnumber is float, returning: ${number}`));
+                        return number
+                    } else {
+                        typeofnumber = 'float';
+                    }
+                }
+                if (log) console.log(cc('bright yellow', `int(x.__int__()) returned non-int. TypeError`));
+                throw new TypeError(`__int__ returned non-int (type ${typeofnumber})`);
+            },
             parseOptions(x: IntParam, base: IntParam, log?: boolean): [string | number, string | number] {
                 const typeofx = typeof x;
                 const typeofbase = typeof base;
@@ -285,20 +299,10 @@ export class Int extends Number {
         if (log) console.log({x, base, log});
         if (Int.ArgsParser.isIntable(x)) {
             if (log) console.log(cc('blue', 'x is Intable'));
-            const number = x.__int__();
-            let typeofnumber = typeof number;
-            if (typeofnumber === "number") {
-                if (parseFloat(number) - parseInt(number) === 0) {
-                    super(number);
-                    if (log) console.log(cc('bright magenta', `super(x.__int__()) and return. this: ${this}`));
-                    return
-                } else {
-                    typeofnumber = 'float';
-                }
-            }
-            if (log) console.log(cc('bright yellow', `int(x.__int__()) !isRoundNumber. TypeError`));
-            throw new TypeError(`__int__ returned non-int (type ${typeofnumber})`);
-            
+            const number = Int.ArgsParser.parseIntable(x, log);
+            super(number);
+            if (log) console.log(cc('bright magenta', `super(parseIntable(x)) and return. this: ${this}`));
+            return
         }
         if (Int.ArgsParser.isOptions(x) || Int.ArgsParser.isOptions(base)) { // keep after instanceof Int check
             if (log) console.log(cc('blue', `Got objects, calling Int.OptionsParser.parse(x, base)`));
