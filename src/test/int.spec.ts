@@ -500,6 +500,34 @@ describe('CPython Tests', () => {
         test('expect(int(myInt)).toEqual(42)', () => expect(int(myInt)).toEqual(42));
         test('int(new BadInt()) TypeError', () => expect(() => int(new BadInt())).toThrow(TypeError));
     });
+    describe.skip('test_int_returns_int_subclass', () => {
+        
+        
+        class BadInt {
+            valueOf() {
+                return bool(true);
+            }
+        }
+        
+        class BadInt2 extends Int {
+            valueOf() {
+                return bool(true);
+            }
+        }
+        
+        const badInt = int(new BadInt());
+        expect(badInt).toEqual(1);
+        expect(typeof badInt).toBe("number"); // original: self.assertIs(type(n), int)
+        expect(badInt).toBeInstanceOf(Int);
+        
+        const badInt2 = int(new BadInt2());
+        expect(badInt2).toEqual(1);
+        expect(typeof badInt2).toBe("number");
+        expect(badInt2).toBeInstanceOf(Int);
+        
+        
+    });
+    
     describe('longobject.c', () => {
         // Objects\longobject.c.PyLong_FromString (2117)
         test('PyLong_FromString', () => {
