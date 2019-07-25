@@ -485,7 +485,6 @@ describe('CPython Tests', () => {
             
             
             __int__(): number {
-                console.log('GoodInt __int__ returning 42');
                 return 42;
             }
         }
@@ -496,8 +495,7 @@ describe('CPython Tests', () => {
             }
         }
         
-        const goodInt = new GoodInt(7, undefined, true);
-        console.log('\x00');
+        const goodInt = new GoodInt(7);
         
         test('expect(goodInt).toEqual(7)', () => expect(goodInt).toEqual(7));
         test('expect(int(goodInt)).toEqual(42)', () => expect(int(goodInt)).toEqual(42));
@@ -506,7 +504,7 @@ describe('CPython Tests', () => {
     describe('test_error_message', () => {
         test("int('\xbd') ValueError", () => expect(() => int('\xbd', undefined, true)).toThrow(valerr('\xbd')));
         test("int('123\xbd') ValueError", () => expect(() => int('123\xbd', undefined, true)).toThrow(valerr('123\xbd')));
-        test("int('  123 456  ') ValueError", () => expect(() => int('  123 456  ')).toThrow(valerr('  123 456  ')));
+        test("int('  123 456  ') ValueError", () => expect(() => int('  123 456  ', undefined, true)).toThrow(valerr('  123 456  ')));
         test("int('123\x00') ValueError", () => expect(() => int('123\x00')).toThrow(valerr('123\x00')));
         // SF bug 1545497: embedded NULs were not detected with explicit base
         test("int('123\x00', 10) ValueError", () => expect(() => int('123\x00', 10)).toThrow(valerr('123\x00', 10)));

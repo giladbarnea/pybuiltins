@@ -296,7 +296,7 @@ export class Int extends Number {
     
     constructor(x: IntParam = undefined, base?: IntParam, log?: boolean) {
         globalLog = log;
-        if (log) console.log({x, base, log});
+        if (log) console.log(cc('black', 'constructor before ArgsParser'), {x, base, log});
         if (Int.ArgsParser.isIntable(x)) {
             if (log) console.log(cc('blue', 'x is Intable'));
             const number = Int.ArgsParser.parseIntable(x, log);
@@ -314,7 +314,7 @@ export class Int extends Number {
         const typeofbase = typeof base;
         let parsedInt = parseInt(x, base); // NaN if fails
         const origbase = base;
-        if (log) console.log(cc(`black`, `constructor, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
+        if (log) console.log(cc(`black`, `constructor after ArgsParser, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
         
         if (x === undefined) {
             if (log) console.log(cc(`blue`, `x === undefined`));
@@ -505,27 +505,29 @@ export class Int extends Number {
             }
             
             for (let c of nosign) { // can iterate on x as well
+                if (c === '_')
+                    continue;
                 let convertedC;
-                if (RegExp(/[a-zA-Z]/).test(c)) {
+                if (RegExp(/[a-zA-Z ]/).test(c)) {
                     convertedC = parseInt(c, 36);
                     if (log) console.log(cc('cyan', `in for loop, converted '${c}' to: ${convertedC}`));
                 } else {
                     convertedC = c;
                 }
-                if (convertedC >= base && c !== '0') { // int("07", 0), int("0c11"), int("0c11", 0), int("0c12", 2),
-                    if (log) console.log(cc('bright yellow', `${convertedC} is >= base ${base}, ValueError`));
+                if (isNaN(convertedC) || (convertedC >= base && c !== '0')) { // int("07", 0), int("0c11"), int("0c11", 0), int("0c12", 2),
+                    if (log) console.log(cc('bright yellow', `Either ${convertedC} isNaN or is >= base ${base}, ValueError`));
                     throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
                 }
             }
             if (Number.isInteger(parsedInt)) { // int('9ba461594', 12)
                 super(parsedInt);
-                if (log) console.log(cc('bright magenta', `if Number.isInteger(parsedInt), super(parsedInt = ${parsedInt}) and return. this: ${this}`));
+                if (log) console.log(cc('bright magenta', `Number.isInteger(parsedInt) => super(parsedInt = ${parsedInt}) and return. this: ${this}`));
                 return
             }
             
             if (!RegExp(/\d/).test(x) ||    // empty strings
                 x.includes(' ')) { // int("+ 314")
-                if (log) console.log(cc('bright yellow', `x.includes(' ') or no /\d/ in x, ValueError`));
+                if (log) console.log(cc('bright yellow', `Either ${x} includes(' ') or no /\d/ in x, ValueError`));
                 throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
             }
             
