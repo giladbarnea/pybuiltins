@@ -497,11 +497,31 @@ describe('CPython Tests', () => {
         }
         
         const goodInt = new GoodInt(7, undefined, true);
-        
+        console.log('\x00');
         
         test('expect(goodInt).toEqual(7)', () => expect(goodInt).toEqual(7));
-        test('expect(int(goodInt)).toEqual(42)', () => expect(int(goodInt, undefined, true)).toEqual(42));
-        test('int(new BadInt()) TypeError', () => expect(() => int(new BadInt(), undefined, true)).toThrow(new TypeError('__int__ returned non-int (type float)')));
+        test('expect(int(goodInt)).toEqual(42)', () => expect(int(goodInt)).toEqual(42));
+        test('int(new BadInt()) TypeError', () => expect(() => int(new BadInt())).toThrow(new TypeError('__int__ returned non-int (type float)')));
+    });
+    describe('test_error_message', () => {
+        test("int('\xbd') ValueError", () => expect(() => int('\xbd')).toThrow(valerr('\xbd')));
+        test("int('123\xbd') ValueError", () => expect(() => int('123\xbd')).toThrow(valerr('123\xbd')));
+        test("int('  123 456  ') ValueError", () => expect(() => int('  123 456  ')).toThrow(valerr('  123 456  ')))
+        test("int('123\x00') ValueError", () => expect(() => int('123\x00')).toThrow(valerr('123\x00')));
+        // SF bug 1545497: embedded NULs were not detected with explicit base
+        test("int('123\x00', 10) ValueError", () => expect(() => int('123\x00', 10)).toThrow(valerr('123\x00', 10)));
+        test("int('123\x00 245', 20) ValueError", () => expect(() => int('123\x00 245', 20)).toThrow(valerr('123\x00 245', 20)));
+        test("int('123\x00 245', 16) ValueError", () => expect(() => int('123\x00 245', 16)).toThrow(valerr('123\x00 245', 16)));
+        test("int('123\x00245', 20) ValueError", () => expect(() => int('123\x00245', 20)).toThrow(valerr('123\x00245', 20)));
+        test("int('123\x00245', 16) ValueError", () => expect(() => int('123\x00245', 16)).toThrow(valerr('123\x00245', 16)));
+        //TODO:
+        /*# byte string with embedded NUL
+        check(b'123\x00')
+        check(b'123\x00', 10)
+        # non-UTF-8 byte string
+        check(b'123\xbd')
+        check(b'123\xbd', 10)*/
+        test("int('123\ud800', 10)", () => expect(() => int('123\ud800', 10)).toThrow(valerr('123\ud800', 10)));
     });
     describe.skip('test_int_returns_int_subclass', () => {
         
