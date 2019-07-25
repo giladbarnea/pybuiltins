@@ -105,7 +105,7 @@ export class Int extends Number {
     private static get OptionsParser() {
         return {
             isOptions(obj: IntParam): boolean {
-                return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
+                return typeof obj === 'object' && obj !== null && !Array.isArray(obj) && !(obj instanceof Int)
             },
             parse(x: IntParam, base: IntParam, log?: boolean): [string | number, string | number] {
                 const typeofx = typeof x;
