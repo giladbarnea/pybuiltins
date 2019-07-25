@@ -507,10 +507,10 @@ export class Int extends Number {
         
         if (base !== 10) { // int("10", 16)
             super(parsedInt);
-            if (log) console.log(cc('bright magenta', `base !== 10, super(parsedInt = ${parsedInt}}) return. this: ${this}`));
+            if (log) console.log(cc('bright magenta', `base !== 10, super(parsedInt = ${parsedInt}}) and return.`), {this: this});
         } else { // int(314)
             super(x);
-            if (log) console.log(cc('bright magenta', `base === 10, super(${x}) return. this: ${this}`));
+            if (log) console.log(cc('bright magenta', `base === 10, super(${x}) and return.`), {this: this});
         }
         
     }
