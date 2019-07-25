@@ -64,18 +64,28 @@ interface IntOptions {
 }
 
 type IntParam = string | number | IntOptions;
+let globalLog = false;
 
 export class Int extends Number {
+    
     toString(radix?: number): string {
         let ret = super.toString(radix);
-        console.log('toString, returning: ', ret);
+        if (globalLog) console.log(cc('bright magenta', `toString, returning: `), ret, {
+            'typeof ret': typeof ret,
+            this: this,
+            'typeof this': typeof this
+        });
         return ret
     }
     
     
     valueOf(): number {
         let ret = super.valueOf();
-        // console.log('valueOf, returning: ', ret);
+        if (globalLog) console.log(cc('bright magenta', 'valueOf, returning: '), ret, {
+            'typeof ret': typeof ret,
+            this: this,
+            'typeof this': typeof this
+        });
         return ret;
     }
     
@@ -253,6 +263,7 @@ export class Int extends Number {
     }
     
     constructor(x: IntParam = undefined, base?: IntParam, log?: boolean) {
+        globalLog = log;
         // console.log({x, base, log, arguments});
         if (Int.OptionsParser.isOptions(x) || Int.OptionsParser.isOptions(base)) {
             if (log) console.log(cc('blue'), `Got objects, calling parseKwargs(x, base)`);
@@ -501,6 +512,7 @@ export class Int extends Number {
             super(x);
             if (log) console.log(cc('bright magenta', `base === 10, super(${x}) return. this: ${this}`));
         }
+        
     }
     
     

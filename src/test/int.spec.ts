@@ -493,7 +493,7 @@ describe('CPython Tests', () => {
             }
         }
         
-        const myInt = new MyInt(7);
+        const myInt = new MyInt(7, undefined, true);
         
         
         test('expect(myInt).toEqual(7)', () => expect(myInt).toEqual(7));
@@ -911,8 +911,8 @@ describe('TypeError misc', () => {
         const typeerr = typeofobj => new TypeError(`'${typeofobj}' object cannot be interpreted as an integer`);
         test('int("100", null)', () => expect(() => int("100", null)).toThrow(typeerr('object')));
         test('int("100", "2")', () => expect(() => int("100", "2")).toThrow(typeerr('string')));
-        test('int("100", 5.5)', () => expect(() => int("100", 5.5, true)).toThrow(typeerr('number')));
-        test('int("100", .5)', () => expect(() => int("100", .5, true)).toThrow(typeerr('number')));
+        test('int("100", 5.5)', () => expect(() => int("100", 5.5)).toThrow(typeerr('number')));
+        test('int("100", .5)', () => expect(() => int("100", .5)).toThrow(typeerr('number')));
         test('int("100", ()=>{})', () => expect(() => int("100", () => {
         })).toThrow(typeerr('function')));
     });
