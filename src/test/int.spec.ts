@@ -480,25 +480,25 @@ describe('CPython Tests', () => {
         
         
     });
-    describe('Subclassing', () => {
-        test('int_subclass_with_int', () => {
-            
-            class MyInt extends Int {
-                valueOf(): number {
-                    return 42;
-                }
+    describe('test_int_subclass_with_int', () => {
+        class MyInt extends Int {
+            valueOf(): number {
+                return 42;
             }
-            
-            class BadInt extends Int {
-                valueOf(): number {
-                    return 42.0;
-                }
+        }
+        
+        class BadInt extends Int {
+            valueOf(): number {
+                return 42.0;
             }
-            const myInt = new MyInt(7);
-            expect(myInt).toEqual(7);
-            expect(int(myInt)).toEqual(42);
-            expect(int(new BadInt())).toThrow(TypeError);
-        });
+        }
+        
+        const myInt = new MyInt(7);
+        
+        
+        test('expect(myInt).toEqual(7)', () => expect(myInt).toEqual(7));
+        test('expect(int(myInt)).toEqual(42)', () => expect(int(myInt)).toEqual(42));
+        test('int(new BadInt()) TypeError', () => expect(() => int(new BadInt())).toThrow(TypeError));
     });
     describe('longobject.c', () => {
         // Objects\longobject.c.PyLong_FromString (2117)
