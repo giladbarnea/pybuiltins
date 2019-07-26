@@ -11,12 +11,15 @@
 - A given built-in is considered complete only if *all* of its [tests from CPython source](https://github.com/python/cpython/tree/master/Lib/test) are translated to JS and passing.
 - The implementation in JS is kept as similar as possible to the [source implementation of Python in C](https://github.com/python/cpython/tree/master/Objects).
 
-## Progress
+## Progress (July 26 2019)
 
-| Built-in | Tests written | % Tests passing |       Status       |
-|:--------:|:-------------:|:---------------:|:------------------:|
-|   int    |      603      |      100%       |      Stable ✅      |
-|   bool   |       3       |      100%       | Incomplete, stable |
+| Built-in | Tests written | % Tests passing |          Status          |
+|:--------:|:-------------:|:---------------:|:------------------------:|
+|   int    |      603      |      100%       |         Stable ✅        |
+|   bool   |       5       |       60%       | Lacking features, stable |
+|   abs    |       8       |      100%       | Lacking features, stable |
+|   any    |       1       |      100%       | Lacking features, stable |
+... > 60 untouched
 
 ## Known Issues
 - Strict equality doesn't work yet, eg:
