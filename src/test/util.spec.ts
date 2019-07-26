@@ -16,4 +16,8 @@ describe('isInteger', () => {
     test('util.isInteger(562949953421311)', () => expect(util.isInteger(562949953421311)).toBe(true));
     test('util.isInteger(562949953421311.1)', () => expect(util.isInteger(562949953421311.1)).toBe(false));
     test('util.isInteger(562949953421312.1)', () => expect(util.isInteger(562949953421312.1)).toBe(true));
+    test('util.isInteger(Number.EPSILON)', () => expect(util.isInteger(Number.EPSILON)).toBe(false));
+    test('util.isInteger(2 ** -(2 ** 10))', () => expect(util.isInteger(2 ** -(2 ** 10))).toBe(false));
+    test('util.isInteger(2 ** -(2 ** 10))', () => expect(util.isInteger(2 ** -(2 ** 10))).toBe(false));
+    test('util.isInteger(10 ** -323)', () => expect(util.isInteger(10 ** -323)).toBe(false));
 });
