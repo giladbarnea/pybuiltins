@@ -502,9 +502,9 @@ describe('CPython Tests', () => {
         test('int(new BadInt()) TypeError', () => expect(() => int(new BadInt())).toThrow(new TypeError('__int__ returned non-int (type float)')));
     });
     describe('test_error_message', () => {
-        test("int('\xbd') ValueError", () => expect(() => int('\xbd', undefined, true)).toThrow(valerr('\xbd')));
-        test("int('123\xbd') ValueError", () => expect(() => int('123\xbd', undefined, true)).toThrow(valerr('123\xbd')));
-        test("int('  123 456  ') ValueError", () => expect(() => int('  123 456  ', undefined, true)).toThrow(valerr('  123 456  ')));
+        test("int('\xbd') ValueError", () => expect(() => int('\xbd')).toThrow(valerr('\xbd')));
+        test("int('123\xbd') ValueError", () => expect(() => int('123\xbd')).toThrow(valerr('123\xbd')));
+        test("int('  123 456  ') ValueError", () => expect(() => int('  123 456  ')).toThrow(valerr('  123 456  ')));
         test("int('123\x00') ValueError", () => expect(() => int('123\x00')).toThrow(valerr('123\x00')));
         // SF bug 1545497: embedded NULs were not detected with explicit base
         test("int('123\x00', 10) ValueError", () => expect(() => int('123\x00', 10)).toThrow(valerr('123\x00', 10)));
@@ -512,7 +512,7 @@ describe('CPython Tests', () => {
         test("int('123\x00 245', 16) ValueError", () => expect(() => int('123\x00 245', 16)).toThrow(valerr('123\x00 245', 16)));
         test("int('123\x00245', 20) ValueError", () => expect(() => int('123\x00245', 20)).toThrow(valerr('123\x00245', 20)));
         test("int('123\x00245', 16) ValueError", () => expect(() => int('123\x00245', 16)).toThrow(valerr('123\x00245', 16)));
-        test("int('123\ud800', 10)", () => expect(() => int('123\ud800', 10, true)).toThrow(valerr('123\ud800', 10)));
+        test("int('123\ud800', 10)", () => expect(() => int('123\ud800', 10)).toThrow(valerr('123\ud800', 10)));
         //TODO:
         /*# byte string with embedded NUL
         check(b'123\x00')
@@ -530,6 +530,9 @@ describe('CPython Tests', () => {
         test("int('0', -909) ValueError", () => expect(() => int('0', -909)).toThrow(valerr));
         test("int('0', {base: 0 - (2 ** 234)}) ValueError", () => expect(() => int('0', {base: 0 - (2 ** 234)})).toThrow(valerr));
         test("int('0', {base: 2 ** 234}) ValueError", () => expect(() => int('0', {base: 2 ** 234})).toThrow(valerr));
+        for (let base = 2; base < 37; base++) {
+            test(`int('0', {${base}})`, () => expect(int('0', {base})).toEqual(0));
+        }
         
     });
     
