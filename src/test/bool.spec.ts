@@ -20,20 +20,20 @@ test.skip('math', () => {
     
 });
 describe('empty list', () => {
-    it.skip('should be falsey when passed an empty list', () => {
+    it('should be falsey when passed an empty list', () => {
         const actual = bool([]);
         expect(actual).toEqual(false)
     });
 });
 
 describe('false', () => {
-    it.skip('should be falsey when passed false', () => {
+    it('should be falsey when passed false', () => {
         const actual = bool(false);
         expect(actual).toEqual(false)
     });
 });
 describe('empty object', () => {
-    it.skip('should be falsey when passed empty object', () => {
+    it('should be falsey when passed empty object', () => {
         expect(bool({})).toEqual(false);
     });
 });
