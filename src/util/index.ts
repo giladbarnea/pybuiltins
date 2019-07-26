@@ -9,12 +9,8 @@ function isInteger(x): boolean {
     if (isInteger) {
         return true;
     } else {
-        if (x > consts.MAX_SAFE_FLOAT_1_PREC) {
-            console.log(`Bigger than MAX_SAFE_FLOAT_1_PREC by: ${x - consts.MAX_SAFE_FLOAT_1_PREC}`);
-            return true;
-        }
-        console.log(`Not round! x: ${x}, Math.round(x): ${Math.round(x)}`);
-        return false;
+        return x > consts.MAX_SAFE_FLOAT_1_PREC;
+        
     }
 }
 
