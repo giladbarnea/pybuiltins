@@ -7,17 +7,18 @@
 	"scripts": {
 		"start": "npm run build:live",
 		"build": "tsc -p .",
-		"testWatch": "jest --watchAll --bail=10",
 		"test": "jest",
-		"testInt": "jest src/test/int.spec.ts",
+		"test:watch": "jest --watch",
+		"test:int": "jest src/test/int.spec.ts",
+		"test:int:watch": "jest src/test/int.spec.ts --watch",
 		"coverage": "jest --coverage",
-		"foo": "node scripts/foo.ts",
 		"build:live": "nodemon --watch src/int.ts --exec ts-node -T src/int.ts"
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/giladbarnea/pythonjs.git"
 	},
+	"keywords": ["python","python3","int","bool","range","dict","enumerate","list"],
 	"author": "Gilad Barnea",
 	"license": "ISC",
 	"bugs": {
