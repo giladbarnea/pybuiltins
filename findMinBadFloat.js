@@ -10,7 +10,7 @@ function isUnsafe(n, digits) {
 
 }
 
-function findMaxSafeFloat(digits) {
+function findMaxSafeFloat(digits, log = false) {
 	let n = Number.MAX_SAFE_INTEGER;
 	let lastSafe = 0;
 	let lastUnsafe = undefined;
@@ -20,15 +20,17 @@ function findMaxSafeFloat(digits) {
 			console.log(`Something went bad, reached 1000 iterations, force exiting loop`);
 			return;
 		}
-		console.table({
-			'': {
-				n,
-				'Relative to Number.MAX_SAFE_INTEGER': `(MAX + 1) / ${(Number.MAX_SAFE_INTEGER + 1) / (n + 1)} - 1`,
-				lastSafe,
-				lastUnsafe,
-				'lastUnsafe - lastSafe': lastUnsafe - lastSafe
-			}
-		});
+		if (log) {
+			console.table({
+				'': {
+					n,
+					'Relative to Number.MAX_SAFE_INTEGER': `(MAX + 1) / ${(Number.MAX_SAFE_INTEGER + 1) / (n + 1)} - 1`,
+					lastSafe,
+					lastUnsafe,
+					'lastUnsafe - lastSafe': lastUnsafe - lastSafe
+				}
+			});
+		}
 		if (isUnsafe(n, digits)) {
 			lastUnsafe = n;
 		} else {
@@ -44,5 +46,5 @@ function findMaxSafeFloat(digits) {
 	}
 }
 
-console.log(findMaxSafeFloat(1));
+console.log(findMaxSafeFloat(1, log = true));
 
