@@ -3,6 +3,8 @@ import * as util from "./util";
 import {cc} from "./util";
 
 
+
+
 /**
  int([x]) -> integer
  int(x, base=10) -> integer
@@ -344,8 +346,8 @@ export class Int extends Number {
             if (log) console.log(cc('cyan', `base === undefined => base=10`));
         } else {
             // if (typeofbase !== 'number' || parseFloat(base) - parseInt(base) !== 0) {
-            if (!util.isRoundNumber(base)) {
-                if (log) console.log(cc('bright yellow', `!isRoundNumber(base)', TypeError`));
+            if (!util.isInteger(base)) {
+                if (log) console.log(cc('bright yellow', `!isInteger(base)', TypeError`));
                 throw new TypeError(`'${typeofbase}' object cannot be interpreted as an integer`);
             }
             

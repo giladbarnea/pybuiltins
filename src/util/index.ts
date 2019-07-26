@@ -1,19 +1,19 @@
 import * as perf from "./perf"
 
 
-function isRoundNumber(x): boolean {
+function isInteger(x): boolean {
     
-    // TODO: Number.MAX_SAFE_INTEGER / 2 == 4503599627370495.5
-    //  4503599627370495 is sensitive to 1/2 resolution (.0, .5, 1)
-    //  MAX_SAFE_INTEGER / 4: .0, .2, .5, .8
-    //  MAX_SAFE_INTEGER / 5: .0, .2, .5, .8
-    //  MAX_SAFE_INTEGER / 6: .0, .2, .5, .8
-    //  MAX_SAFE_INTEGER / 7: .0, .2, .5, .8
-    //  MAX_SAFE_INTEGER / 8: .0, .1, .2, .4, .5, .6, .8, .9
-    //  MAX_SAFE_INTEGER / 9 (1000799917193443.5): .0, .1, .2, .4, .5, .6, .8, .9
     //  1e+21 is lower limit for toString()
-    // return typeof x === 'number' && parsedFloat - parsedInt === 0
-    return typeof x === 'number' && Math.round(x) - x === 0
+    let isInteger = typeof x === 'number' && Math.round(x) - x === 0;
+    if (isInteger) {
+        return true;
+    } else {
+        if (x > 562949953421311) {
+            console.log(`Not round! x: ${x}, Math.round(x): ${Math.round(x)}`);
+            return true;
+        }
+        return false;
+    }
 }
 
 
@@ -64,4 +64,4 @@ function cc(val: string, ...args) {
     // return [words.map(c => colorsDict[c]).join('') + args[0], ...args.slice(1)]
 }
 
-export {perf, cc, isRoundNumber}
+export {perf, cc, isInteger}
