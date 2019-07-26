@@ -7,6 +7,7 @@ BigInteger
 
 .vscode
 .idea
+scratches/*
 # Logs
 logs
 *.log
