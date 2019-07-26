@@ -8,15 +8,15 @@
 3. Therefore, translating Python's built-ins into JS will reduce the amount of facepalms and make things better overall
 
 ## Rigorousness
-- A given built-in is considered complete only if *all* of its [tests from CPython source](https://github.com/python/cpython/tree/master/Lib/test) are translated to JS and passed.
+- A given built-in is considered complete only if *all* of its [tests from CPython source](https://github.com/python/cpython/tree/master/Lib/test) are translated to JS and passing.
 - The implementation in JS is kept as similar as possible to the [source implementation of Python in C](https://github.com/python/cpython/tree/master/Objects).
 
 ## Progress
 
-| Built-in | Tests written | % Tests passed |                   Status                   |
-|:--------:|:-------------:|:--------------:|:------------------------------------------:|
-|   int    |      603      |      100%      | <span style="color: #0f9d40">Stable</span> |
-|   bool   |       3       |      100%      | <span style="color: #0f9d40">Incomplete, stable</span> |
+| Built-in | Tests written | % Tests passing |       Status       |
+|:--------:|:-------------:|:---------------:|:------------------:|
+|   int    |      603      |      100%       |      Stable ✅      |
+|   bool   |       3       |      100%       | Incomplete, stable |
 
 ## Known Issues
 - Strict equality doesn't work yet, eg:
