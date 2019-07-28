@@ -327,8 +327,8 @@ export class Int extends Number {
             super(0);
             if (log) console.log(cc('bright magenta', `x is undefined, super(0) return. this: ${this}`));
             return
-        } else if (x === false) {
-            super(0);
+        } else if (typeofx === 'boolean') {
+            super(x);
             if (log) console.log(cc('bright magenta', `x is false, super(0) return. this: ${this}`));
             return
         }
