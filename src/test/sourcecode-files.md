@@ -7,3 +7,13 @@
 \python\python3.7.3_source\Lib\test\test_int_literal.py
 
 ### Implementations
+\python\python3.7.3_source\Objects\longobject.c
+
+## Bool
+### Tests
+\pypy\lib-python\3\test\test_bool.py (use cpython equiv)
+\python\python3.7.3_source\Lib\test\test_bool.py
+\pypy\pypy\objspace\std\test\test_boolobject.py
+
+### Implementations
+\python\python3.7.3_source\Objects\boolobject.c

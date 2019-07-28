@@ -1,39 +1,48 @@
 import {bool} from "../bool";
 import {int} from "../int";
 
-test.skip('subclass', () => {
-    // /Lib/test/test_bool.py.test_subclass
-    expect(() => {
-        class C extends bool {
-            pass
+describe(`My Tests`, () => {
+    test.skip('math', () => {
+        // /Lib/test/test_bool.py.test_math:106
+        for (let b of [bool(false), bool(true)]) {
+            for (let i of [0, 1, 2]) {
+                expect(b ** i).not.toBe(int(b) ** i);
+                expect(b ** i).toEqual(int(b) ** i);
+            }
         }
-    }).toThrowError()
-});
-test.skip('math', () => {
-    // /Lib/test/test_bool.py.test_math:106
-    for (let b of [bool(false), bool(true)]) {
-        for (let i of [0, 1, 2]) {
-            expect(b ** i).not.toBe(int(b) ** i);
-            expect(b ** i).toEqual(int(b) ** i);
-        }
-    }
+        
+    });
+    describe('empty list', () => {
+        it('should be falsey when passed an empty list', () => {
+            const actual = bool([]);
+            expect(actual).toEqual(false)
+        });
+    });
     
+    describe('false', () => {
+        it('should be falsey when passed false', () => {
+            const actual = bool(false);
+            expect(actual).toEqual(false)
+        });
+    });
+    describe('empty object', () => {
+        it('should be falsey when passed empty object', () => {
+            expect(bool({})).toEqual(false);
+        });
+    });
 });
-describe('empty list', () => {
-    it('should be falsey when passed an empty list', () => {
-        const actual = bool([]);
-        expect(actual).toEqual(false)
+describe(`CPython Tests`, () => {
+    test.skip('test_subclass', () => {
+        expect(() => {
+            class C extends bool {
+                pass
+            }
+        }).toThrowError()
+    });
+    describe(`test_int`, () => {
+        test(`int(bool(false)`, () => {
+            expect(int(bool(false)).toEqual(0));
+        });
     });
 });
 
-describe('false', () => {
-    it('should be falsey when passed false', () => {
-        const actual = bool(false);
-        expect(actual).toEqual(false)
-    });
-});
-describe('empty object', () => {
-    it('should be falsey when passed empty object', () => {
-        expect(bool({})).toEqual(false);
-    });
-});
