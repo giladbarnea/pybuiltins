@@ -3,8 +3,6 @@ import * as util from "./util";
 import {cc} from "./util";
 
 
-
-
 /**
  int([x]) -> integer
  int(x, base=10) -> integer
@@ -60,7 +58,7 @@ Number.prototype = oldProto;
 });
 */
 
-type XType = string | number | Intable;
+type XType = string | number | boolean | Intable;
 
 interface IntOptions {
     x?: XType,

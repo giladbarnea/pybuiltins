@@ -18,7 +18,20 @@
 		"type": "git",
 		"url": "git+https://github.com/giladbarnea/pythonjs.git"
 	},
-	"keywords": ["python","python3","int","bool","range","dict","enumerate","list"],
+	"keywords": [
+		"python",
+		"python3",
+		"str",
+		"string",
+		"int",
+		"bool",
+		"boolean",
+		"float",
+		"range",
+		"dict",
+		"enumerate",
+		"list"
+	],
 	"author": "Gilad Barnea",
 	"license": "ISC",
 	"bugs": {
