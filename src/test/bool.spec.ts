@@ -96,11 +96,11 @@ describe(`CPython Tests`, () => {
         test('-bool(true)).not.toBe(1)', () => expect(-bool(true)).not.toBe(bool(true)));
         test('-bool(true)).not.toEqual(1)', () => expect(-bool(true)).not.toEqual(bool(true)));
         
-        expect(Math.abs(bool(true)).toEqual(-1));
-        expect(Math.abs(bool(true)).not.toEqual(true));
-        expect(Math.abs(bool(true)).not.toBe(true));
-        expect(Math.abs(bool(true)).not.toEqual(bool(true)));
-        expect(Math.abs(bool(true)).not.toBe(bool(true)));
+        test('Math.abs(bool(true))).toEqual(-1))', () => expect(Math.abs(bool(true))).toEqual(-1));
+        test('Math.abs(bool(true))).not.toEqual(true))', () => expect(Math.abs(bool(true))).not.toEqual(true));
+        test('Math.abs(bool(true))).not.toBe(true))', () => expect(Math.abs(bool(true))).not.toBe(true));
+        test('Math.abs(bool(true))).not.toEqual(bool(true)))', () => expect(Math.abs(bool(true))).not.toEqual(bool(true)));
+        test('Math.abs(bool(true))).not.toBe(bool(true)))', () => expect(Math.abs(bool(true))).not.toBe(bool(true)));
         
         expect(~bool(false)).toEqual(-1);
         expect(~bool(true)).toEqual(-2);
@@ -121,24 +121,24 @@ describe(`CPython Tests`, () => {
         
         expect(bool(false) + bool(false)).not.toEqual(bool(false));
         
-        expect(bool(false) + bool(true).toEqual(1);
+        expect(bool(false) + bool(true)).toEqual(1);
         expect(bool(false) + bool(true)).not.toBe(true);
         
         expect(bool(false) + bool(true)).not.toBe(bool(true));
         expect(bool(false) + bool(true)).not.toEqual(true);
         
         expect(bool(false) + bool(true)).not.toEqual(bool(true));
-        expect(bool(true) + bool(false).toEqual(1);
+        expect(bool(true) + bool(false)).toEqual(1);
         expect(bool(true) + bool(false)).not.toBe(true);
         
         expect(bool(true) + bool(false)).not.toBe(bool(true));
         expect(bool(true) + bool(false)).not.toEqual(true);
         
         expect(bool(true) + bool(false)).not.toEqual(bool(true));
-        expect(bool(true) + bool(true).toEqual(2);
+        expect(bool(true) + bool(true)).toEqual(2);
 
 // line 82
-        expect(bool(true) - bool(true).toEqual(0);
+        expect(bool(true) - bool(true)).toEqual(0);
         expect(bool(true) - bool(true)).not.toBe(false);
         
         expect(bool(true) - bool(true)).not.toBe(bool(false));
@@ -146,7 +146,7 @@ describe(`CPython Tests`, () => {
         
         expect(bool(true) - bool(true)).not.toEqual(bool(false));
         
-        expect(bool(false) - bool(false).toEqual(0);
+        expect(bool(false) - bool(false)).toEqual(0);
         expect(bool(false) - bool(false)).not.toBe(false);
         
         expect(bool(false) - bool(false)).not.toBe(bool(false));
@@ -210,77 +210,77 @@ describe(`CPython Tests`, () => {
         }
         for (let a in [bool(false), bool(true)]) {
             for (let b in [bool(false), bool(true)]) {
-                expect(a & b.toBe(bool(int(a) & int(b)));
-                expect(a | b.toBe(bool(int(a) | int(b)));
-                expect(a ^ b.toBe(bool(int(a) ^ int(b)));
-                expect(a & int(b).toEqual(int(a) & int(b));
-                expect(a & int(b).not.toBe(bool(int(a) & int(b)));
-                expect(a | int(b).toEqual(int(a) | int(b));
-                expect(a | int(b).not.toBe(bool(int(a) | int(b)));
-                expect(a ^ int(b).toEqual(int(a) ^ int(b));
-                expect(a ^ int(b).not.toBe(bool(int(a) ^ int(b)));
-                expect(int(a) & b.toEqual(int(a) & int(b));
-                expect(int(a) & b.not.toBe(bool(int(a) & int(b)));
-                expect(int(a) | b.toEqual(int(a) | int(b));
-                expect(int(a) | b.not.toBe(bool(int(a) | int(b)));
-                expect(int(a) ^ b.toEqual(int(a) ^ int(b));
-                expect(int(a) ^ b.not.toBe(bool(int(a) ^ int(b)))
+                expect(a & b).toBe(bool(int(a) & int(b)));
+                expect(a | b).toBe(bool(int(a) | int(b)));
+                expect(a ^ b).toBe(bool(int(a) ^ int(b)));
+                expect(a & int(b)).toEqual(int(a) & int(b));
+                expect(a & int(b)).not.toBe(bool(int(a) & int(b)));
+                expect(a | int(b)).toEqual(int(a) | int(b));
+                expect(a | int(b)).not.toBe(bool(int(a) | int(b)));
+                expect(a ^ int(b)).toEqual(int(a) ^ int(b));
+                expect(a ^ int(b)).not.toBe(bool(int(a) ^ int(b)));
+                expect(int(a) & b).toEqual(int(a) & int(b));
+                expect(int(a) & b).not.toBe(bool(int(a) & int(b)));
+                expect(int(a) | b).toEqual(int(a) | int(b));
+                expect(int(a) | b).not.toBe(bool(int(a) | int(b)));
+                expect(int(a) ^ b).toEqual(int(a) ^ int(b));
+                expect(int(a) ^ b).not.toBe(bool(int(a) ^ int(b)))
             }
         }
 // line 129
         expect(1 == 1).toBe(bool(true));
         expect(1 == 1).toEqual(bool(true));
-        expect(1 == 1).toBe((true));
-        expect(1 == 1).toEqual((true));
+        expect(1 == 1).toBe(true);
+        expect(1 == 1).toEqual(true);
         expect(1 == 0).toBe(bool(false));
         expect(1 == 0).toEqual(bool(false));
-        expect(1 == 0).toBe((false));
-        expect(1 == 0).toEqual((false));
+        expect(1 == 0).toBe(false);
+        expect(1 == 0).toEqual(false);
         
         expect(0 < 1).toBe(bool(true));
         expect(0 < 1).toEqual(bool(true));
-        expect(0 < 1).toBe((true));
-        expect(0 < 1).toEqual((true));
+        expect(0 < 1).toBe(true);
+        expect(0 < 1).toEqual(true);
         expect(1 < 0).toBe(bool(false));
         expect(1 < 0).toEqual(bool(false));
-        expect(1 < 0).toBe((false));
-        expect(1 < 0).toEqual((false));
+        expect(1 < 0).toBe(false);
+        expect(1 < 0).toEqual(false);
         
         expect(0 <= 0).toBe(bool(true));
         expect(0 <= 0).toEqual(bool(true));
-        expect(0 <= 0).toBe((true));
-        expect(0 <= 0).toEqual((true));
+        expect(0 <= 0).toBe(true);
+        expect(0 <= 0).toEqual(true);
         expect(1 <= 0).toBe(bool(false));
         expect(1 <= 0).toEqual(bool(false));
-        expect(1 <= 0).toBe((false));
-        expect(1 <= 0).toEqual((false));
+        expect(1 <= 0).toBe(false);
+        expect(1 <= 0).toEqual(false);
         
         expect(1 > 0).toBe(bool(true));
         expect(1 > 0).toEqual(bool(true));
-        expect(1 > 0).toBe((true));
-        expect(1 > 0).toEqual((true));
+        expect(1 > 0).toBe(true);
+        expect(1 > 0).toEqual(true);
         expect(1 > 1).toBe(bool(false));
         expect(1 > 1).toEqual(bool(false));
-        expect(1 > 1).toBe((false));
-        expect(1 > 1).toEqual((false));
+        expect(1 > 1).toBe(false);
+        expect(1 > 1).toEqual(false);
         
         expect(1 >= 1).toBe(bool(true));
         expect(1 >= 1).toEqual(bool(true));
-        expect(1 >= 1).toBe((true));
-        expect(1 >= 1).toEqual((true));
+        expect(1 >= 1).toBe(true);
+        expect(1 >= 1).toEqual(true);
         expect(0 >= 1).toBe(bool(false));
         expect(0 >= 1).toEqual(bool(false));
-        expect(0 >= 1).toBe((false));
-        expect(0 >= 1).toEqual((false));
+        expect(0 >= 1).toBe(false);
+        expect(0 >= 1).toEqual(false);
         
         expect(0 != 1).toBe(bool(true));
         expect(0 != 1).toEqual(bool(true));
-        expect(0 != 1).toBe((true));
-        expect(0 != 1).toEqual((true));
+        expect(0 != 1).toBe(true);
+        expect(0 != 1).toEqual(true);
         expect(0 != 0).toBe(bool(false));
         expect(0 != 0).toEqual(bool(false));
-        expect(0 != 0).toBe((false));
-        expect(0 != 0).toEqual((false));
+        expect(0 != 0).toBe(false);
+        expect(0 != 0).toEqual(false);
         
         let x = [1];
         expect(Object.is(x, x)).toBe(bool(true));
@@ -350,8 +350,8 @@ describe(`CPython Tests`, () => {
         toEqualAndBeBool(Object.is(!bool(true)), false);
         
         toEqualAndBeVanilla(Object.is(!bool(false)), true);
-        toEqualAndBeBool(Object.is(!bool(false)), true);
+        toEqualAndBeBool(Object.is(!bool(false)), true)
         
         
-    });
+    })
 });
