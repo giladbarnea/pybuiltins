@@ -1,4 +1,3 @@
-
 export function bool(val: any): boolean {
     
     if (val === null)
@@ -11,5 +10,4 @@ export function bool(val: any): boolean {
             return !!val;
     }
     return Object.keys(val).length !== 0;
-    
 }

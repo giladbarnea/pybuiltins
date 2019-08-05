@@ -295,7 +295,7 @@ describe(`CPython Tests`, () => {
     });
     describe(`test_convert`, () => {
         // (,,'assertRaises(TypeError, bool, 42, 42)');
-        test('bool(42, 42) TypeError', expect(bool(42, 42)).toThrow(new TypeError(`bool() takes at most 1 argument (2 given)`)));
+        test('bool(42, 42) TypeError', () => expect(bool(42, 42)).toThrow(new TypeError(`bool() takes at most 1 argument (2 given)`)));
         toEqualAndBeVanillaAndBool(bool(10), true, 'assertIs(bool(10), True)');
         toEqualAndBeVanillaAndBool(bool(1), true, 'assertIs(bool(1), True)');
         toEqualAndBeVanillaAndBool(bool(-1), true, 'assertIs(bool(-1), True)');
@@ -353,9 +353,43 @@ describe(`CPython Tests`, () => {
         toEqualAndBeVanillaAndBool("xyz".startsWith("z"), false, 'assertIs("xyz".startswith("z"), False)');
         skip.toEqualAndBeVanillaAndBool(str("xyz").startswith("z"), false, 'assertIs("xyz".startswith("z"), False)');
     });
+    
+    // line 233
+    // TODO: all besdies not instanceof fail
     describe(`test_boolean`, () => {
-        toEqualAndBeVanillaAndBool(bool(true) & 1, 1, 'self.assertEqual(True & 1, 1)');
-        expect(bool(true) & 1).not.toBeInstanceOf(Boolean);
-        toEqualAndBeVanillaAndBool(bool(true) & bool(true), true, 'self.assertIs(True & True, True)');
+        
+        toEqualAndBeVanillaAndBool(bool(true) & 1, 1, 'assertEqual(True & 1, 1)');
+        test('(bool(true) & 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) & 1).not.toBeInstanceOf(Boolean));
+        toEqualAndBeVanillaAndBool(bool(true) & bool(true), true, 'assertIs(True & True, True)');
+        
+        toEqualAndBeVanillaAndBool(bool(true) | 1, 1, 'assertEqual(True | 1, 1)');
+        test('(bool(true) | 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) | 1).not.toBeInstanceOf(Boolean));
+        toEqualAndBeVanillaAndBool(bool(true) | bool(true), true, 'assertIs(True | True, True)');
+        
+        toEqualAndBeVanillaAndBool(bool(true) ^ 1, 0, 'assertEqual(True ^ 1, 0)');
+        test('(bool(true) ^ 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) ^ 1).not.toBeInstanceOf(Boolean));
+        toEqualAndBeVanillaAndBool(bool(true) ^ bool(true), false, 'assertIs(True ^ True, false)');
+        
+        
+    });
+    describe(`test_fileclosed`, () => {
+        /*def test_fileclosed(self):
+            try:
+                f = open(support.TESTFN, "w")
+                assertIs(f.closed, False)
+                f.close()
+                assertIs(f.closed, True)
+            finally:
+                os.remove(support.TESTFN)
+        */
+    });
+    describe(`test_types`, () => {
+        // types are always true.
+        for (let t of [[bool, complex, dict, float, int, list, object,
+            set, str, tuple, type]]) {
+            toEqualAndBeVanillaAndBool(bool(t), true, 'assertIs(bool(t), True)');
+            
+            
+        }
     });
 });
