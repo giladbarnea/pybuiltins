@@ -52,13 +52,11 @@ function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, n
     
 }
 
-const not = (() => {
-    return {
-        toEqualAndBeVanilla: (actual, expected, description = undefined) => toEqualAndBeVanilla(actual, expected, description, "NOT"),
-        toEqualAndBeBool: (actual, expected, description = undefined) => toEqualAndBeBool(actual, expected, description, "NOT"),
-        toEqualAndBeVanillaAndBool: (actual, expected, description = undefined) => toEqualAndBeVanillaAndBool(actual, expected, description, "NOT")
-    }
-})();
+const not = (() => ({
+    toEqualAndBeVanilla: (actual, expected, description = undefined) => toEqualAndBeVanilla(actual, expected, description, "NOT"),
+    toEqualAndBeBool: (actual, expected, description = undefined) => toEqualAndBeBool(actual, expected, description, "NOT"),
+    toEqualAndBeVanillaAndBool: (actual, expected, description = undefined) => toEqualAndBeVanillaAndBool(actual, expected, description, "NOT")
+}))();
 
 
 describe(`My Tests`, () => {
@@ -101,148 +99,69 @@ describe(`CPython Tests`, () => {
         
     });
     describe('test_math', () => {
-        test('+bool(false)).toEqual(0)', () => expect(+bool(false)).toEqual(0));
+        toEqualAndBeVanilla(+bool(false), 0, 'assertEqual(+False, 0)');
+        not.toEqualAndBeVanillaAndBool(+bool(false), bool(false), 'assertIsNot(+False, False)');
+        toEqualAndBeVanilla(-bool(false), 0, 'assertEqual(-False, 0)');
+        not.toEqualAndBeVanillaAndBool(-bool(false), bool(false), 'assertIsNot(-False, False)');
+        toEqualAndBeVanilla(Math.abs(bool(false)), 0, 'assertEqual(abs(False), 0)');
+        not.toEqualAndBeVanillaAndBool(Math.abs(bool(false)), bool(false), 'assertIsNot(abs(False), False)');
+        toEqualAndBeVanilla(+bool(true), 1, 'assertEqual(+True, 1)');
+        not.toEqualAndBeVanillaAndBool(+bool(true), bool(true), 'assertIsNot(+True, True)');
+        toEqualAndBeVanilla(-bool(true), -1, 'assertEqual(-True, -1)');
+        toEqualAndBeVanilla(Math.abs(bool(true)), 1, 'assertEqual(abs(True), 1)');
+        not.toEqualAndBeVanillaAndBool(Math.abs(bool(true)), bool(true), 'assertIsNot(abs(True), True)');
+        toEqualAndBeVanilla(~bool(false), -1, 'assertEqual(~False, -1)');
+        toEqualAndBeVanilla(~bool(true), -2, 'assertEqual(~True, -2)');
         
-        test('+bool(false)).not.toBe(0)', () => expect(+bool(false)).not.toBe(false));
-        test('+bool(false)).not.toEqual(0)', () => expect(+bool(false)).not.toEqual(false));
-        test('+bool(false)).not.toBe(0)', () => expect(+bool(false)).not.toBe(bool(false)));
-        test('+bool(false)).not.toEqual(0)', () => expect(+bool(false)).not.toEqual(bool(false)));
-        
-        // line 57
-        test('-bool(false)).toEqual(0)', () => expect(-bool(false)).toEqual(0));
-        
-        test('-bool(false)).not.toEqual(0)', () => expect(-bool(false)).not.toEqual(false));
-        test('-bool(false)).not.toBe(0)', () => expect(-bool(false)).not.toBe(false));
-        test('-bool(false)).not.toBe(0)', () => expect(-bool(false)).not.toBe(bool(false)));
-        test('-bool(false)).not.toEqual(0)', () => expect(-bool(false)).not.toEqual(bool(false)));
-        
-        test('(Math.abs(bool(false)).toEqual(0))', () => expect(Math.abs(bool(false))).toEqual(0));
-        test('Math.abs(bool(false)).not.toEqual(false)', () => expect(Math.abs(bool(false))).not.toEqual(false));
-        test('Math.abs(bool(false)).not.toBe(false)', () => expect(Math.abs(bool(false))).not.toBe(false));
-        test('Math.abs(bool(false)).not.toEqual(bool(false))', () => expect(Math.abs(bool(false))).not.toEqual(bool(false)));
-        test('Math.abs(bool(false)).not.toBe(bool(false))', () => expect(Math.abs(bool(false))).not.toBe(bool(false)));
-        
-        
-        test('+bool(true)).toEqual(1)', () => expect(+bool(true)).toEqual(1));
-        
-        test('+bool(true)).not.toBe(1)', () => expect(+bool(true)).not.toBe(true));
-        test('+bool(true)).not.toEqual(1)', () => expect(+bool(true)).not.toEqual(true));
-        test('+bool(true)).not.toBe(1)', () => expect(+bool(true)).not.toBe(bool(true)));
-        test('+bool(true)).not.toEqual(1)', () => expect(+bool(true)).not.toEqual(bool(true)));
-        
-        test('-bool(true)).toEqual(-1)', () => expect(-bool(true)).toEqual(-1));
-        
-        test('-bool(true)).not.toEqual(1)', () => expect(-bool(true)).not.toEqual(true));
-        test('-bool(true)).not.toBe(1)', () => expect(-bool(true)).not.toBe(true));
-        test('-bool(true)).not.toBe(1)', () => expect(-bool(true)).not.toBe(bool(true)));
-        test('-bool(true)).not.toEqual(1)', () => expect(-bool(true)).not.toEqual(bool(true)));
-        
-        test('Math.abs(bool(true))).toEqual(-1))', () => expect(Math.abs(bool(true))).toEqual(-1));
-        test('Math.abs(bool(true))).not.toEqual(true))', () => expect(Math.abs(bool(true))).not.toEqual(true));
-        test('Math.abs(bool(true))).not.toBe(true))', () => expect(Math.abs(bool(true))).not.toBe(true));
-        test('Math.abs(bool(true))).not.toEqual(bool(true)))', () => expect(Math.abs(bool(true))).not.toEqual(bool(true)));
-        test('Math.abs(bool(true))).not.toBe(bool(true)))', () => expect(Math.abs(bool(true))).not.toBe(bool(true)));
-        
-        test('~bool(false).toEqual(-1)', () => expect(~bool(false)).toEqual(-1));
-        test('~bool(true).toEqual(-2)', () => expect(~bool(true)).toEqual(-2));
         
         // line 69
-        test('(bool(false) + 2).toEqual(2)', () => expect(bool(false) + 2).toEqual(2));
-        test('(bool(true) + 2) .toEqual(3)', () => expect(bool(true) + 2).toEqual(3));
-        
-        test('(2 + bool(false)).toEqual(2)', () => expect(2 + bool(false)).toEqual(2));
-        test('(2 + bool(true)) .toEqual(3)', () => expect(2 + bool(true)).toEqual(3));
+        toEqualAndBeVanilla(bool(false) + 2, 2, 'assertEqual(False+2, 2)');
+        toEqualAndBeVanilla(bool(true) + 2, 3, 'assertEqual(True+2, 3)');
+        toEqualAndBeVanilla(2 + bool(false), 2, 'assertEqual(2+False, 2)');
+        toEqualAndBeVanilla(2 + bool(true), 3, 'assertEqual(2+True, 3)');
         
         // line 74
-        test('bool(false) + bool(false)).toEqual(0)', () => expect(bool(false) + bool(false)).toEqual(0));
-        test('bool(false) + bool(false)).not.toBe(false)', () => expect(bool(false) + bool(false)).not.toBe(false));
-        
-        test('bool(false) + bool(false)).not.toBe(bool(false))', () => expect(bool(false) + bool(false)).not.toBe(bool(false)));
-        test('bool(false) + bool(false)).not.toEqual(false)', () => expect(bool(false) + bool(false)).not.toEqual(false));
-        
-        test('bool(false) + bool(false)).not.toEqual(bool(false))', () => expect(bool(false) + bool(false)).not.toEqual(bool(false)));
-        
-        test('bool(false) + bool(true)) .toEqual(1)', () => expect(bool(false) + bool(true)).toEqual(1));
-        test('bool(false) + bool(true)) .not.toBe(true)', () => expect(bool(false) + bool(true)).not.toBe(true));
-        
-        test('bool(false) + bool(true)) .not.toBe(bool(true))', () => expect(bool(false) + bool(true)).not.toBe(bool(true)));
-        test('bool(false) + bool(true)) .not.toEqual(true)', () => expect(bool(false) + bool(true)).not.toEqual(true));
-        
-        test('bool(false) + bool(true)) .not.toEqual(bool(true))', () => expect(bool(false) + bool(true)).not.toEqual(bool(true)));
-        test('bool(true) + bool(false)) .toEqual(1)', () => expect(bool(true) + bool(false)).toEqual(1));
-        test('bool(true) + bool(false)) .not.toBe(true)', () => expect(bool(true) + bool(false)).not.toBe(true));
-        
-        test('bool(true) + bool(false)) .not.toBe(bool(true))', () => expect(bool(true) + bool(false)).not.toBe(bool(true)));
-        test('bool(true) + bool(false)) .not.toEqual(true)', () => expect(bool(true) + bool(false)).not.toEqual(true));
-        
-        test('bool(true) + bool(false)) .not.toEqual(bool(true))', () => expect(bool(true) + bool(false)).not.toEqual(bool(true)));
-        test('bool(true) + bool(true))  .toEqual(2)', () => expect(bool(true) + bool(true)).toEqual(2));
+        toEqualAndBeVanilla(bool(false) + bool(false), 0, 'assertEqual(False+False, 0)');
+        not.toEqualAndBeVanillaAndBool(bool(false) + bool(false), false, 'assertIsNot(False+False, False)');
+        toEqualAndBeVanilla(bool(false) + bool(true), 1, 'assertEqual(False+True, 1)');
+        not.toEqualAndBeVanillaAndBool(bool(false) + bool(true), true, 'assertIsNot(False+True, True)');
+        toEqualAndBeVanilla(bool(true) + bool(false), 1, 'assertEqual(True+False, 1)');
+        not.toEqualAndBeVanillaAndBool(bool(true) + bool(false), true, 'assertIsNot(True+False, True)');
+        toEqualAndBeVanilla(bool(true) + bool(true), 2, 'assertEqual(True+True, 2)');
         
         // line 82
-        test('expect(bool(true) - bool(true)).toEqual(0)', () => expect(bool(true) - bool(true)).toEqual(0));
-        test('expect(bool(true) - bool(true)).not.toBe(false)', () => expect(bool(true) - bool(true)).not.toBe(false));
-        
-        test('expect(bool(true) - bool(true)).not.toBe(bool(false))', () => expect(bool(true) - bool(true)).not.toBe(bool(false)));
-        test('expect(bool(true) - bool(true)).not.toEqual(false)', () => expect(bool(true) - bool(true)).not.toEqual(false));
-        
-        test('expect(bool(true) - bool(true)).not.toEqual(bool(false))', () => expect(bool(true) - bool(true)).not.toEqual(bool(false)));
-        
-        test('expect(bool(false) - bool(false)).toEqual(0)', () => expect(bool(false) - bool(false)).toEqual(0));
-        test('expect(bool(false) - bool(false)).not.toBe(false)', () => expect(bool(false) - bool(false)).not.toBe(false));
-        
-        test('expect(bool(false) - bool(false)).not.toBe(bool(false))', () => expect(bool(false) - bool(false)).not.toBe(bool(false)));
-        test('expect(bool(false) - bool(false)).not.toEqual(false)', () => expect(bool(false) - bool(false)).not.toEqual(false));
-        
-        test('expect(bool(false) - bool(false)).not.toEqual(bool(false))', () => expect(bool(false) - bool(false)).not.toEqual(bool(false)));
-        
-        test('expect(bool(true) - bool(false)).toEqual(1)', () => expect(bool(true) - bool(false)).toEqual(1));
-        test('expect(bool(true) - bool(false)).not.toBe(true)', () => expect(bool(true) - bool(false)).not.toBe(true));
-        
-        test('expect(bool(true) - bool(false)).not.toBe(bool(true))', () => expect(bool(true) - bool(false)).not.toBe(bool(true)));
-        test('expect(bool(true) - bool(false)).not.toEqual(true)', () => expect(bool(true) - bool(false)).not.toEqual(true));
-        
-        test('expect(bool(true) - bool(false)).not.toEqual(bool(true))', () => expect(bool(true) - bool(false)).not.toEqual(bool(true)));
-        test('expect(bool(false) - bool(true)).toEqual(-1)', () => expect(bool(false) - bool(true)).toEqual(-1));
+        toEqualAndBeVanilla(bool(true) - bool(true), 0, 'assertEqual(True-True, 0)');
+        not.toEqualAndBeVanillaAndBool(bool(true) - bool(true), false, 'assertIsNot(True-True, False)');
+        toEqualAndBeVanilla(bool(false) - bool(false), 0, 'assertEqual(False-False, 0)');
+        not.toEqualAndBeVanillaAndBool(bool(false) - bool(false), false, 'assertIsNot(False-False, False)');
+        toEqualAndBeVanilla(bool(true) - bool(false), 1, 'assertEqual(True-False, 1)');
+        not.toEqualAndBeVanillaAndBool(bool(true) - bool(false), true, 'assertIsNot(True-False, True)');
+        toEqualAndBeVanilla(bool(false) - bool(true), -1, 'assertEqual(False-True, -1)');
         
         // line 90
-        test('expect(bool(true) * 1).toEqual(1)', () => expect(bool(true) * 1).toEqual(1));
-        test('expect(bool(false) * 1).toEqual(0)', () => expect(bool(false) * 1).toEqual(0));
-        test('expect(bool(false) * 1).not.toBe(false)', () => expect(bool(false) * 1).not.toBe(false));
-        test('expect(bool(false) * 1).not.toBe(bool(false))', () => expect(bool(false) * 1).not.toBe(bool(false)));
-        test('expect(bool(false) * 1).not.toEqual(false)', () => expect(bool(false) * 1).not.toEqual(false));
-        test('expect(bool(false) * 1).not.toEqual(bool(false))', () => expect(bool(false) * 1).not.toEqual(bool(false)));
+        toEqualAndBeVanilla(bool(true) * 1, 1, 'assertEqual(True*1, 1)');
+        toEqualAndBeVanilla(bool(false) * 1, 0, 'assertEqual(False*1, 0)');
+        not.toEqualAndBeVanillaAndBool(bool(false) * 1, false, 'assertIsNot(False*1, False)');
         
         // line 94
-        test('expect(bool(true) / 1).toEqual(1)', () => expect(bool(true) / 1).toEqual(1));
-        test('expect(bool(true) / 1).not.toBe(true)', () => expect(bool(true) / 1).not.toBe(true));
-        test('expect(bool(true) / 1).not.toBe(bool(true))', () => expect(bool(true) / 1).not.toBe(bool(true)));
-        test('expect(bool(true) / 1).not.toEqual(true)', () => expect(bool(true) / 1).not.toEqual(true));
-        test('expect(bool(true) / 1).not.toEqual(bool(true))', () => expect(bool(true) / 1).not.toEqual(bool(true)));
-        test('expect(bool(false) / 1).toEqual(0)', () => expect(bool(false) / 1).toEqual(0));
-        test('expect(bool(false) / 1).not.toBe(false)', () => expect(bool(false) / 1).not.toBe(false));
-        test('expect(bool(false) / 1).not.toBe(bool(false))', () => expect(bool(false) / 1).not.toBe(bool(false)));
-        test('expect(bool(false) / 1).not.toEqual(false)', () => expect(bool(false) / 1).not.toEqual(false));
-        test('expect(bool(false) / 1).not.toEqual(bool(false))', () => expect(bool(false) / 1).not.toEqual(bool(false)));
+        toEqualAndBeVanilla(bool(true) / 1, 1, 'assertEqual(True/1, 1)');
+        not.toEqualAndBeVanillaAndBool(bool(true) / 1, true, 'assertIsNot(True/1, True)');
+        toEqualAndBeVanilla(bool(false) / 1, 0, 'assertEqual(False/1, 0)');
+        not.toEqualAndBeVanillaAndBool(bool(false) / 1, false, 'assertIsNot(False/1, False)');
         
         // line 99
-        test('expect(bool(true) % 1).toEqual(0)', () => expect(bool(true) % 1).toEqual(0));
-        test('expect(bool(true) % 1).not.toBe(false)', () => expect(bool(true) % 1).not.toBe(false));
-        test('expect(bool(true) % 1).not.toBe(bool(false))', () => expect(bool(true) % 1).not.toBe(bool(false)));
-        test('expect(bool(true) % 1).not.toEqual(false)', () => expect(bool(true) % 1).not.toEqual(false));
-        test('expect(bool(true) % 1).not.toEqual(bool(false))', () => expect(bool(true) % 1).not.toEqual(bool(false)));
-        test('expect(bool(true) % 2).toEqual(1)', () => expect(bool(true) % 2).toEqual(1));
-        test('expect(bool(true) % 2).not.toBe(true)', () => expect(bool(true) % 2).not.toBe(true));
-        test('expect(bool(true) % 2).not.toEqual(true)', () => expect(bool(true) % 2).not.toEqual(true));
-        test('expect(bool(true) % 2).not.toEqual(bool(true))', () => expect(bool(true) % 2).not.toEqual(bool(true)));
-        test('expect(bool(false) % 1).toEqual(0)', () => expect(bool(false) % 1).toEqual(0));
-        
-        not.toEqualAndBeVanillaAndBool(bool(false) % 1, false, 'self.assertIsNot(False%1, False)');
+        toEqualAndBeVanilla(bool(true) % 1, 0, 'assertEqual(True%1, 0)');
+        not.toEqualAndBeVanillaAndBool(bool(true) % 2, false, 'assertIsNot(True%1, False)');
+        toEqualAndBeVanilla(bool(true) % 2, 1, 'assertEqual(True%2, 1)');
+        not.toEqualAndBeVanillaAndBool(bool(true) % 2, true, 'assertIsNot(True%2, True)');
+        toEqualAndBeVanilla(bool(false) % 1, 0, 'assertEqual(False%1, 0)');
+        not.toEqualAndBeVanillaAndBool(bool(false) % 1, false, 'assertIsNot(False%1, False)');
         
         // /Lib/test/test_bool.py.test_math:106
         for (let b of [bool(false), bool(true)]) {
             for (let i of [0, 1, 2]) {
-                not.toEqualAndBeBool(b ** i, bool(int(b) ** i), 'self.assertIsNot(b**i, bool(int(b)**i))');
-                toEqualAndBeVanilla(b ** i, int(b) ** i, 'self.assertEqual(b**i, int(b)**i)');
+                not.toEqualAndBeBool(b ** i, bool(int(b) ** i), 'assertIsNot(b**i, bool(int(b)**i))');
+                toEqualAndBeVanilla(b ** i, int(b) ** i, 'assertEqual(b**i, int(b)**i)');
             }
         }
         for (let a in [bool(false), bool(true)]) {
@@ -302,45 +221,45 @@ describe(`CPython Tests`, () => {
             }
         }
         // line 129
-        toEqualAndBeVanillaAndBool(1 == 1, true, 'self.assertIs(1==1, True)');
-        toEqualAndBeVanillaAndBool(1 == 0, false, 'self.assertIs(1==0, False)');
-        toEqualAndBeVanillaAndBool(0 < 1, true, 'self.assertIs(0<1, True)');
-        toEqualAndBeVanillaAndBool(1 < 0, false, 'self.assertIs(1<0, False)');
-        toEqualAndBeVanillaAndBool(0 <= 0, true, 'self.assertIs(0<=0, True)');
-        toEqualAndBeVanillaAndBool(1 <= 0, false, 'self.assertIs(1<=0, False)');
-        toEqualAndBeVanillaAndBool(1 > 0, true, 'self.assertIs(1>0, True)');
-        toEqualAndBeVanillaAndBool(1 > 1, false, 'self.assertIs(1>1, False)');
-        toEqualAndBeVanillaAndBool(1 >= 1, true, 'self.assertIs(1>=1, True)');
-        toEqualAndBeVanillaAndBool(0 >= 1, false, 'self.assertIs(0>=1, False)');
-        toEqualAndBeVanillaAndBool(0 != 1, true, 'self.assertIs(0!=1, True)');
-        toEqualAndBeVanillaAndBool(0 != 0, false, 'self.assertIs(0!=0, False)');
+        toEqualAndBeVanillaAndBool(1 == 1, true, 'assertIs(1==1, True)');
+        toEqualAndBeVanillaAndBool(1 == 0, false, 'assertIs(1==0, False)');
+        toEqualAndBeVanillaAndBool(0 < 1, true, 'assertIs(0<1, True)');
+        toEqualAndBeVanillaAndBool(1 < 0, false, 'assertIs(1<0, False)');
+        toEqualAndBeVanillaAndBool(0 <= 0, true, 'assertIs(0<=0, True)');
+        toEqualAndBeVanillaAndBool(1 <= 0, false, 'assertIs(1<=0, False)');
+        toEqualAndBeVanillaAndBool(1 > 0, true, 'assertIs(1>0, True)');
+        toEqualAndBeVanillaAndBool(1 > 1, false, 'assertIs(1>1, False)');
+        toEqualAndBeVanillaAndBool(1 >= 1, true, 'assertIs(1>=1, True)');
+        toEqualAndBeVanillaAndBool(0 >= 1, false, 'assertIs(0>=1, False)');
+        toEqualAndBeVanillaAndBool(0 != 1, true, 'assertIs(0!=1, True)');
+        toEqualAndBeVanillaAndBool(0 != 0, false, 'assertIs(0!=0, False)');
         
         // line 142
         let list = [1];
-        toEqualAndBeVanillaAndBool(Object.is(list, list), true, 'self.assertIs(x is x, True)');
-        toEqualAndBeVanillaAndBool(!Object.is(list, list), false, 'self.assertIs(x is not x, False)');
+        toEqualAndBeVanillaAndBool(Object.is(list, list), true, 'assertIs(x is x, True)');
+        toEqualAndBeVanillaAndBool(!Object.is(list, list), false, 'assertIs(x is not x, False)');
         
         // line 146
-        toEqualAndBeVanillaAndBool(list.includes(1), true, 'self.assertIs(1 in x, True)');
-        toEqualAndBeVanillaAndBool(list.includes(0), false, 'self.assertIs(0 in x, False)');
-        toEqualAndBeVanillaAndBool(!list.includes(1), false, 'self.assertIs(1 not in x, False)');
-        toEqualAndBeVanillaAndBool(!list.includes(0), true, 'self.assertIs(0 not in list, True)');
+        toEqualAndBeVanillaAndBool(list.includes(1), true, 'assertIs(1 in x, True)');
+        toEqualAndBeVanillaAndBool(list.includes(0), false, 'assertIs(0 in x, False)');
+        toEqualAndBeVanillaAndBool(!list.includes(1), false, 'assertIs(1 not in x, False)');
+        toEqualAndBeVanillaAndBool(!list.includes(0), true, 'assertIs(0 not in list, True)');
         
         let obj = {1: 2};
         // TODO: obj === obj?
         // line 152
-        toEqualAndBeVanillaAndBool(Object.is(obj, obj), true, 'self.assertIs(obj is obj, True)');
-        toEqualAndBeVanillaAndBool(!Object.is(obj, obj), false, 'self.assertIs(obj is not obj, False)');
+        toEqualAndBeVanillaAndBool(Object.is(obj, obj), true, 'assertIs(obj is obj, True)');
+        toEqualAndBeVanillaAndBool(!Object.is(obj, obj), false, 'assertIs(obj is not obj, False)');
         
         // line 155
-        toEqualAndBeVanillaAndBool((1 in obj), true, 'self.assertIs(1 in obj, True)');
-        toEqualAndBeVanillaAndBool((0 in obj), false, 'self.assertIs(0 in obj, False)');
-        toEqualAndBeVanillaAndBool(!(1 in obj), false, 'self.assertIs(1 not in obj, False)');
-        toEqualAndBeVanillaAndBool(!(0 in obj), true, 'self.assertIs(0 not in obj, True)');
+        toEqualAndBeVanillaAndBool((1 in obj), true, 'assertIs(1 in obj, True)');
+        toEqualAndBeVanillaAndBool((0 in obj), false, 'assertIs(0 in obj, False)');
+        toEqualAndBeVanillaAndBool(!(1 in obj), false, 'assertIs(1 not in obj, False)');
+        toEqualAndBeVanillaAndBool(!(0 in obj), true, 'assertIs(0 not in obj, True)');
         
         // line 160
-        toEqualAndBeVanillaAndBool(Object.is(!bool(true)), false, 'self.assertIs(not True, False)');
-        toEqualAndBeVanillaAndBool(Object.is(!bool(false)), true, 'self.assertIs(not False, True)');
+        toEqualAndBeVanillaAndBool(Object.is(!bool(true)), false, 'assertIs(not True, False)');
+        toEqualAndBeVanillaAndBool(Object.is(!bool(false)), true, 'assertIs(not False, True)');
         
         
     })
