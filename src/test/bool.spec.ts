@@ -1,6 +1,14 @@
 import {bool} from "../bool"
 import {int} from "../int"
 import {str} from "../str";
+import {float} from "../float";
+import {set} from "../set";
+import {complex} from "../complex";
+import {dict} from "../dict";
+import {list} from "../list";
+import {object} from "../object";
+import {tuple} from "../tuple";
+import {type} from "../type";
 
 type Verb = 'Be' | 'Equal'
 type TestOptions = { not?: boolean, skip?: boolean };
@@ -385,8 +393,19 @@ describe(`CPython Tests`, () => {
     });
     describe(`test_types`, () => {
         // types are always true.
-        for (let t of [[bool, complex, dict, float, int, list, object,
-            set, str, tuple, type]]) {
+        for (let t of [
+            bool,
+            complex,
+            dict,
+            float,
+            int,
+            list,
+            object,
+            set,
+            str,
+            tuple,
+            type
+        ]) {
             toEqualAndBeVanillaAndBool(bool(t), true, 'assertIs(bool(t), True)');
             
             
