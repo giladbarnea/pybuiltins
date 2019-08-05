@@ -39,7 +39,7 @@ class BoolTest(unittest.TestCase):
         self.assertEqual(str(False), 'False')
         self.assertEqual(str(True), 'True')
 
-    def test_int(self):
+    def test_ignt(self):
         self.assertEqual(int(False), 0)
         self.assertIsNot(int(False), False)
         self.assertEqual(int(True), 1)
