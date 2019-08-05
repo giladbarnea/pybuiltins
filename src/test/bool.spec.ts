@@ -1,8 +1,8 @@
 import {bool} from "../bool"
 import {int} from "../int"
 
-function _toEqualAndBe(actual, expected, description = undefined, not = undefined, options) {
-    let {vanilla} = options;
+function _toEqualAndBe(actual, expected, description = undefined, options) {
+    let {vanilla, not} = options;
     const toWhat = vanilla ? `${expected}` : `bool(${expected}) = ${bool(expected)}`;
     if (!vanilla)
         expected = bool(expected);
@@ -28,22 +28,25 @@ function _toEqualAndBe(actual, expected, description = undefined, not = undefine
 
 
 /**toBe(..), toEqual(..)*/
-function toEqualAndBeVanilla(actual, expected, description = undefined, not = undefined) {
-    _toEqualAndBe(actual, expected, description, not, {vanilla: true});
+function toEqualAndBeVanilla(actual, expected, description = undefined, options = {}) {
+    let {not, skip} = options;
+    _toEqualAndBe(actual, expected, description, {vanilla: true, not, skip});
     
     
 }
 
 /**toBe(bool(..)), toEqual(bool(..))*/
-function toEqualAndBeBool(actual, expected, description = undefined, not = undefined) {
-    _toEqualAndBe(actual, expected, description, not, {vanilla: false});
+function toEqualAndBeBool(actual, expected, description = undefined, options = {}) {
+    let {not, skip} = options;
+    _toEqualAndBe(actual, expected, description, {vanilla: false, not, skip});
 }
 
 /**toBe(..), toBe(bool(..)), toEqual(..), toEqual(bool(..))*/
-function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, not = undefined) {
+function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, options = {}) {
+    
     const tests = () => {
-        toEqualAndBeVanilla(actual, expected, undefined, not);
-        toEqualAndBeBool(actual, expected, undefined, not);
+        toEqualAndBeVanilla(actual, expected, undefined, options);
+        toEqualAndBeBool(actual, expected, undefined, options);
     };
     if (description)
         describe(description, tests);
@@ -53,9 +56,15 @@ function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, n
 }
 
 const not = (() => ({
-    toEqualAndBeVanilla: (actual, expected, description = undefined) => toEqualAndBeVanilla(actual, expected, description, "NOT"),
-    toEqualAndBeBool: (actual, expected, description = undefined) => toEqualAndBeBool(actual, expected, description, "NOT"),
-    toEqualAndBeVanillaAndBool: (actual, expected, description = undefined) => toEqualAndBeVanillaAndBool(actual, expected, description, "NOT")
+    toEqualAndBeVanilla: (actual, expected, description = undefined) =>
+        toEqualAndBeVanilla(actual, expected, description, {not: true}),
+    
+    toEqualAndBeBool: (actual, expected, description = undefined) =>
+        toEqualAndBeBool(actual, expected, description, {not: true}),
+    
+    toEqualAndBeVanillaAndBool: (actual, expected, description = undefined) =>
+        toEqualAndBeVanillaAndBool(actual, expected, description, {not: true})
+    
 }))();
 
 
@@ -99,9 +108,13 @@ describe(`CPython Tests`, () => {
         
     });
     describe('test_math', () => {
+        // line 55
         toEqualAndBeVanilla(+bool(false), 0, 'assertEqual(+False, 0)');
         not.toEqualAndBeVanillaAndBool(+bool(false), bool(false), 'assertIsNot(+False, False)');
+        
+        // TODO: pass
         toEqualAndBeVanilla(-bool(false), 0, 'assertEqual(-False, 0)');
+        
         not.toEqualAndBeVanillaAndBool(-bool(false), bool(false), 'assertIsNot(-False, False)');
         toEqualAndBeVanilla(Math.abs(bool(false)), 0, 'assertEqual(abs(False), 0)');
         not.toEqualAndBeVanillaAndBool(Math.abs(bool(false)), bool(false), 'assertIsNot(abs(False), False)');
