@@ -106,18 +106,11 @@ describe(`CPython Tests`, () => {
         }).toThrowError());
     
     describe(`test_int`, () => {
-        test(`int(bool(false)).toEqual(0)`, () => expect(int(bool(false))).toEqual(0));
-        test(`int(bool(false))).not.toBe(false)`, () => expect(int(bool(false))).not.toBe(false));
-        test(`int(bool(false))).not.toEqual(false)`, () => expect(int(bool(false))).not.toEqual(false));
-        test(`int(bool(false))).not.toBe(bool(false))`, () => expect(int(bool(false))).not.toBe(bool(false)));
-        test(`int(bool(false))).not.toEqual(bool(false))`, () => expect(int(bool(false))).not.toEqual(bool(false)));
-        
-        test(`int(bool(true)).toEqual(1)`, () => expect(int(bool(true))).toEqual(1));
-        test(`int(bool(true))).not.toBe(true)`, () => expect(int(bool(true))).not.toBe(true));
-        test(`int(bool(true))).not.toEqual(true)`, () => expect(int(bool(true))).not.toEqual(true));
-        test(`int(bool(true))).not.toBe(bool(true))`, () => expect(int(bool(true))).not.toBe(bool(true)));
-        test(`int(bool(true))).not.toEqual(bool(true))`, () => expect(int(bool(true))).not.toEqual(bool(true)))
-        
+        // partially fail because testing int(n) is n
+        toEqualAndBeVanilla(int(bool(false)), 0, 'assertEqual(int(False), 0)');
+        not.toEqualAndBeVanillaAndBool(int(bool(false)), true, 'assertIsNot(int(False), False)');
+        toEqualAndBeVanilla(int(bool(true)), 1, 'assertEqual(int(True), 1)');
+        not.toEqualAndBeVanillaAndBool(int(bool(true)), true, 'assertIsNot(int(True), True)')
         
     });
     describe('test_math', () => {
