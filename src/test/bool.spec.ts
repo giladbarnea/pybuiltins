@@ -1,20 +1,45 @@
 import {bool} from "../bool"
 import {int} from "../int"
 
-function toEqualAndBeVanilla(actual, expected) {
-    test(`expect(${actual}).toBe(${expected})`, () => expect(actual).toBe(expected));
-    test(`expect(${actual}).toEqual(${expected})`, () => expect(actual).toEqual(expected))
+/**toBe(..), toEqual(..)*/
+function toEqualAndBeVanilla(actual, expected, description = undefined, not = false) {
+    if (description) {
+        describe(description, () => {
+            test(`expect(${actual}).toBe(${expected})`, () => expect(actual).toBe(expected));
+            test(`expect(${actual}).toEqual(${expected})`, () => expect(actual).toEqual(expected))
+        });
+    } else {
+        test(`expect(${actual}).toBe(${expected})`, () => expect(actual).toBe(expected));
+        test(`expect(${actual}).toEqual(${expected})`, () => expect(actual).toEqual(expected))
+    }
 }
 
-function toEqualAndBeBool(actual, expected) {
-    test(`expect(${actual}).toBe(bool(${expected}) = ${bool(expected)})`, () => expect(actual).toBe(bool(expected)));
-    test(`expect(${actual}).toEqual(bool(${expected}) = ${bool(expected)})`, () => expect(actual).toEqual(bool(expected)))
+/**toBe(bool(..)), toEqual(bool(..))*/
+function toEqualAndBeBool(actual, expected, description = undefined, not = false) {
+    const name = verb => `expect(${actual})${not ? '.not' : ''}.to${verb}(bool(${expected}) = ${bool(expected)})`;
+    const tests = () => {
+        const toBe = name('Be');
+        const toEqual = name('Equal');
+        if (not) {
+            test(toBe, () => expect(actual).not.toBe(bool(expected)));
+            test(toEqual, () => expect(actual).not.toEqual(bool(expected)))
+        } else {
+            test(toBe, () => expect(actual).toBe(bool(expected)));
+            test(toEqual, () => expect(actual).toEqual(bool(expected)))
+        }
+    };
+    if (description) {
+        describe(description, tests);
+    } else {
+        tests();
+        
+    }
 }
 
-function toEqualAndBeVanillaAndBool(actual, expected, pytest = undefined) {
-    if (pytest) {
-        describe(pytest, () => {
-            
+/**toBe(..), toBe(bool(..)), toEqual(..), toEqual(bool(..))*/
+function toEqualAndBeVanillaAndBool(actual, expected, description = undefined) {
+    if (description) {
+        describe(description, () => {
             toEqualAndBeVanilla(actual, expected);
             toEqualAndBeBool(actual, expected);
         });
@@ -217,11 +242,8 @@ describe(`CPython Tests`, () => {
         // /Lib/test/test_bool.py.test_math:106
         for (let b of [bool(false), bool(true)]) {
             for (let i of [0, 1, 2]) {
-                let expected = int(b) ** i;
-                let actual = b ** i;
-                test(`expect(${b}**${i} = ${actual}).not.toBe(int(${b}) ** ${i} = ${expected})`, () => expect(actual).not.toBe(expected));
-                test(`expect(${b}**${i} = ${actual}).not.toEqual(int(${b}) ** ${i} = ${expected})`, () => expect(actual).not.toEqual(expected));
-                test(`expect(${b}**${i} = ${actual}).toEqual(int(${b}) ** ${i} = ${expected})`, () => expect(actual).toEqual(expected))
+                toEqualAndBeBool(b ** i, bool(int(b) ** i), 'self.assertIsNot(b**i, bool(int(b)**i))', true);
+                toEqualAndBeVanilla(b ** i, int(b) ** i, 'self.assertEqual(b**i, int(b)**i)');
             }
         }
         for (let a in [bool(false), bool(true)]) {
@@ -234,140 +256,88 @@ describe(`CPython Tests`, () => {
                 let bool_int_a_amp_int_b = bool(int_a_amp_int_b);
                 let bool_int_a_pipe_int_b = bool(int_a_pipe_int_b);
                 let bool_int_a_hat_int_b = bool(int_a_hat_int_b);
-                test(`expect(${a} & ${b} = ${a & b}).toBe(bool(int(${a}) & int(${b})) = ${bool_int_a_amp_int_b})`, () => expect(a & b).toBe(bool_int_a_amp_int_b));
-                test(`expect(${a} | ${b} = ${a | b}).toBe(bool(int(${a}) | int(${b})) = ${bool_int_a_pipe_int_b})`, () => expect(a | b).toBe(bool_int_a_pipe_int_b));
-                test(`expect(${a} ^ ${b} = ${a ^ b}).toBe(bool(int(${a}) ^ int(${b})) = ${bool_int_a_hat_int_b})`, () => expect(a ^ b).toBe(bool_int_a_hat_int_b));
-                test(`expect(${a} & int(${b})).toEqual(int(${a}) & int(${b}))`, () => expect(a & int_b).toEqual(int_a_amp_int_b));
-                test(`expect(${a} & int(${b})).not.toBe(bool(int(${a}) & int(${b})))`, () => expect(a & int_b).not.toBe(bool_int_a_amp_int_b));
-                test(`expect(${a} | int(${b})).not.toBe(bool(int(${a}) | int(${b})))`, () => expect(a | int_b).not.toBe(bool_int_a_pipe_int_b));
-                test(`expect(${a} ^ int(${b})).not.toBe(bool(int(${a}) ^ int(${b})))`, () => expect(a ^ int_b).not.toBe(bool_int_a_hat_int_b));
-                test(`expect(int(${a}) & ${b}).not.toBe(bool(int(${a}) & int(${b})))`, () => expect(int_a & b).not.toBe(bool_int_a_amp_int_b));
-                test(`expect(int(${a}) | ${b}).not.toBe(bool(int(${a}) | int(${b})))`, () => expect(int_a | b).not.toBe(bool_int_a_pipe_int_b));
-                test(`expect(int(${a}) ^ ${b}).not.toBe(bool(int(${a}) ^ int(${b})))`, () => expect(int_a ^ b).not.toBe(bool_int_a_hat_int_b));
-                test(`expect(${a} | int(${b})).toEqual(int(${a}) | int(${b}))`, () => expect(a | int_b).toEqual(int_a_pipe_int_b));
-                test(`expect(${a} ^ int(${b})).toEqual(int(${a}) ^ int(${b}))`, () => expect(a ^ int_b).toEqual(int_a_hat_int_b));
-                test(`expect(int(${a}) & ${b}).toEqual(int(${a}) & int(${b}))`, () => expect(int_a & b).toEqual(int_a_amp_int_b));
-                test(`expect(int(${a}) | ${b}).toEqual(int(${a}) | int(${b}))`, () => expect(int_a | b).toEqual(int_a_pipe_int_b));
-                test(`expect(int(${a}) ^ ${b}).toEqual(int(${a}) ^ int(${b}))`, () => expect(int_a ^ b).toEqual(int_a_hat_int_b))
+                test(`expect(${a} & ${b} = ${a & b}).toBe(bool(int(${a}) & int(${b})) = ${bool_int_a_amp_int_b})`,
+                    () => expect(a & b).toBe(bool_int_a_amp_int_b));
+                
+                test(`expect(${a} | ${b} = ${a | b}).toBe(bool(int(${a}) | int(${b})) = ${bool_int_a_pipe_int_b})`,
+                    () => expect(a | b).toBe(bool_int_a_pipe_int_b));
+                
+                test(`expect(${a} ^ ${b} = ${a ^ b}).toBe(bool(int(${a}) ^ int(${b})) = ${bool_int_a_hat_int_b})`,
+                    () => expect(a ^ b).toBe(bool_int_a_hat_int_b));
+                
+                test(`expect(${a} & int(${b})).toEqual(int(${a}) & int(${b}))`,
+                    () => expect(a & int_b).toEqual(int_a_amp_int_b));
+                
+                test(`expect(${a} & int(${b})).not.toBe(bool(int(${a}) & int(${b})))`,
+                    () => expect(a & int_b).not.toBe(bool_int_a_amp_int_b));
+                
+                test(`expect(${a} | int(${b})).not.toBe(bool(int(${a}) | int(${b})))`,
+                    () => expect(a | int_b).not.toBe(bool_int_a_pipe_int_b));
+                
+                test(`expect(${a} ^ int(${b})).not.toBe(bool(int(${a}) ^ int(${b})))`,
+                    () => expect(a ^ int_b).not.toBe(bool_int_a_hat_int_b));
+                
+                test(`expect(int(${a}) & ${b}).not.toBe(bool(int(${a}) & int(${b})))`,
+                    () => expect(int_a & b).not.toBe(bool_int_a_amp_int_b));
+                
+                test(`expect(int(${a}) | ${b}).not.toBe(bool(int(${a}) | int(${b})))`,
+                    () => expect(int_a | b).not.toBe(bool_int_a_pipe_int_b));
+                
+                test(`expect(int(${a}) ^ ${b}).not.toBe(bool(int(${a}) ^ int(${b})))`,
+                    () => expect(int_a ^ b).not.toBe(bool_int_a_hat_int_b));
+                
+                test(`expect(${a} | int(${b})).toEqual(int(${a}) | int(${b}))`,
+                    () => expect(a | int_b).toEqual(int_a_pipe_int_b));
+                
+                test(`expect(${a} ^ int(${b})).toEqual(int(${a}) ^ int(${b}))`,
+                    () => expect(a ^ int_b).toEqual(int_a_hat_int_b));
+                
+                test(`expect(int(${a}) & ${b}).toEqual(int(${a}) & int(${b}))`,
+                    () => expect(int_a & b).toEqual(int_a_amp_int_b));
+                
+                test(`expect(int(${a}) | ${b}).toEqual(int(${a}) | int(${b}))`,
+                    () => expect(int_a | b).toEqual(int_a_pipe_int_b));
+                
+                test(`expect(int(${a}) ^ ${b}).toEqual(int(${a}) ^ int(${b}))`,
+                    () => expect(int_a ^ b).toEqual(int_a_hat_int_b))
             }
         }
         // line 129
-        test(`expect(1 == 1).toBe(bool(true))`, () => expect(1 == 1).toBe(bool(true)));
-        test(`expect(1 == 1).toEqual(bool(true))`, () => expect(1 == 1).toEqual(bool(true)));
-        test(`expect(1 == 1).toBe(true)`, () => expect(1 == 1).toBe(true));
-        test(`expect(1 == 1).toEqual(true)`, () => expect(1 == 1).toEqual(true));
-        test(`expect(1 == 0).toBe(bool(false))`, () => expect(1 == 0).toBe(bool(false)));
-        test(`expect(1 == 0).toEqual(bool(false))`, () => expect(1 == 0).toEqual(bool(false)));
-        test(`expect(1 == 0).toBe(false)`, () => expect(1 == 0).toBe(false));
-        test(`expect(1 == 0).toEqual(false)`, () => expect(1 == 0).toEqual(false));
+        toEqualAndBeVanillaAndBool(1 == 1, true, 'self.assertIs(1==1, True)');
+        toEqualAndBeVanillaAndBool(1 == 0, false, 'self.assertIs(1==0, False)');
+        toEqualAndBeVanillaAndBool(0 < 1, true, 'self.assertIs(0<1, True)');
+        toEqualAndBeVanillaAndBool(1 < 0, false, 'self.assertIs(1<0, False)');
+        toEqualAndBeVanillaAndBool(0 <= 0, true, 'self.assertIs(0<=0, True)');
+        toEqualAndBeVanillaAndBool(1 <= 0, false, 'self.assertIs(1<=0, False)');
+        toEqualAndBeVanillaAndBool(1 > 0, true, 'self.assertIs(1>0, True)');
+        toEqualAndBeVanillaAndBool(1 > 1, false, 'self.assertIs(1>1, False)');
+        toEqualAndBeVanillaAndBool(1 >= 1, true, 'self.assertIs(1>=1, True)');
+        toEqualAndBeVanillaAndBool(0 >= 1, false, 'self.assertIs(0>=1, False)');
+        toEqualAndBeVanillaAndBool(0 != 1, true, 'self.assertIs(0!=1, True)');
+        toEqualAndBeVanillaAndBool(0 != 0, false, 'self.assertIs(0!=0, False)');
         
-        test(`expect(0 < 1).toBe(bool(true))`, () => expect(0 < 1).toBe(bool(true)));
-        test(`expect(0 < 1).toEqual(bool(true))`, () => expect(0 < 1).toEqual(bool(true)));
-        test(`expect(0 < 1).toBe(true)`, () => expect(0 < 1).toBe(true));
-        test(`expect(0 < 1).toEqual(true)`, () => expect(0 < 1).toEqual(true));
-        test(`expect(1 < 0).toBe(bool(false))`, () => expect(1 < 0).toBe(bool(false)));
-        test(`expect(1 < 0).toEqual(bool(false))`, () => expect(1 < 0).toEqual(bool(false)));
-        test(`expect(1 < 0).toBe(false)`, () => expect(1 < 0).toBe(false));
-        test(`expect(1 < 0).toEqual(false)`, () => expect(1 < 0).toEqual(false));
+        // line 142
+        let list = [1];
+        toEqualAndBeVanillaAndBool(Object.is(list, list), true, 'self.assertIs(x is x, True)');
+        toEqualAndBeVanillaAndBool(!Object.is(list, list), false, 'self.assertIs(x is not x, False)');
         
-        test(`expect(0 <= 0).toBe(bool(true))`, () => expect(0 <= 0).toBe(bool(true)));
-        test(`expect(0 <= 0).toEqual(bool(true))`, () => expect(0 <= 0).toEqual(bool(true)));
-        test(`expect(0 <= 0).toBe(true)`, () => expect(0 <= 0).toBe(true));
-        test(`expect(0 <= 0).toEqual(true)`, () => expect(0 <= 0).toEqual(true));
-        test(`expect(1 <= 0).toBe(bool(false))`, () => expect(1 <= 0).toBe(bool(false)));
-        test(`expect(1 <= 0).toEqual(bool(false))`, () => expect(1 <= 0).toEqual(bool(false)));
-        test(`expect(1 <= 0).toBe(false)`, () => expect(1 <= 0).toBe(false));
-        test(`expect(1 <= 0).toEqual(false)`, () => expect(1 <= 0).toEqual(false));
+        // line 146
+        toEqualAndBeVanillaAndBool(list.includes(1), true, 'self.assertIs(1 in x, True)');
+        toEqualAndBeVanillaAndBool(list.includes(0), false, 'self.assertIs(0 in x, False)');
+        toEqualAndBeVanillaAndBool(!list.includes(1), false, 'self.assertIs(1 not in x, False)');
+        toEqualAndBeVanillaAndBool(!list.includes(0), true, 'self.assertIs(0 not in list, True)');
         
-        test(`expect(1 > 0).toBe(bool(true))`, () => expect(1 > 0).toBe(bool(true)));
-        test(`expect(1 > 0).toEqual(bool(true))`, () => expect(1 > 0).toEqual(bool(true)));
-        test(`expect(1 > 0).toBe(true)`, () => expect(1 > 0).toBe(true));
-        test(`expect(1 > 0).toEqual(true)`, () => expect(1 > 0).toEqual(true));
-        test(`expect(1 > 1).toBe(bool(false))`, () => expect(1 > 1).toBe(bool(false)));
-        test(`expect(1 > 1).toEqual(bool(false))`, () => expect(1 > 1).toEqual(bool(false)));
-        test(`expect(1 > 1).toBe(false)`, () => expect(1 > 1).toBe(false));
-        test(`expect(1 > 1).toEqual(false)`, () => expect(1 > 1).toEqual(false));
+        let obj = {1: 2};
+        // TODO: obj === obj?
+        // line 152
+        toEqualAndBeVanillaAndBool(Object.is(obj, obj), true, 'self.assertIs(obj is obj, True)');
+        toEqualAndBeVanillaAndBool(!Object.is(obj, obj), false, 'self.assertIs(obj is not obj, False)');
         
-        test(`expect(1 >= 1).toBe(bool(true))`, () => expect(1 >= 1).toBe(bool(true)));
-        test(`expect(1 >= 1).toEqual(bool(true))`, () => expect(1 >= 1).toEqual(bool(true)));
-        test(`expect(1 >= 1).toBe(true)`, () => expect(1 >= 1).toBe(true));
-        test(`expect(1 >= 1).toEqual(true)`, () => expect(1 >= 1).toEqual(true));
-        test(`expect(0 >= 1).toBe(bool(false))`, () => expect(0 >= 1).toBe(bool(false)));
-        test(`expect(0 >= 1).toEqual(bool(false))`, () => expect(0 >= 1).toEqual(bool(false)));
-        test(`expect(0 >= 1).toBe(false)`, () => expect(0 >= 1).toBe(false));
-        test(`expect(0 >= 1).toEqual(false)`, () => expect(0 >= 1).toEqual(false));
-        
-        test(`expect(0 != 1).toBe(bool(true))`, () => expect(0 != 1).toBe(bool(true)));
-        test(`expect(0 != 1).toEqual(bool(true))`, () => expect(0 != 1).toEqual(bool(true)));
-        test(`expect(0 != 1).toBe(true)`, () => expect(0 != 1).toBe(true));
-        test(`expect(0 != 1).toEqual(true)`, () => expect(0 != 1).toEqual(true));
-        test(`expect(0 != 0).toBe(bool(false))`, () => expect(0 != 0).toBe(bool(false)));
-        test(`expect(0 != 0).toEqual(bool(false))`, () => expect(0 != 0).toEqual(bool(false)));
-        test(`expect(0 != 0).toBe(false)`, () => expect(0 != 0).toBe(false));
-        test(`expect(0 != 0).toEqual(false)`, () => expect(0 != 0).toEqual(false));
-        
-        let x = [1];
-        test(`expect(Object.is(x, x)).toBe(bool(true))`, () => expect(Object.is(x, x)).toBe(bool(true)));
-        test(`expect(Object.is(x, x)).toBe(true)`, () => expect(Object.is(x, x)).toBe(true));
-        test(`expect(Object.is(x, x)).toEqual(bool(true))`, () => expect(Object.is(x, x)).toEqual(bool(true)));
-        test(`expect(Object.is(x, x)).toEqual(true)`, () => expect(Object.is(x, x)).toEqual(true));
-        
-        test(`expect(!Object.is(x, x)).toBe(bool(false))`, () => expect(!Object.is(x, x)).toBe(bool(false)));
-        test(`expect(!Object.is(x, x)).toBe(false)`, () => expect(!Object.is(x, x)).toBe(false));
-        test(`expect(!Object.is(x, x)).toEqual(bool(false))`, () => expect(!Object.is(x, x)).toEqual(bool(false)));
-        test(`expect(!Object.is(x, x)).toEqual(false)`, () => expect(!Object.is(x, x)).toEqual(false));
-        
-        test(`expect(x.includes(1)).toBe(bool(true))`, () => expect(x.includes(1)).toBe(bool(true)));
-        test(`expect(x.includes(1)).toBe(true)`, () => expect(x.includes(1)).toBe(true));
-        test(`expect(x.includes(1)).toEqual(bool(true))`, () => expect(x.includes(1)).toEqual(bool(true)));
-        test(`expect(x.includes(1)).toEqual(true)`, () => expect(x.includes(1)).toEqual(true));
-        
-        test(`expect(x.includes(0)).toBe(bool(false))`, () => expect(x.includes(0)).toBe(bool(false)));
-        test(`expect(x.includes(0)).toBe(false)`, () => expect(x.includes(0)).toBe(false));
-        test(`expect(x.includes(0)).toEqual(bool(false))`, () => expect(x.includes(0)).toEqual(bool(false)));
-        test(`expect(x.includes(0)).toEqual(false)`, () => expect(x.includes(0)).toEqual(false));
-        
-        test(`expect(!x.includes(1)).toBe(bool(false))`, () => expect(!x.includes(1)).toBe(bool(false)));
-        test(`expect(!x.includes(1)).toBe(false)`, () => expect(!x.includes(1)).toBe(false));
-        test(`expect(!x.includes(1)).toEqual(bool(false))`, () => expect(!x.includes(1)).toEqual(bool(false)));
-        test(`expect(!x.includes(1)).toEqual(false)`, () => expect(!x.includes(1)).toEqual(false));
-        
-        test(`expect(!x.includes(0)).toBe(bool(true))`, () => expect(!x.includes(0)).toBe(bool(true)));
-        test(`expect(!x.includes(0)).toBe(true)`, () => expect(!x.includes(0)).toBe(true));
-        test(`expect(!x.includes(0)).toEqual(bool(true))`, () => expect(!x.includes(0)).toEqual(bool(true)));
-        test(`expect(!x.includes(0)).toEqual(true)`, () => expect(!x.includes(0)).toEqual(true));
-        
-        x = {1: 2};
-        // TODO: x === x?
-        test(`expect(Object.is(x, x)).toBe(bool(true))`, () => expect(Object.is(x, x)).toBe(bool(true)));
-        test(`expect(Object.is(x, x)).toBe(true)`, () => expect(Object.is(x, x)).toBe(true));
-        test(`expect(Object.is(x, x)).toEqual(bool(true))`, () => expect(Object.is(x, x)).toEqual(bool(true)));
-        test(`expect(Object.is(x, x)).toEqual(true)`, () => expect(Object.is(x, x)).toEqual(true));
-        
-        test(`expect(!Object.is(x, x)).toBe(bool(false))`, () => expect(!Object.is(x, x)).toBe(bool(false)));
-        test(`expect(!Object.is(x, x)).toBe(false)`, () => expect(!Object.is(x, x)).toBe(false));
-        test(`expect(!Object.is(x, x)).toEqual(bool(false))`, () => expect(!Object.is(x, x)).toEqual(bool(false)));
-        test(`expect(!Object.is(x, x)).toEqual(false)`, () => expect(!Object.is(x, x)).toEqual(false));
-        
-        test(`expect(1 in x).toBe(bool(true))`, () => expect(1 in x).toBe(bool(true)));
-        test(`expect(1 in x).toBe(true)`, () => expect(1 in x).toBe(true));
-        test(`expect(1 in x).toEqual(bool(true))`, () => expect(1 in x).toEqual(bool(true)));
-        test(`expect(1 in x).toEqual(true)`, () => expect(1 in x).toEqual(true));
-        
-        test(`expect(0 in x).toBe(bool(false))`, () => expect(0 in x).toBe(bool(false)));
-        test(`expect(0 in x).toBe(false)`, () => expect(0 in x).toBe(false));
-        test(`expect(0 in x).toEqual(bool(false))`, () => expect(0 in x).toEqual(bool(false)));
-        test(`expect(0 in x).toEqual(false)`, () => expect(0 in x).toEqual(false));
-        
-        test(`expect(!(1 in x)).toBe(bool(false))`, () => expect(!(1 in x)).toBe(bool(false)));
-        test(`expect(!(1 in x)).toBe(false)`, () => expect(!(1 in x)).toBe(false));
-        test(`expect(!(1 in x)).toEqual(bool(false))`, () => expect(!(1 in x)).toEqual(bool(false)));
-        test(`expect(!(1 in x)).toEqual(false)`, () => expect(!(1 in x)).toEqual(false));
-        
-        test(`expect(!(0 in x)).toBe(bool(true))`, () => expect(!(0 in x)).toBe(bool(true)));
-        test(`expect(!(0 in x)).toBe(true)`, () => expect(!(0 in x)).toBe(true));
-        test(`expect(!(0 in x)).toEqual(bool(true))`, () => expect(!(0 in x)).toEqual(bool(true)));
-        test(`expect(!(0 in x)).toEqual(true)`, () => expect(!(0 in x)).toEqual(true));
+        // line 155
+        toEqualAndBeVanillaAndBool((1 in obj), true, 'self.assertIs(1 in obj, True)');
+        toEqualAndBeVanillaAndBool((0 in obj), false, 'self.assertIs(0 in obj, False)');
+        toEqualAndBeVanillaAndBool(!(1 in obj), false, 'self.assertIs(1 not in obj, False)');
+        toEqualAndBeVanillaAndBool(!(0 in obj), true, 'self.assertIs(0 not in obj, True)');
         
         // line 160
         toEqualAndBeVanillaAndBool(Object.is(!bool(true)), false, 'self.assertIs(not True, False)');
