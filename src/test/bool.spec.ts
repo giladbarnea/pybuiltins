@@ -2,20 +2,30 @@ import {bool} from "../bool"
 import {int} from "../int"
 
 /**toBe(..), toEqual(..)*/
-function toEqualAndBeVanilla(actual, expected, description = undefined, not = false) {
+function toEqualAndBeVanilla(actual, expected, description = undefined, not = undefined) {
+    const name = verb => `expect(${actual})${not ? '.not' : ''}.to${verb}(${expected} = ${expected})`;
+    const tests = () => {
+        const toBe = name('Be');
+        const toEqual = name('Equal');
+        if (not) {
+            test(toBe, () => expect(actual).not.toBe(expected));
+            test(toEqual, () => expect(actual).not.toEqual(expected))
+        } else {
+            test(toBe, () => expect(actual).toBe(expected));
+            test(toEqual, () => expect(actual).toEqual(expected))
+        }
+    };
     if (description) {
-        describe(description, () => {
-            test(`expect(${actual}).toBe(${expected})`, () => expect(actual).toBe(expected));
-            test(`expect(${actual}).toEqual(${expected})`, () => expect(actual).toEqual(expected))
-        });
+        describe(description, tests);
     } else {
-        test(`expect(${actual}).toBe(${expected})`, () => expect(actual).toBe(expected));
-        test(`expect(${actual}).toEqual(${expected})`, () => expect(actual).toEqual(expected))
+        tests();
+        
     }
+    
 }
 
 /**toBe(bool(..)), toEqual(bool(..))*/
-function toEqualAndBeBool(actual, expected, description = undefined, not = false) {
+function toEqualAndBeBool(actual, expected, description = undefined, not = undefined) {
     const name = verb => `expect(${actual})${not ? '.not' : ''}.to${verb}(bool(${expected}) = ${bool(expected)})`;
     const tests = () => {
         const toBe = name('Be');
@@ -37,15 +47,15 @@ function toEqualAndBeBool(actual, expected, description = undefined, not = false
 }
 
 /**toBe(..), toBe(bool(..)), toEqual(..), toEqual(bool(..))*/
-function toEqualAndBeVanillaAndBool(actual, expected, description = undefined) {
+function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, not = undefined) {
+    const tests = () => {
+        toEqualAndBeVanilla(actual, expected, undefined, not);
+        toEqualAndBeBool(actual, expected, undefined, not);
+    };
     if (description) {
-        describe(description, () => {
-            toEqualAndBeVanilla(actual, expected);
-            toEqualAndBeBool(actual, expected);
-        });
+        describe(description, tests);
     } else {
-        toEqualAndBeVanilla(actual, expected);
-        toEqualAndBeBool(actual, expected);
+        tests()
     }
 }
 
@@ -233,11 +243,12 @@ describe(`CPython Tests`, () => {
         test('expect(bool(true) % 2).not.toEqual(true)', () => expect(bool(true) % 2).not.toEqual(true));
         test('expect(bool(true) % 2).not.toEqual(bool(true))', () => expect(bool(true) % 2).not.toEqual(bool(true)));
         test('expect(bool(false) % 1).toEqual(0)', () => expect(bool(false) % 1).toEqual(0));
-        test('expect(bool(false) % 1).not.toBe(false)', () => expect(bool(false) % 1).not.toBe(false));
+        /*test('expect(bool(false) % 1).not.toBe(false)', () => expect(bool(false) % 1).not.toBe(false));
         test('expect(bool(false) % 1).not.toBe(bool(false))', () => expect(bool(false) % 1).not.toBe(bool(false)));
         test('expect(bool(false) % 1).not.toEqual(false)', () => expect(bool(false) % 1).not.toEqual(false));
         test('expect(bool(false) % 1).not.toEqual(bool(false))', () => expect(bool(false) % 1).not.toEqual(bool(false)));
-        
+        */
+        toEqualAndBeVanillaAndBool(bool(false) % 1, false, 'self.assertIsNot(False%1, False)', "NOT");
         
         // /Lib/test/test_bool.py.test_math:106
         for (let b of [bool(false), bool(true)]) {
