@@ -26,6 +26,7 @@ function _toEqualAndBe(actual, expected, description = undefined, not = undefine
     
 }
 
+
 /**toBe(..), toEqual(..)*/
 function toEqualAndBeVanilla(actual, expected, description = undefined, not = undefined) {
     _toEqualAndBe(actual, expected, description, not, {vanilla: true});
@@ -51,15 +52,14 @@ function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, n
     
 }
 
-function toEqualToVanillaAndBool(actual, expected) {
-    expect(actual).toEqual(expected);
-    expect(actual).toEqual(bool(expected))
-}
+const not = (() => {
+    return {
+        toEqualAndBeVanilla: (actual, expected, description = undefined) => toEqualAndBeVanilla(actual, expected, description, "NOT"),
+        toEqualAndBeBool: (actual, expected, description = undefined) => toEqualAndBeBool(actual, expected, description, "NOT"),
+        toEqualAndBeVanillaAndBool: (actual, expected, description = undefined) => toEqualAndBeVanillaAndBool(actual, expected, description, "NOT")
+    }
+})();
 
-function toBeVanillaAndBool(actual, expected) {
-    expect(actual).toBe(expected);
-    expect(actual).toBe(bool(expected))
-}
 
 describe(`My Tests`, () => {
     
@@ -236,12 +236,12 @@ describe(`CPython Tests`, () => {
         test('expect(bool(true) % 2).not.toEqual(bool(true))', () => expect(bool(true) % 2).not.toEqual(bool(true)));
         test('expect(bool(false) % 1).toEqual(0)', () => expect(bool(false) % 1).toEqual(0));
         
-        toEqualAndBeVanillaAndBool(bool(false) % 1, false, 'self.assertIsNot(False%1, False)', "NOT");
+        not.toEqualAndBeVanillaAndBool(bool(false) % 1, false, 'self.assertIsNot(False%1, False)');
         
         // /Lib/test/test_bool.py.test_math:106
         for (let b of [bool(false), bool(true)]) {
             for (let i of [0, 1, 2]) {
-                toEqualAndBeBool(b ** i, bool(int(b) ** i), 'self.assertIsNot(b**i, bool(int(b)**i))', "NOT");
+                not.toEqualAndBeBool(b ** i, bool(int(b) ** i), 'self.assertIsNot(b**i, bool(int(b)**i))');
                 toEqualAndBeVanilla(b ** i, int(b) ** i, 'self.assertEqual(b**i, int(b)**i)');
             }
         }
