@@ -1,22 +1,27 @@
 import {bool} from "../bool"
 import {int} from "../int"
 
-function _toEqualAndBe(actual, expected, description = undefined, options) {
+type Verb = 'Be' | 'Equal'
+type TestOptions = { not?: boolean, skip?: boolean };
+
+function _toEqualAndBe(actual, expected, description = undefined, options: TestOptions & { vanilla: boolean }) {
     let {vanilla, not} = options;
     const toWhat = vanilla ? `${expected}` : `bool(${expected}) = ${bool(expected)}`;
     if (!vanilla)
         expected = bool(expected);
-    const name = verb => `expect(${actual})${not ? '.not' : ''}.to${verb}(${toWhat})`;
+    
     const tests = () => {
-        const toBe = name('Be');
-        const toEqual = name('Equal');
-        if (not) {
-            test(toBe, () => expect(actual).not.toBe(expected));
-            test(toEqual, () => expect(actual).not.toEqual(expected))
-        } else {
-            test(toBe, () => expect(actual).toBe(expected));
-            test(toEqual, () => expect(actual).toEqual(expected))
-        }
+        const _name = (verb: Verb) => `expect(${actual})${not ? '.not' : ''}.to${verb}(${toWhat})`;
+        const _test = (verb: Verb, fn) => test(_name(verb), fn(verb));
+        let fn;
+        if (not)
+            fn = verb => () => expect(actual).not[`to${verb}`](expected);
+        else
+            fn = verb => () => expect(actual)[`to${verb}`](expected);
+        
+        _test('Be', fn);
+        _test('Equal', fn);
+        
     };
     if (description)
         describe(description, tests);
@@ -28,7 +33,7 @@ function _toEqualAndBe(actual, expected, description = undefined, options) {
 
 
 /**toBe(..), toEqual(..)*/
-function toEqualAndBeVanilla(actual, expected, description = undefined, options = {}) {
+function toEqualAndBeVanilla(actual, expected, description = undefined, options: TestOptions = {}) {
     let {not, skip} = options;
     _toEqualAndBe(actual, expected, description, {vanilla: true, not, skip});
     
@@ -36,13 +41,14 @@ function toEqualAndBeVanilla(actual, expected, description = undefined, options 
 }
 
 /**toBe(bool(..)), toEqual(bool(..))*/
-function toEqualAndBeBool(actual, expected, description = undefined, options = {}) {
+function toEqualAndBeBool(actual, expected, description = undefined, options: TestOptions = {}) {
     let {not, skip} = options;
     _toEqualAndBe(actual, expected, description, {vanilla: false, not, skip});
 }
 
+
 /**toBe(..), toBe(bool(..)), toEqual(..), toEqual(bool(..))*/
-function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, options = {}) {
+function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, options: TestOptions = {}) {
     
     const tests = () => {
         toEqualAndBeVanilla(actual, expected, undefined, options);
@@ -67,7 +73,12 @@ const not = (() => ({
     
 }))();
 
-
+const skip = (() => {
+    return {
+        toEqualAndBeVanilla: (actual, expected, description = undefined) =>
+            toEqualAndBeVanilla(actual, expected, description, {skip: true}),
+    }
+})();
 describe(`My Tests`, () => {
     
     describe('empty list', () =>
