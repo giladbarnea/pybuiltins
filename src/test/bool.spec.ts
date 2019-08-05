@@ -315,16 +315,16 @@ describe(`CPython Tests`, () => {
     describe.skip(`test_format`, () => {
         // TODO: "%d" % False might not be possible, consider str("%d" something
     });
-    describe(`test_hasattr`, () => {
+    describe.skip(`test_hasattr`, () => {
     
     });
-    describe(`test_callable`, () => {
+    describe.skip(`test_callable`, () => {
     
     });
-    describe(`test_isinstance`, () => {
+    describe.skip(`test_isinstance`, () => {
     
     });
-    describe(`test_issubclass`, () => {
+    describe.skip(`test_issubclass`, () => {
     
     });
     describe(`test_contains`, () => {
@@ -380,7 +380,7 @@ describe(`CPython Tests`, () => {
         
         
     });
-    describe(`test_fileclosed`, () => {
+    describe.skip(`test_fileclosed`, () => {
         /*def test_fileclosed(self):
             try:
                 f = open(support.TESTFN, "w")
@@ -410,5 +410,8 @@ describe(`CPython Tests`, () => {
             
             
         }
+    });
+    describe(`test_from_bytes`, () => {
+    
     });
 });
