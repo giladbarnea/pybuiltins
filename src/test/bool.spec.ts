@@ -1,9 +1,12 @@
 import {bool} from "../bool"
 import {int} from "../int"
 
-/**toBe(..), toEqual(..)*/
-function toEqualAndBeVanilla(actual, expected, description = undefined, not = undefined) {
-    const name = verb => `expect(${actual})${not ? '.not' : ''}.to${verb}(${expected} = ${expected})`;
+function _toEqualAndBe(actual, expected, description = undefined, not = undefined, options) {
+    let {vanilla} = options;
+    const toWhat = vanilla ? `${expected}` : `bool(${expected}) = ${bool(expected)}`;
+    if (!vanilla)
+        expected = bool(expected);
+    const name = verb => `expect(${actual})${not ? '.not' : ''}.to${verb}(${toWhat})`;
     const tests = () => {
         const toBe = name('Be');
         const toEqual = name('Equal');
@@ -15,35 +18,24 @@ function toEqualAndBeVanilla(actual, expected, description = undefined, not = un
             test(toEqual, () => expect(actual).toEqual(expected))
         }
     };
-    if (description) {
+    if (description)
         describe(description, tests);
-    } else {
+    else
         tests();
-        
-    }
+    
+    
+}
+
+/**toBe(..), toEqual(..)*/
+function toEqualAndBeVanilla(actual, expected, description = undefined, not = undefined) {
+    _toEqualAndBe(actual, expected, description, not, {vanilla: true});
+    
     
 }
 
 /**toBe(bool(..)), toEqual(bool(..))*/
 function toEqualAndBeBool(actual, expected, description = undefined, not = undefined) {
-    const name = verb => `expect(${actual})${not ? '.not' : ''}.to${verb}(bool(${expected}) = ${bool(expected)})`;
-    const tests = () => {
-        const toBe = name('Be');
-        const toEqual = name('Equal');
-        if (not) {
-            test(toBe, () => expect(actual).not.toBe(bool(expected)));
-            test(toEqual, () => expect(actual).not.toEqual(bool(expected)))
-        } else {
-            test(toBe, () => expect(actual).toBe(bool(expected)));
-            test(toEqual, () => expect(actual).toEqual(bool(expected)))
-        }
-    };
-    if (description) {
-        describe(description, tests);
-    } else {
-        tests();
-        
-    }
+    _toEqualAndBe(actual, expected, description, not, {vanilla: false});
 }
 
 /**toBe(..), toBe(bool(..)), toEqual(..), toEqual(bool(..))*/
@@ -52,11 +44,11 @@ function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, n
         toEqualAndBeVanilla(actual, expected, undefined, not);
         toEqualAndBeBool(actual, expected, undefined, not);
     };
-    if (description) {
+    if (description)
         describe(description, tests);
-    } else {
+    else
         tests()
-    }
+    
 }
 
 function toEqualToVanillaAndBool(actual, expected) {
@@ -243,17 +235,13 @@ describe(`CPython Tests`, () => {
         test('expect(bool(true) % 2).not.toEqual(true)', () => expect(bool(true) % 2).not.toEqual(true));
         test('expect(bool(true) % 2).not.toEqual(bool(true))', () => expect(bool(true) % 2).not.toEqual(bool(true)));
         test('expect(bool(false) % 1).toEqual(0)', () => expect(bool(false) % 1).toEqual(0));
-        /*test('expect(bool(false) % 1).not.toBe(false)', () => expect(bool(false) % 1).not.toBe(false));
-        test('expect(bool(false) % 1).not.toBe(bool(false))', () => expect(bool(false) % 1).not.toBe(bool(false)));
-        test('expect(bool(false) % 1).not.toEqual(false)', () => expect(bool(false) % 1).not.toEqual(false));
-        test('expect(bool(false) % 1).not.toEqual(bool(false))', () => expect(bool(false) % 1).not.toEqual(bool(false)));
-        */
+        
         toEqualAndBeVanillaAndBool(bool(false) % 1, false, 'self.assertIsNot(False%1, False)', "NOT");
         
         // /Lib/test/test_bool.py.test_math:106
         for (let b of [bool(false), bool(true)]) {
             for (let i of [0, 1, 2]) {
-                toEqualAndBeBool(b ** i, bool(int(b) ** i), 'self.assertIsNot(b**i, bool(int(b)**i))', true);
+                toEqualAndBeBool(b ** i, bool(int(b) ** i), 'self.assertIsNot(b**i, bool(int(b)**i))', "NOT");
                 toEqualAndBeVanilla(b ** i, int(b) ** i, 'self.assertEqual(b**i, int(b)**i)');
             }
         }
