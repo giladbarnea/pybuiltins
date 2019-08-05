@@ -1,5 +1,6 @@
 import {bool} from "../bool"
 import {int} from "../int"
+import {str} from "../str";
 
 type Verb = 'Be' | 'Equal'
 type TestOptions = { not?: boolean, skip?: boolean };
@@ -80,6 +81,8 @@ const not = (() => ({
 const skip = (() => ({
     toEqualAndBeVanilla: (actual, expected, description = undefined) =>
         toEqualAndBeVanilla(actual, expected, description, {skip: true}),
+    toEqualAndBeVanillaAndBool: (actual, expected, description = undefined) =>
+        toEqualAndBeVanillaAndBool(actual, expected, description, {skip: true}),
 }))();
 describe(`My Tests`, () => {
     
@@ -104,7 +107,12 @@ describe(`CPython Tests`, () => {
                 pass
             }
         }).toThrowError());
+    describe.skip(`test_print`, () => {
     
+    });
+    describe.skip(`test_str`, () => {
+    
+    });
     describe(`test_int`, () => {
         // partially fail because testing int(n) is n
         toEqualAndBeVanilla(int(bool(false)), 0, 'assertEqual(int(False), 0)');
@@ -113,12 +121,15 @@ describe(`CPython Tests`, () => {
         not.toEqualAndBeVanillaAndBool(int(bool(true)), true, 'assertIsNot(int(True), True)')
         
     });
+    describe.skip(`test_float`, () => {
+    
+    });
     describe('test_math', () => {
         // line 55
         toEqualAndBeVanilla(+bool(false), 0, 'assertEqual(+False, 0)');
         not.toEqualAndBeVanillaAndBool(+bool(false), bool(false), 'assertIsNot(+False, False)');
         
-        // TODO: pass
+        // fails because -0 is not 0 in javascript
         skip.toEqualAndBeVanilla(-bool(false), 0, 'assertEqual(-False, 0)');
         
         not.toEqualAndBeVanillaAndBool(-bool(false), bool(false), 'assertIsNot(-False, False)');
@@ -281,5 +292,65 @@ describe(`CPython Tests`, () => {
         toEqualAndBeVanillaAndBool(!bool(false), true, 'assertIs(not False, True)');
         
         
-    })
+    });
+    describe(`test_convert`, () => {
+        // (,,'assertRaises(TypeError, bool, 42, 42)');
+        test('bool(42, 42) TypeError', expect(bool(42, 42)).toThrow(new TypeError(`bool() takes at most 1 argument (2 given)`)));
+        toEqualAndBeVanillaAndBool(bool(10), true, 'assertIs(bool(10), True)');
+        toEqualAndBeVanillaAndBool(bool(1), true, 'assertIs(bool(1), True)');
+        toEqualAndBeVanillaAndBool(bool(-1), true, 'assertIs(bool(-1), True)');
+        toEqualAndBeVanillaAndBool(bool(0), false, 'assertIs(bool(0), False)');
+        toEqualAndBeVanillaAndBool(bool("hello"), true, 'assertIs(bool("hello"), True)');
+        toEqualAndBeVanillaAndBool(bool(""), false, 'assertIs(bool(""), False)');
+        toEqualAndBeVanillaAndBool(bool(), false, 'assertIs(bool(), False)');
+    });
+    describe.skip(`test_format`, () => {
+        // TODO: "%d" % False might not be possible, consider str("%d" something
+    });
+    describe(`test_hasattr`, () => {
+    
+    });
+    describe(`test_callable`, () => {
+    
+    });
+    describe(`test_isinstance`, () => {
+    
+    });
+    describe(`test_issubclass`, () => {
+    
+    });
+    describe(`test_contains`, () => {
+        toEqualAndBeVanillaAndBool(1 in {}, false, 'assertIs(1 in {}, False)');
+        toEqualAndBeVanillaAndBool(1 in {1: 1}, true, 'assertIs(1 in {1:1}, True)');
+    });
+    describe(`test_string`, () => {
+        toEqualAndBeVanillaAndBool("xyz".endsWith("z"), true, 'assertIs("xyz".endswith("z"), True)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz").endswith("z"), true, 'assertIs("xyz".endswith("z"), True)');
+        toEqualAndBeVanillaAndBool("xyz".endsWith("x"), false, 'assertIs("xyz".endswith("x"), False)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz").endswith("x"), false, 'assertIs("xyz".endswith("z"), True)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz0123").isalnum(), true, 'assertIs("xyz0123".isalnum(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("@#$%").isalnum(), false, 'assertIs("@#$%".isalnum(), False)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz").isalpha(), true, 'assertIs("xyz".isalpha(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("@#$%").isalpha(), false, 'assertIs("@#$%".isalpha(), False)');
+        skip.toEqualAndBeVanillaAndBool(str("0123").isdigit(), true, 'assertIs("0123".isdigit(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz").isdigit(), false, 'assertIs("xyz".isdigit(), False)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz").islower(), true, 'assertIs("xyz".islower(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("XYZ").islower(), false, 'assertIs("XYZ".islower(), False)');
+        skip.toEqualAndBeVanillaAndBool(str("0123").isdecimal(), true, 'assertIs("0123".isdecimal(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz").isdecimal(), false, 'assertIs("xyz".isdecimal(), False)');
+        skip.toEqualAndBeVanillaAndBool(str("0123").isnumeric(), true, 'assertIs("0123".isnumeric(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz").isnumeric(), false, 'assertIs("xyz".isnumeric(), False)');
+        skip.toEqualAndBeVanillaAndBool(str(" ").isspace(), true, 'assertIs(" ".isspace(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("\xa0").isspace(), true, 'assertIs("\xa0".isspace(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("\u3000").isspace(), true, 'assertIs("\u3000".isspace(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("XYZ").isspace(), false, 'assertIs("XYZ".isspace(), False)');
+        skip.toEqualAndBeVanillaAndBool(str("X").istitle(), true, 'assertIs("X".istitle(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("x").istitle(), false, 'assertIs("x".istitle(), False)');
+        skip.toEqualAndBeVanillaAndBool(str("XYZ").isupper(), true, 'assertIs("XYZ".isupper(), True)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz").isupper(), false, 'assertIs("xyz".isupper(), False)');
+        toEqualAndBeVanillaAndBool("xyz".startsWith("x"), true, 'assertIs("xyz".startswith("x"), True)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz").startswith("x"), true, 'assertIs("xyz".startswith("x"), True)');
+        toEqualAndBeVanillaAndBool("xyz".startsWith("z"), false, 'assertIs("xyz".startswith("z"), False)');
+        skip.toEqualAndBeVanillaAndBool(str("xyz").startswith("z"), false, 'assertIs("xyz".startswith("z"), False)');
+    });
 });
