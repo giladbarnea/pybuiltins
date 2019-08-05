@@ -87,15 +87,15 @@ export class Int extends Number {
     }
     
     
-    valueOf(): number {
-        let ret = super.valueOf();
-        if (globalLog) console.log(cc('bright magenta', 'valueOf, returning: '), ret, {
-            'typeof ret': typeof ret,
-            this: this,
-            'typeof this': typeof this
-        });
-        return ret;
-    }
+    // valueOf(): number {
+    //     let ret = super.valueOf();
+    //     if (globalLog) console.log(cc('bright magenta', 'valueOf, returning: '), ret, {
+    //         'typeof ret': typeof ret,
+    //         this: this,
+    //         'typeof this': typeof this
+    //     });
+    //     return ret;
+    // }
     
     
     divide(y: Int | number) {
@@ -125,6 +125,7 @@ export class Int extends Number {
             parseIntable(x: Intable, log?: boolean): number {
                 const number = x.__int__();
                 let typeofnumber = typeof number;
+                if (log) console.log(cc('blue', 'typeofnumber:'), typeofnumber);
                 if (typeofnumber === "number") {
                     if (parseFloat(number) - parseInt(number) === 0) {
                         if (log) console.log(cc('magenta', `\tnumber is float, returning: ${number}`));

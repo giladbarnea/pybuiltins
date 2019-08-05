@@ -9,15 +9,16 @@ import {list} from "../list";
 import {object} from "../object";
 import {tuple} from "../tuple";
 import {type} from "../type";
+import {cc} from "../util";
 
 type Verb = 'Be' | 'Equal'
-type TestOptions = { not?: boolean, skip?: boolean };
+type TestOptions = { not?: boolean, skip?: boolean, log?: boolean };
 
 function _toEqualAndBe(actual, expected, description = undefined, options: TestOptions & { vanilla: boolean }) {
-    let {vanilla, not, skip} = options;
+    let {vanilla, not, skip, log} = options;
     const toWhat = vanilla ? `${expected}` : `bool(${expected}) = ${bool(expected)}`;
     if (!vanilla)
-        expected = bool(expected);
+        expected = bool(expected, log);
     
     const tests = () => {
         const _name = (verb: Verb) => `expect(${actual})${not ? '.not' : ''}.to${verb}(${toWhat})`;
@@ -32,14 +33,16 @@ function _toEqualAndBe(actual, expected, description = undefined, options: TestO
         else
             fn = (verb: Verb) => () => expect(actual)[`to${verb}`](expected);
         
-        _test('Be', fn);
-        _test('Equal', fn);
+        const betest = _test('Be', fn);
+        const eqtest = _test('Equal', fn);
         
     };
-    if (description)
+    if (description) {
         describe(description, tests);
-    else
+        console.log();
+    } else {
         tests();
+    }
     
     
 }
@@ -47,16 +50,16 @@ function _toEqualAndBe(actual, expected, description = undefined, options: TestO
 
 /**toBe(..), toEqual(..)*/
 function toEqualAndBeVanilla(actual, expected, description = undefined, options: TestOptions = {}) {
-    let {not, skip} = options;
-    _toEqualAndBe(actual, expected, description, {vanilla: true, not, skip});
+    let {not, skip, log} = options;
+    _toEqualAndBe(actual, expected, description, {vanilla: true, not, skip, log});
     
     
 }
 
 /**toBe(bool(..)), toEqual(bool(..))*/
 function toEqualAndBeBool(actual, expected, description = undefined, options: TestOptions = {}) {
-    let {not, skip} = options;
-    _toEqualAndBe(actual, expected, description, {vanilla: false, not, skip});
+    let {not, skip, log} = options;
+    _toEqualAndBe(actual, expected, description, {vanilla: false, not, skip, log});
 }
 
 
@@ -94,20 +97,14 @@ const skip = (() => ({
 }))();
 describe(`My Tests`, () => {
     
-    describe('empty list', () =>
-        it('should be falsey when passed an empty list', () => {
-            const actual = bool([]);
-            expect(actual).toEqual(false)
-        }));
+    test('expect(bool([])).toEqual(false)', () => expect(bool([])).toEqual(false));
     
-    describe('false', () =>
-        it('should be falsey when passed false', () => {
-            const actual = bool(false);
-            expect(actual).toEqual(false)
-        }));
-    describe('empty object', () => it('should be falsey when passed empty object', () => expect(bool({})).toEqual(false)))
+    it('expect(bool(false)).toEqual(false)', () => expect(bool(false)).toEqual(false));
+    test('expect(bool({})).toEqual(false))', () => expect(bool({})).toEqual(false))
 });
-describe.skip(`CPython Tests: Strict Equality Equivalents`, () => describe(`test_int`, () => test(`expect(int(bool(false))).toBe(0)`, () => expect(expect(int(bool(false))).toBe(0)))));
+describe.skip(`CPython Tests: Strict Equality Equivalents`, () => {
+    test(`expect(int(bool(false))).toBe(0)`, () => expect(expect(int(bool(false))).toBe(0)));
+});
 describe(`CPython Tests`, () => {
     test.skip('test_subclass', () =>
         expect(() => {
@@ -198,8 +195,9 @@ describe(`CPython Tests`, () => {
         // /Lib/test/test_bool.py.test_math:106
         for (let b of [bool(false), bool(true)]) {
             for (let i of [0, 1, 2]) {
-                not.toEqualAndBeBool(b ** i, bool(int(b) ** i), 'assertIsNot(b**i, bool(int(b)**i))');
-                toEqualAndBeVanilla(b ** i, int(b) ** i, 'assertEqual(b**i, int(b)**i)');
+                console.log(cc('black', `b: ${b}, i: ${i}`));
+                not.toEqualAndBeBool(b ** i, bool(int(b) ** i, {log: true}), `assertIsNot(b**${i}, bool(int(b)**${i}))`);
+                toEqualAndBeVanilla(b ** i, int(b) ** i, `assertEqual(b**${i}, int(b)**${i})`);
             }
         }
         for (let a in [bool(false), bool(true)]) {
@@ -258,8 +256,10 @@ describe(`CPython Tests`, () => {
                     () => expect(int_a ^ b).toEqual(int_a_hat_int_b))
             }
         }
+        const letest = test('LETEST', () => expect(1).toEqual(2));
+        
         // line 129
-        toEqualAndBeVanillaAndBool(1 == 1, true, 'assertIs(1==1, True)');
+        toEqualAndBeVanillaAndBool(1 == 1, true, 'assertIs(1==1, True)', {log: false});
         toEqualAndBeVanillaAndBool(1 == 0, false, 'assertIs(1==0, False)');
         toEqualAndBeVanillaAndBool(0 < 1, true, 'assertIs(0<1, True)');
         toEqualAndBeVanillaAndBool(1 < 0, false, 'assertIs(1<0, False)');
@@ -411,7 +411,7 @@ describe(`CPython Tests`, () => {
             
         }
     });
-    describe(`test_from_bytes`, () => {
+    describe.skip(`test_from_bytes`, () => {
     
     });
 });
