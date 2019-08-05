@@ -277,8 +277,8 @@ describe(`CPython Tests`, () => {
         toEqualAndBeVanillaAndBool(!(0 in obj), true, 'assertIs(0 not in obj, True)');
         
         // line 160
-        toEqualAndBeVanillaAndBool(Object.is(!bool(true)), false, 'assertIs(not True, False)');
-        toEqualAndBeVanillaAndBool(Object.is(!bool(false)), true, 'assertIs(not False, True)');
+        toEqualAndBeVanillaAndBool(!bool(true), false, 'assertIs(not True, False)');
+        toEqualAndBeVanillaAndBool(!bool(false), true, 'assertIs(not False, True)');
         
         
     })
