@@ -353,4 +353,9 @@ describe(`CPython Tests`, () => {
         toEqualAndBeVanillaAndBool("xyz".startsWith("z"), false, 'assertIs("xyz".startswith("z"), False)');
         skip.toEqualAndBeVanillaAndBool(str("xyz").startswith("z"), false, 'assertIs("xyz".startswith("z"), False)');
     });
+    describe(`test_boolean`, () => {
+        toEqualAndBeVanillaAndBool(bool(true) & 1, 1, 'self.assertEqual(True & 1, 1)');
+        expect(bool(true) & 1).not.toBeInstanceOf(Boolean);
+        toEqualAndBeVanillaAndBool(bool(true) & bool(true), true, 'self.assertIs(True & True, True)');
+    });
 });
