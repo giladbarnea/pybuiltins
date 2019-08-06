@@ -43,8 +43,10 @@ export function bool(val: any, options = {}): boolean {
     */
     const {log} = options;
     const newbool = new Bool(val, options);
-    // return newbool;
-    if (log) console.log(cc('bright magenta', `returning newbool:`), newbool);
+    if (log) console.log(cc('bright magenta', `Returning newbool: ${this}`), newbool);
+    return newbool.valueOf();
     const ret = Boolean(newbool);
+    if (log) console.log(cc('bright magenta', `Returning Boolean(newbool): ${ret}`), ret);
     return ret;
+    
 }

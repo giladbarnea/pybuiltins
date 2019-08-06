@@ -33,15 +33,18 @@ function _toEqualAndBe(actual, expected, description = undefined, options: TestO
     const tests = () => {
         const _name = (verb: Verb) => `expect(${actual})${not ? '.not' : ''}.to${verb}(${toWhat})`;
         let _test;
-        if (skip)
+        if (skip) {
             _test = (verb: Verb, fn) => test.skip(_name(verb), fn(verb));
-        else
+        } else {
             _test = (verb: Verb, fn) => test(_name(verb), fn(verb));
+        }
+        
         let fn;
-        if (not)
+        if (not) {
             fn = (verb: Verb) => () => expect(actual).not[`to${verb}`](expected);
-        else
+        } else {
             fn = (verb: Verb) => () => expect(actual)[`to${verb}`](expected);
+        }
         
         _test('Be', fn);
         _test('Equal', fn);
@@ -261,11 +264,13 @@ describe(`CPython Tests`, () => {
             // /Lib/test/test_bool.py.test_math:106
             for (let b of [bool(false), bool(true)]) {
                 for (let i of [0, 1, 2]) {
-                    not.toEqualAndBeBool(b ** i, bool(int(b) ** i), `[0] assertIsNot(${b}**${i}, bool(int(${b})**${i}))`);
+                    let actual = b ** i;
+                    let expected = int(b) ** i;
+                    not.toEqualAndBeBool(actual, bool(expected), `[0] assertIsNot(${b}**${i}, bool(int(${b})**${i}))`);
                     
                     // new Bool toEqual b:true, i:1,2 fail
                     //          toBe    b:true, i:1,2 fail
-                    toEqualAndBeVanilla(b ** i, int(b) ** i, `[1] assertEqual(${b}**${i}, int(${b})**${i})`);
+                    toEqualAndBeVanilla(actual, expected, `[1] assertEqual(${b}**${i}, int(${b})**${i})`);
                 }
             }
         });
@@ -280,14 +285,14 @@ describe(`CPython Tests`, () => {
                     let bool_int_a_amp_int_b = bool(int_a_amp_int_b);
                     let bool_int_a_pipe_int_b = bool(int_a_pipe_int_b);
                     let bool_int_a_hat_int_b = bool(int_a_hat_int_b);
-                    // Boolean fail, new Bool fail
+                    // Boolean fail, new Bool fail, bool fail
                     describe(`${_suiteLineno()} assertIs(a&b, bool(int(a)&int(b)))`, () => {
                         test(`expect(${a} & ${b} = ${a & b}).toEqual(bool(int(${a}) & int(${b})) = ${bool_int_a_amp_int_b})`,
                             () => expect(a & b).toEqual(bool_int_a_amp_int_b));
                         test(`expect(${a} & ${b} = ${a & b}).toBe(bool(int(${a}) & int(${b})) = ${bool_int_a_amp_int_b})`,
                             () => expect(a & b).toBe(bool_int_a_amp_int_b));
                     });
-                    // Boolean fail, new Bool fail
+                    // Boolean fail, new Bool fail, bool fail
                     describe(`${_suiteLineno()} assertIs(a|b, bool(int(a)|int(b)))`, () => {
                         
                         test(`expect(${a} | ${b} = ${a | b}).toEqual(bool(int(${a}) | int(${b})) = ${bool_int_a_pipe_int_b})`,
@@ -295,7 +300,7 @@ describe(`CPython Tests`, () => {
                         test(`expect(${a} | ${b} = ${a | b}).toBe(bool(int(${a}) | int(${b})) = ${bool_int_a_pipe_int_b})`,
                             () => expect(a | b).toBe(bool_int_a_pipe_int_b));
                     });
-                    // Boolean fail, new Bool fail
+                    // Boolean fail, new Bool fail, bool fail
                     describe(`${_suiteLineno()} assertIs(a^b, bool(int(a)^int(b)))`, () => {
                         test(`expect(${a} ^ ${b} = ${a ^ b}).toEqual(bool(int(${a}) ^ int(${b})) = ${bool_int_a_hat_int_b})`,
                             () => expect(a ^ b).toEqual(bool_int_a_hat_int_b));
@@ -456,8 +461,12 @@ describe(`CPython Tests`, () => {
             //          toEqual(bool(false))     fail
             // new Bool toBe(bool(false))    fail
             toEqualAndBeVanillaAndBool(!bool(true), false, '[0] assertIs(not True, False)');
-            // Boolean fail x4, new Bool fail x4    WEIRD
-            toEqualAndBeVanillaAndBool(!bool(false), true, '[1] assertIs(not False, True)');
+            // Boolean fail x4
+            //  new Bool fail x4    WEIRD
+            let b = bool(false, {log: true});
+            let actual = !b;
+            console.log(cc('blue', `b: ${b}, actual (!b): ${actual}`));
+            toEqualAndBeVanillaAndBool(actual, true, '[1] assertIs(not False, True)');
         });
         
         
@@ -524,19 +533,42 @@ describe(`CPython Tests`, () => {
     });
     
     // line 233
-    // TODO: all besdies not instanceof fail
+    // TODO: all besides not instanceof fail
     describe(`test_boolean`, () => {
-        
+        // bool toBe(bool(1))       fail
+        //      toEqual(bool(1))    fail
         toEqualAndBeVanillaAndBool(bool(true) & 1, 1, 'assertEqual(True & 1, 1)');
+        
         test('(bool(true) & 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) & 1).not.toBeInstanceOf(Boolean));
+        
+        // bool toBe(true)          fail
+        //      toEqual(true)       fail
+        //      toBe(bool(true))    fail
+        //      toEqual(bool(true)) fail
         toEqualAndBeVanillaAndBool(bool(true) & bool(true), true, 'assertIs(True & True, True)');
         
+        // bool toBe(bool(1))       fail
+        //      toEqual(bool(1))    fail
         toEqualAndBeVanillaAndBool(bool(true) | 1, 1, 'assertEqual(True | 1, 1)');
+        
         test('(bool(true) | 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) | 1).not.toBeInstanceOf(Boolean));
+        
+        // bool toBe(true)          fail
+        //      toEqual(true)       fail
+        //      toBe(bool(true))    fail
+        //      toEqual(bool(true)) fail
         toEqualAndBeVanillaAndBool(bool(true) | bool(true), true, 'assertIs(True | True, True)');
         
+        // bool toBe(bool(1))       fail
+        //      toEqual(bool(1))    fail
         toEqualAndBeVanillaAndBool(bool(true) ^ 1, 0, 'assertEqual(True ^ 1, 0)');
+        
         test('(bool(true) ^ 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) ^ 1).not.toBeInstanceOf(Boolean));
+        
+        // bool toBe(true)          fail
+        //      toEqual(true)       fail
+        //      toBe(bool(true))    fail
+        //      toEqual(bool(true)) fail
         toEqualAndBeVanillaAndBool(bool(true) ^ bool(true), false, 'assertIs(True ^ True, false)');
         
         
