@@ -14,7 +14,17 @@ import {cc} from "../util";
 type Verb = 'Be' | 'Equal'
 type TestOptions = { not?: boolean, skip?: boolean, log?: boolean };
 
+
+function _suiteLineno() {
+    const stack = (new Error).stack.split("\n");
+    let call = stack.find(x => x.includes('Suite.describe'));
+    let lineno = call.substr(call.indexOf('bool.spec.ts') + 13);
+    return lineno;
+}
+
 function _toEqualAndBe(actual, expected, description = undefined, options: TestOptions & { vanilla: boolean }) {
+    
+    
     let {vanilla, not, skip, log} = options;
     const toWhat = vanilla ? `${expected}` : `bool(${expected}) = ${bool(expected)}`;
     if (!vanilla)
@@ -33,13 +43,15 @@ function _toEqualAndBe(actual, expected, description = undefined, options: TestO
         else
             fn = (verb: Verb) => () => expect(actual)[`to${verb}`](expected);
         
-        const betest = _test('Be', fn);
-        const eqtest = _test('Equal', fn);
+        _test('Be', fn);
+        _test('Equal', fn);
         
     };
     if (description) {
+        
+        description = `(${_suiteLineno()} ${description}`;
         describe(description, tests);
-        console.log();
+        // console.log();
     } else {
         tests();
     }
@@ -70,10 +82,12 @@ function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, o
         toEqualAndBeVanilla(actual, expected, undefined, options);
         toEqualAndBeBool(actual, expected, undefined, options);
     };
-    if (description)
+    if (description) {
+        description = `(${_suiteLineno()} ${description}`;
         describe(description, tests);
-    else
+    } else {
         tests()
+    }
     
 }
 
@@ -195,8 +209,8 @@ describe(`CPython Tests`, () => {
         // /Lib/test/test_bool.py.test_math:106
         for (let b of [bool(false), bool(true)]) {
             for (let i of [0, 1, 2]) {
-                console.log(cc('black', `b: ${b}, i: ${i}`));
-                not.toEqualAndBeBool(b ** i, bool(int(b) ** i, {log: true}), `assertIsNot(b**${i}, bool(int(b)**${i}))`);
+                // console.log(cc('black', `b: ${b}, i: ${i}`));
+                not.toEqualAndBeBool(b ** i, bool(int(b) ** i), `assertIsNot(b**${i}, bool(int(b)**${i}))`);
                 toEqualAndBeVanilla(b ** i, int(b) ** i, `assertEqual(b**${i}, int(b)**${i})`);
             }
         }
@@ -259,7 +273,7 @@ describe(`CPython Tests`, () => {
         const letest = test('LETEST', () => expect(1).toEqual(2));
         
         // line 129
-        toEqualAndBeVanillaAndBool(1 == 1, true, 'assertIs(1==1, True)', {log: false});
+        toEqualAndBeVanillaAndBool(1 == 1, true, 'assertIs(1==1, True)');
         toEqualAndBeVanillaAndBool(1 == 0, false, 'assertIs(1==0, False)');
         toEqualAndBeVanillaAndBool(0 < 1, true, 'assertIs(0<1, True)');
         toEqualAndBeVanillaAndBool(1 < 0, false, 'assertIs(1<0, False)');
