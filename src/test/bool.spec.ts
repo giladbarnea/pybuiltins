@@ -535,40 +535,40 @@ describe(`CPython Tests`, () => {
     // line 233
     // TODO: all besides not instanceof fail
     describe(`test_boolean`, () => {
-        // bool toBe(bool(1))       fail
-        //      toEqual(bool(1))    fail
+        // bool, new Bool(), Boolean()  toBe(bool(1))       fail
+        //                              toEqual(bool(1))    fail
         toEqualAndBeVanillaAndBool(bool(true) & 1, 1, 'assertEqual(True & 1, 1)');
         
         test('(bool(true) & 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) & 1).not.toBeInstanceOf(Boolean));
         
-        // bool toBe(true)          fail
-        //      toEqual(true)       fail
-        //      toBe(bool(true))    fail
-        //      toEqual(bool(true)) fail
+        // bool, new Bool(), Boolean()  toBe(true)          fail
+        //                              toEqual(true)       fail
+        //                              toBe(bool(true))    fail
+        //                              toEqual(bool(true)) fail
         toEqualAndBeVanillaAndBool(bool(true) & bool(true), true, 'assertIs(True & True, True)');
         
-        // bool toBe(bool(1))       fail
-        //      toEqual(bool(1))    fail
+        // bool, new Bool(), Boolean()  toBe(bool(1))       fail
+        //                              toEqual(bool(1))    fail
         toEqualAndBeVanillaAndBool(bool(true) | 1, 1, 'assertEqual(True | 1, 1)');
         
         test('(bool(true) | 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) | 1).not.toBeInstanceOf(Boolean));
         
-        // bool toBe(true)          fail
-        //      toEqual(true)       fail
-        //      toBe(bool(true))    fail
-        //      toEqual(bool(true)) fail
+        // bool, new Bool(), Boolean()  toBe(true)          fail
+        //                              toEqual(true)       fail
+        //                              toBe(bool(true))    fail
+        //                              toEqual(bool(true)) fail
         toEqualAndBeVanillaAndBool(bool(true) | bool(true), true, 'assertIs(True | True, True)');
         
-        // bool toBe(bool(1))       fail
-        //      toEqual(bool(1))    fail
+        // bool, new Bool(), Boolean()  toBe(bool(1))       fail
+        //                              toEqual(bool(1))    fail
         toEqualAndBeVanillaAndBool(bool(true) ^ 1, 0, 'assertEqual(True ^ 1, 0)');
         
         test('(bool(true) ^ 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) ^ 1).not.toBeInstanceOf(Boolean));
         
-        // bool toBe(true)          fail
-        //      toEqual(true)       fail
-        //      toBe(bool(true))    fail
-        //      toEqual(bool(true)) fail
+        // bool, new Bool(), Boolean()  toBe(true)          fail
+        //                              toEqual(true)       fail
+        //                              toBe(bool(true))    fail
+        //                              toEqual(bool(true)) fail
         toEqualAndBeVanillaAndBool(bool(true) ^ bool(true), false, 'assertIs(True ^ True, false)');
         
         
