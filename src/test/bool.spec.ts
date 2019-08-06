@@ -261,11 +261,11 @@ describe(`CPython Tests`, () => {
             // /Lib/test/test_bool.py.test_math:106
             for (let b of [bool(false), bool(true)]) {
                 for (let i of [0, 1, 2]) {
-                    // console.log(cc('black', `b: ${b}, i: ${i}`));
-                    not.toEqualAndBeBool(b ** i, bool(int(b) ** i), `[0] assertIsNot(b**${i}, bool(int(b)**${i}))`);
+                    not.toEqualAndBeBool(b ** i, bool(int(b) ** i), `[0] assertIsNot(${b}**${i}, bool(int(${b})**${i}))`);
                     
-                    // new Bool fail
-                    toEqualAndBeVanilla(b ** i, int(b) ** i, `[1] assertEqual(b**${i}, int(b)**${i})`);
+                    // new Bool toEqual b:true, i:1,2 fail
+                    //          toBe    b:true, i:1,2 fail
+                    toEqualAndBeVanilla(b ** i, int(b) ** i, `[1] assertEqual(${b}**${i}, int(${b})**${i})`);
                 }
             }
         });
@@ -280,14 +280,14 @@ describe(`CPython Tests`, () => {
                     let bool_int_a_amp_int_b = bool(int_a_amp_int_b);
                     let bool_int_a_pipe_int_b = bool(int_a_pipe_int_b);
                     let bool_int_a_hat_int_b = bool(int_a_hat_int_b);
-                    // Boolean fail
+                    // Boolean fail, new Bool fail
                     describe(`${_suiteLineno()} assertIs(a&b, bool(int(a)&int(b)))`, () => {
                         test(`expect(${a} & ${b} = ${a & b}).toEqual(bool(int(${a}) & int(${b})) = ${bool_int_a_amp_int_b})`,
                             () => expect(a & b).toEqual(bool_int_a_amp_int_b));
                         test(`expect(${a} & ${b} = ${a & b}).toBe(bool(int(${a}) & int(${b})) = ${bool_int_a_amp_int_b})`,
                             () => expect(a & b).toBe(bool_int_a_amp_int_b));
                     });
-                    // Boolean fail
+                    // Boolean fail, new Bool fail
                     describe(`${_suiteLineno()} assertIs(a|b, bool(int(a)|int(b)))`, () => {
                         
                         test(`expect(${a} | ${b} = ${a | b}).toEqual(bool(int(${a}) | int(${b})) = ${bool_int_a_pipe_int_b})`,
@@ -295,7 +295,7 @@ describe(`CPython Tests`, () => {
                         test(`expect(${a} | ${b} = ${a | b}).toBe(bool(int(${a}) | int(${b})) = ${bool_int_a_pipe_int_b})`,
                             () => expect(a | b).toBe(bool_int_a_pipe_int_b));
                     });
-                    // Boolean fail
+                    // Boolean fail, new Bool fail
                     describe(`${_suiteLineno()} assertIs(a^b, bool(int(a)^int(b)))`, () => {
                         test(`expect(${a} ^ ${b} = ${a ^ b}).toEqual(bool(int(${a}) ^ int(${b})) = ${bool_int_a_hat_int_b})`,
                             () => expect(a ^ b).toEqual(bool_int_a_hat_int_b));
@@ -343,67 +343,93 @@ describe(`CPython Tests`, () => {
         
         // line 129
         describe(`${_suiteLineno()} line 129`, () => {
+            // new Bool toBe(bool(true))         fail
             toEqualAndBeVanillaAndBool(1 == 1, true, '[0] assertIs(1==1, True)');
             
             // Boolean  toBe(bool(false))        fail
             //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))         fail
             toEqualAndBeVanillaAndBool(1 == 0, false, '[1] assertIs(1==0, False)');
+            
+            // new Bool toBe(bool(true))         fail
             toEqualAndBeVanillaAndBool(0 < 1, true, '[2] assertIs(0<1, True)');
             
             // Boolean  toBe(bool(false))        fail
             //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))         fail
             toEqualAndBeVanillaAndBool(1 < 0, false, '[3] assertIs(1<0, False)');
+            
+            // new Bool toBe(bool(true))         fail
             toEqualAndBeVanillaAndBool(0 <= 0, true, '[4] assertIs(0<=0, True)');
             
             // Boolean  toBe(bool(false))        fail
             //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))         fail
             toEqualAndBeVanillaAndBool(1 <= 0, false, '[5] assertIs(1<=0, False)');
+            
+            // new Bool toBe(bool(true))         fail
             toEqualAndBeVanillaAndBool(1 > 0, true, '[6] assertIs(1>0, True)');
             
             // Boolean  toBe(bool(false))        fail
             //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))         fail
             toEqualAndBeVanillaAndBool(1 > 1, false, '[7] assertIs(1>1, False)');
+            
+            // new Bool toBe(bool(true))         fail
             toEqualAndBeVanillaAndBool(1 >= 1, true, '[8] assertIs(1>=1, True)');
             
             // Boolean  toBe(bool(false))        fail
             //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))         fail
             toEqualAndBeVanillaAndBool(0 >= 1, false, '[9] assertIs(0>=1, False)');
+            
+            // new Bool toBe(bool(true))         fail
             toEqualAndBeVanillaAndBool(0 != 1, true, '[10] assertIs(0!=1, True)');
             
             // Boolean  toBe(bool(false))        fail
             //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))         fail
             toEqualAndBeVanillaAndBool(0 != 0, false, '[11] assertIs(0!=0, False)');
         });
         
         let list = [1];
         describe(`${_suiteLineno()} line 142`, () => {
+            // new Bool toBe(bool(true))         fail
             toEqualAndBeVanillaAndBool(Object.is(list, list), true, '[0] assertIs(x is x, True)');
             
             // Boolean  toBe(bool(false))        fail
             //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))         fail
             toEqualAndBeVanillaAndBool(!Object.is(list, list), false, '[1] assertIs(x is not x, False)');
             
         });
         describe(`${_suiteLineno()} line 146`, () => {
+            // new Bool toBe(bool(true))         fail
             toEqualAndBeVanillaAndBool(list.includes(1), true, '[0] assertIs(1 in x, True)');
             
             // Boolean  toBe(bool(false))        fail
             //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))         fail
             toEqualAndBeVanillaAndBool(list.includes(0), false, '[1] assertIs(0 in x, False)');
             
             // Boolean  toBe(bool(false))        fail
             //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))         fail
             toEqualAndBeVanillaAndBool(!list.includes(1), false, '[2] assertIs(1 not in x, False)');
+            
+            // new Bool toBe(bool(true))         fail
             toEqualAndBeVanillaAndBool(!list.includes(0), true, '[3] assertIs(0 not in list, True)');
             
         });
         let obj = {1: 2};
         // TODO: obj === obj?
         describe(`${_suiteLineno()} line 152`, () => {
+            // new Bool toBe(bool(true))         fail
             toEqualAndBeVanillaAndBool(Object.is(obj, obj), true, '[0] assertIs(obj is obj, True)');
             
             // Boolean  toBe(bool(false))        fail
             //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))         fail
             toEqualAndBeVanillaAndBool(!Object.is(obj, obj), false, '[1] assertIs(obj is not obj, False)');
             
         });
@@ -426,11 +452,9 @@ describe(`CPython Tests`, () => {
             
         });
         describe(`${_suiteLineno()} line 160`, () => {
-            // Boolean fail
-            // new Bool toEqual(false)      pass
-            //          toBe(false)         pass
-            //          toEqual(bool(false) pass
-            //          toBe(bool(false)    fail
+            // Boolean  toBe(bool(false))        fail
+            //          toEqual(bool(false))     fail
+            // new Bool toBe(bool(false))    fail
             toEqualAndBeVanillaAndBool(!bool(true), false, '[0] assertIs(not True, False)');
             // Boolean fail x4, new Bool fail x4    WEIRD
             toEqualAndBeVanillaAndBool(!bool(false), true, '[1] assertIs(not False, True)');
