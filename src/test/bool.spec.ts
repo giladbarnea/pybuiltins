@@ -1,4 +1,4 @@
-import {bool} from "../bool"
+import {Bool, bool} from "../bool"
 import {int} from "../int"
 import {str} from "../str";
 import {float} from "../float";
@@ -533,43 +533,42 @@ describe(`CPython Tests`, () => {
     });
     
     // line 233
-    // TODO: all besides not instanceof fail
+    // TODO: Python => True [bitwise] True: boolean
+    // TODO: JS => True [bitwise] True: Number
     describe(`test_boolean`, () => {
-        // bool, new Bool(), Boolean()  toBe(bool(1))       fail
-        //                              toEqual(bool(1))    fail
-        toEqualAndBeVanillaAndBool(bool(true) & 1, 1, 'assertEqual(True & 1, 1)');
+        let True = bool(true);
+        toEqualAndBeVanilla(True & 1, 1, 'assertEqual(True & 1, 1)');
         
-        test('(bool(true) & 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) & 1).not.toBeInstanceOf(Boolean));
-        
-        // bool, new Bool(), Boolean()  toBe(true)          fail
-        //                              toEqual(true)       fail
-        //                              toBe(bool(true))    fail
-        //                              toEqual(bool(true)) fail
-        toEqualAndBeVanillaAndBool(bool(true) & bool(true), true, 'assertIs(True & True, True)');
-        
-        // bool, new Bool(), Boolean()  toBe(bool(1))       fail
-        //                              toEqual(bool(1))    fail
-        toEqualAndBeVanillaAndBool(bool(true) | 1, 1, 'assertEqual(True | 1, 1)');
-        
-        test('(bool(true) | 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) | 1).not.toBeInstanceOf(Boolean));
+        test('(bool(true) & 1).not.toBeInstanceOf(Boolean)', () => expect(True & 1).not.toBeInstanceOf(Boolean));
+        test('(bool(true) & 1).not.toBeInstanceOf(Boolean)', () => expect(True & 1).not.toBeInstanceOf(Bool));
         
         // bool, new Bool(), Boolean()  toBe(true)          fail
         //                              toEqual(true)       fail
         //                              toBe(bool(true))    fail
         //                              toEqual(bool(true)) fail
-        toEqualAndBeVanillaAndBool(bool(true) | bool(true), true, 'assertIs(True | True, True)');
+        toEqualAndBeVanillaAndBool(True & True, true, 'assertIs(True & True, True)');
         
-        // bool, new Bool(), Boolean()  toBe(bool(1))       fail
-        //                              toEqual(bool(1))    fail
-        toEqualAndBeVanillaAndBool(bool(true) ^ 1, 0, 'assertEqual(True ^ 1, 0)');
+        toEqualAndBeVanilla(True | 1, 1, 'assertEqual(True | 1, 1)');
         
-        test('(bool(true) ^ 1).not.toBeInstanceOf(Boolean)', () => expect(bool(true) ^ 1).not.toBeInstanceOf(Boolean));
+        test('(bool(true) | 1).not.toBeInstanceOf(Boolean)', () => expect(True | 1).not.toBeInstanceOf(Boolean));
+        test('(bool(true) | 1).not.toBeInstanceOf(Boolean)', () => expect(True | 1).not.toBeInstanceOf(Bool));
         
         // bool, new Bool(), Boolean()  toBe(true)          fail
         //                              toEqual(true)       fail
         //                              toBe(bool(true))    fail
         //                              toEqual(bool(true)) fail
-        toEqualAndBeVanillaAndBool(bool(true) ^ bool(true), false, 'assertIs(True ^ True, false)');
+        toEqualAndBeVanillaAndBool(True | True, true, 'assertIs(True | True, True)');
+        
+        toEqualAndBeVanilla(True ^ 1, 0, 'assertEqual(True ^ 1, 0)');
+        
+        test('(bool(true) ^ 1).not.toBeInstanceOf(Boolean)', () => expect(True ^ 1).not.toBeInstanceOf(Boolean));
+        test('(bool(true) ^ 1).not.toBeInstanceOf(Boolean)', () => expect(True ^ 1).not.toBeInstanceOf(Bool));
+        
+        // bool, new Bool(), Boolean()  toBe(false)          fail
+        //                              toEqual(false)       fail
+        //                              toBe(bool(false))    fail
+        //                              toEqual(bool(false)) fail
+        toEqualAndBeVanillaAndBool(True ^ True, false, 'assertIs(True ^ True, False)');
         
         
     });

@@ -1,7 +1,7 @@
 import {cc} from "./util";
 import {Int} from "./int";
 
-class Bool extends Boolean {
+export class Bool extends Boolean {
     constructor(val: any, options = {}) {
         const {log} = options;
         if (log) console.log(cc('black', 'constructor'), {val});
@@ -44,7 +44,7 @@ export function bool(val: any, options = {}): boolean {
     const {log} = options;
     const newbool = new Bool(val, options);
     if (log) console.log(cc('bright magenta', `Returning newbool: ${this}`), newbool);
-    // return newbool.valueOf();
+    return newbool.valueOf();
     // return newbool;
     const ret = Boolean(newbool);
     if (log) console.log(cc('bright magenta', `Returning Boolean(newbool): ${ret}`), ret);
