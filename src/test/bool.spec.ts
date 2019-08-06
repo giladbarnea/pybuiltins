@@ -19,7 +19,7 @@ function _suiteLineno() {
     const stack = (new Error).stack.split("\n");
     const call = stack.find(x => x.includes('Suite.describe'));
     const lineno = call.substr(call.indexOf('bool.spec.ts') + 13);
-    return lineno;
+    return `(${lineno}`;
 }
 
 function _toEqualAndBe(actual, expected, description = undefined, options: TestOptions & { vanilla: boolean }) {
@@ -49,7 +49,7 @@ function _toEqualAndBe(actual, expected, description = undefined, options: TestO
     };
     if (description) {
         
-        description = `(${_suiteLineno()} ${description}`;
+        // description = `${_suiteLineno()} ${description}`;
         describe(description, tests);
         // console.log();
     } else {
@@ -83,7 +83,7 @@ function toEqualAndBeVanillaAndBool(actual, expected, description = undefined, o
         toEqualAndBeBool(actual, expected, undefined, options);
     };
     if (description) {
-        description = `(${_suiteLineno()} ${description}`;
+        // description = `${_suiteLineno()} ${description}`;
         describe(description, tests);
     } else {
         tests()
@@ -148,194 +148,217 @@ describe(`CPython Tests`, () => {
     
     });
     describe('test_math', () => {
-        // line 55
-        toEqualAndBeVanilla(+bool(false), 0, 'assertEqual(+False, 0)'); // Boolean fail
-        not.toEqualAndBeVanillaAndBool(+bool(false), bool(false), 'assertIsNot(+False, False)');
         
-        // fails because -0 is not 0 in javascript
-        skip.toEqualAndBeVanilla(-bool(false), 0, 'assertEqual(-False, 0)');
+        describe(`${_suiteLineno()} line 55`, () => {
+            toEqualAndBeVanilla(+bool(false), 0, '[0] assertEqual(+False, 0)'); // Boolean fail
+            not.toEqualAndBeVanillaAndBool(+bool(false), bool(false), '[1] assertIsNot(+False, False)');
+            
+            // fails because -0 is not 0 in javascript
+            skip.toEqualAndBeVanilla(-bool(false), 0, '[2] assertEqual(-False, 0)');
+            
+            not.toEqualAndBeVanillaAndBool(-bool(false), bool(false), '[3] assertIsNot(-False, False)');
+            toEqualAndBeVanilla(Math.abs(bool(false)), 0, '[4] assertEqual(abs(False), 0)'); // Boolean fail
+            not.toEqualAndBeVanillaAndBool(Math.abs(bool(false)), bool(false), '[5] assertIsNot(abs(False), False)');
+            toEqualAndBeVanilla(+bool(true), 1, '[6] assertEqual(+True, 1)');
+            not.toEqualAndBeVanillaAndBool(+bool(true), bool(true), '[7] assertIsNot(+True, True)');
+            toEqualAndBeVanilla(-bool(true), -1, '[8] assertEqual(-True, -1)');
+            toEqualAndBeVanilla(Math.abs(bool(true)), 1, '[9] assertEqual(abs(True), 1)');
+            not.toEqualAndBeVanillaAndBool(Math.abs(bool(true)), bool(true), '[10] assertIsNot(abs(True), True)');
+            toEqualAndBeVanilla(~bool(false), -1, '[11] assertEqual(~False, -1)'); // Boolean fail
+            toEqualAndBeVanilla(~bool(true), -2, '[12] assertEqual(~True, -2)');
+            
+        });
+        describe(`${_suiteLineno()} line 69`, () => {
+            toEqualAndBeVanilla(bool(false) + 2, 2, '[0] assertEqual(False+2, 2)'); // Boolean fail
+            toEqualAndBeVanilla(bool(true) + 2, 3, '[1] assertEqual(True+2, 3)');
+            toEqualAndBeVanilla(2 + bool(false), 2, '[2] assertEqual(2+False, 2)'); // Boolean fail
+            toEqualAndBeVanilla(2 + bool(true), 3, '[3] assertEqual(2+True, 3)')
+        });
         
-        not.toEqualAndBeVanillaAndBool(-bool(false), bool(false), 'assertIsNot(-False, False)');
-        toEqualAndBeVanilla(Math.abs(bool(false)), 0, 'assertEqual(abs(False), 0)'); // Boolean fail
-        not.toEqualAndBeVanillaAndBool(Math.abs(bool(false)), bool(false), 'assertIsNot(abs(False), False)');
-        toEqualAndBeVanilla(+bool(true), 1, 'assertEqual(+True, 1)');
-        not.toEqualAndBeVanillaAndBool(+bool(true), bool(true), 'assertIsNot(+True, True)');
-        toEqualAndBeVanilla(-bool(true), -1, 'assertEqual(-True, -1)');
-        toEqualAndBeVanilla(Math.abs(bool(true)), 1, 'assertEqual(abs(True), 1)');
-        not.toEqualAndBeVanillaAndBool(Math.abs(bool(true)), bool(true), 'assertIsNot(abs(True), True)');
-        toEqualAndBeVanilla(~bool(false), -1, 'assertEqual(~False, -1)'); // Boolean fail
-        toEqualAndBeVanilla(~bool(true), -2, 'assertEqual(~True, -2)');
+        describe(`${_suiteLineno()} line 74`, () => {
+            toEqualAndBeVanilla(bool(false) + bool(false), 0, '[0] assertEqual(False+False, 0)'); // Boolean fail
+            not.toEqualAndBeVanillaAndBool(bool(false) + bool(false), false, '[1] assertIsNot(False+False, False)');
+            toEqualAndBeVanilla(bool(false) + bool(true), 1, '[2] assertEqual(False+True, 1)'); // Boolean fail
+            not.toEqualAndBeVanillaAndBool(bool(false) + bool(true), true, '[3] assertIsNot(False+True, True)');
+            toEqualAndBeVanilla(bool(true) + bool(false), 1, '[4] assertEqual(True+False, 1)'); // Boolean fail
+            not.toEqualAndBeVanillaAndBool(bool(true) + bool(false), true, '[5] assertIsNot(True+False, True)');
+            toEqualAndBeVanilla(bool(true) + bool(true), 2, '[6] assertEqual(True+True, 2)');
+        });
+        
+        describe(`${_suiteLineno()} line 82`, () => {
+            toEqualAndBeVanilla(bool(true) - bool(true), 0, '[0] assertEqual(True-True, 0)');
+            not.toEqualAndBeVanillaAndBool(bool(true) - bool(true), false, '[1] assertIsNot(True-True, False)');
+            toEqualAndBeVanilla(bool(false) - bool(false), 0, '[2] assertEqual(False-False, 0)');
+            not.toEqualAndBeVanillaAndBool(bool(false) - bool(false), false, '[3] assertIsNot(False-False, False)');
+            toEqualAndBeVanilla(bool(true) - bool(false), 1, '[4] assertEqual(True-False, 1)'); // Boolean fail
+            not.toEqualAndBeVanillaAndBool(bool(true) - bool(false), true, '[5] assertIsNot(True-False, True)');
+            toEqualAndBeVanilla(bool(false) - bool(true), -1, '[6] assertEqual(False-True, -1)'); // Boolean fail
+        });
         
         
-        // line 69
-        toEqualAndBeVanilla(bool(false) + 2, 2, 'assertEqual(False+2, 2)'); // Boolean fail
-        toEqualAndBeVanilla(bool(true) + 2, 3, 'assertEqual(True+2, 3)');
-        toEqualAndBeVanilla(2 + bool(false), 2, 'assertEqual(2+False, 2)'); // Boolean fail
-        toEqualAndBeVanilla(2 + bool(true), 3, 'assertEqual(2+True, 3)');
+        describe(`${_suiteLineno()} line 90`, () => {
+            toEqualAndBeVanilla(bool(true) * 1, 1, '[0] assertEqual(True*1, 1)');
+            toEqualAndBeVanilla(bool(false) * 1, 0, '[1] assertEqual(False*1, 0)'); // Boolean fail
+            not.toEqualAndBeVanillaAndBool(bool(false) * 1, false, '[2] assertIsNot(False*1, False)');
+        });
         
-        // line 74
-        toEqualAndBeVanilla(bool(false) + bool(false), 0, 'assertEqual(False+False, 0)'); // Boolean fail
-        not.toEqualAndBeVanillaAndBool(bool(false) + bool(false), false, 'assertIsNot(False+False, False)');
-        toEqualAndBeVanilla(bool(false) + bool(true), 1, 'assertEqual(False+True, 1)'); // Boolean fail
-        not.toEqualAndBeVanillaAndBool(bool(false) + bool(true), true, 'assertIsNot(False+True, True)');
-        toEqualAndBeVanilla(bool(true) + bool(false), 1, 'assertEqual(True+False, 1)'); // Boolean fail
-        not.toEqualAndBeVanillaAndBool(bool(true) + bool(false), true, 'assertIsNot(True+False, True)');
-        toEqualAndBeVanilla(bool(true) + bool(true), 2, 'assertEqual(True+True, 2)');
         
-        // line 82
-        toEqualAndBeVanilla(bool(true) - bool(true), 0, 'assertEqual(True-True, 0)');
-        not.toEqualAndBeVanillaAndBool(bool(true) - bool(true), false, 'assertIsNot(True-True, False)');
-        toEqualAndBeVanilla(bool(false) - bool(false), 0, 'assertEqual(False-False, 0)');
-        not.toEqualAndBeVanillaAndBool(bool(false) - bool(false), false, 'assertIsNot(False-False, False)');
-        toEqualAndBeVanilla(bool(true) - bool(false), 1, 'assertEqual(True-False, 1)'); // Boolean fail
-        not.toEqualAndBeVanillaAndBool(bool(true) - bool(false), true, 'assertIsNot(True-False, True)');
-        toEqualAndBeVanilla(bool(false) - bool(true), -1, 'assertEqual(False-True, -1)'); // Boolean fail
+        describe(`${_suiteLineno()} line 94`, () => {
+            toEqualAndBeVanilla(bool(true) / 1, 1, '[0] assertEqual(True/1, 1)');
+            not.toEqualAndBeVanillaAndBool(bool(true) / 1, true, '[1] assertIsNot(True/1, True)');
+            toEqualAndBeVanilla(bool(false) / 1, 0, '[2] assertEqual(False/1, 0)'); // Boolean fail
+            not.toEqualAndBeVanillaAndBool(bool(false) / 1, false, '[3] assertIsNot(False/1, False)');
+        });
         
-        // line 90
-        toEqualAndBeVanilla(bool(true) * 1, 1, 'assertEqual(True*1, 1)');
-        toEqualAndBeVanilla(bool(false) * 1, 0, 'assertEqual(False*1, 0)'); // Boolean fail
-        not.toEqualAndBeVanillaAndBool(bool(false) * 1, false, 'assertIsNot(False*1, False)');
         
-        // line 94
-        toEqualAndBeVanilla(bool(true) / 1, 1, 'assertEqual(True/1, 1)');
-        not.toEqualAndBeVanillaAndBool(bool(true) / 1, true, 'assertIsNot(True/1, True)');
-        toEqualAndBeVanilla(bool(false) / 1, 0, 'assertEqual(False/1, 0)'); // Boolean fail
-        not.toEqualAndBeVanillaAndBool(bool(false) / 1, false, 'assertIsNot(False/1, False)');
+        describe(`${_suiteLineno()} line 99`, () => {
+            toEqualAndBeVanilla(bool(true) % 1, 0, '[0] assertEqual(True%1, 0)');
+            not.toEqualAndBeVanillaAndBool(bool(true) % 2, false, '[1] assertIsNot(True%1, False)');
+            toEqualAndBeVanilla(bool(true) % 2, 1, '[2] assertEqual(True%2, 1)');
+            not.toEqualAndBeVanillaAndBool(bool(true) % 2, true, '[3] assertIsNot(True%2, True)');
+            toEqualAndBeVanilla(bool(false) % 1, 0, '[4] assertEqual(False%1, 0)');
+            not.toEqualAndBeVanillaAndBool(bool(false) % 1, false, '[5] assertIsNot(False%1, False)');
+        });
         
-        // line 99
-        toEqualAndBeVanilla(bool(true) % 1, 0, 'assertEqual(True%1, 0)');
-        not.toEqualAndBeVanillaAndBool(bool(true) % 2, false, 'assertIsNot(True%1, False)');
-        toEqualAndBeVanilla(bool(true) % 2, 1, 'assertEqual(True%2, 1)');
-        not.toEqualAndBeVanillaAndBool(bool(true) % 2, true, 'assertIsNot(True%2, True)');
-        toEqualAndBeVanilla(bool(false) % 1, 0, 'assertEqual(False%1, 0)');
-        not.toEqualAndBeVanillaAndBool(bool(false) % 1, false, 'assertIsNot(False%1, False)');
-        
-        // /Lib/test/test_bool.py.test_math:106
-        for (let b of [bool(false), bool(true)]) {
-            for (let i of [0, 1, 2]) {
-                // console.log(cc('black', `b: ${b}, i: ${i}`));
-                not.toEqualAndBeBool(b ** i, bool(int(b) ** i), `assertIsNot(b**${i}, bool(int(b)**${i}))`);
-                toEqualAndBeVanilla(b ** i, int(b) ** i, `assertEqual(b**${i}, int(b)**${i})`); // new Bool fail
+        describe(`${_suiteLineno()} for bool(false), bool(true)... i of [0,1,2]`, () => {
+            
+            // /Lib/test/test_bool.py.test_math:106
+            for (let b of [bool(false), bool(true)]) {
+                for (let i of [0, 1, 2]) {
+                    // console.log(cc('black', `b: ${b}, i: ${i}`));
+                    not.toEqualAndBeBool(b ** i, bool(int(b) ** i), `[0] assertIsNot(b**${i}, bool(int(b)**${i}))`);
+                    toEqualAndBeVanilla(b ** i, int(b) ** i, `[1] assertEqual(b**${i}, int(b)**${i})`); // new Bool fail
+                }
             }
-        }
-        for (let a in [bool(false), bool(true)]) {
-            for (let b in [bool(false), bool(true)]) {
-                let int_b = int(b);
-                let int_a = int(a);
-                let int_a_amp_int_b = int_a & int_b;
-                let int_a_pipe_int_b = int_a | int_b;
-                let int_a_hat_int_b = int_a ^ int_b;
-                let bool_int_a_amp_int_b = bool(int_a_amp_int_b);
-                let bool_int_a_pipe_int_b = bool(int_a_pipe_int_b);
-                let bool_int_a_hat_int_b = bool(int_a_hat_int_b);
-                
-                test(`expect(${a} & ${b} = ${a & b}).toEqual(bool(int(${a}) & int(${b})) = ${bool_int_a_amp_int_b})`,
-                    () => expect(a & b).toEqual(bool_int_a_amp_int_b)); // Boolean and new Bool fail
-                test(`expect(${a} & ${b} = ${a & b}).toBe(bool(int(${a}) & int(${b})) = ${bool_int_a_amp_int_b})`,
-                    () => expect(a & b).toBe(bool_int_a_amp_int_b)); // Boolean and new Bool fail
-                
-                test(`expect(${a} | ${b} = ${a | b}).toEqual(bool(int(${a}) | int(${b})) = ${bool_int_a_pipe_int_b})`,
-                    () => expect(a | b).toEqual(bool_int_a_pipe_int_b)); // Boolean and new Bool fail
-                test(`expect(${a} | ${b} = ${a | b}).toBe(bool(int(${a}) | int(${b})) = ${bool_int_a_pipe_int_b})`,
-                    () => expect(a | b).toBe(bool_int_a_pipe_int_b)); // Boolean and new Bool fail
-                
-                test(`expect(${a} ^ ${b} = ${a ^ b}).toEqual(bool(int(${a}) ^ int(${b})) = ${bool_int_a_hat_int_b})`,
-                    () => expect(a ^ b).toEqual(bool_int_a_hat_int_b));  // Boolean and new Bool fail
-                test(`expect(${a} ^ ${b} = ${a ^ b}).toBe(bool(int(${a}) ^ int(${b})) = ${bool_int_a_hat_int_b})`,
-                    () => expect(a ^ b).toBe(bool_int_a_hat_int_b));  // Boolean and new Bool fail
-                
-                test(`expect(${a} & int(${b})).toEqual(int(${a}) & int(${b}))`,
-                    () => expect(a & int_b).toEqual(int_a_amp_int_b));
-                
-                test(`expect(${a} & int(${b})).not.toBe(bool(int(${a}) & int(${b})))`,
-                    () => expect(a & int_b).not.toBe(bool_int_a_amp_int_b));
-                
-                test(`expect(${a} | int(${b})).not.toBe(bool(int(${a}) | int(${b})))`,
-                    () => expect(a | int_b).not.toBe(bool_int_a_pipe_int_b));
-                
-                test(`expect(${a} ^ int(${b})).not.toBe(bool(int(${a}) ^ int(${b})))`,
-                    () => expect(a ^ int_b).not.toBe(bool_int_a_hat_int_b));
-                
-                test(`expect(int(${a}) & ${b}).not.toBe(bool(int(${a}) & int(${b})))`,
-                    () => expect(int_a & b).not.toBe(bool_int_a_amp_int_b));
-                
-                test(`expect(int(${a}) | ${b}).not.toBe(bool(int(${a}) | int(${b})))`,
-                    () => expect(int_a | b).not.toBe(bool_int_a_pipe_int_b));
-                
-                test(`expect(int(${a}) ^ ${b}).not.toBe(bool(int(${a}) ^ int(${b})))`,
-                    () => expect(int_a ^ b).not.toBe(bool_int_a_hat_int_b));
-                
-                test(`expect(${a} | int(${b})).toEqual(int(${a}) | int(${b}))`,
-                    () => expect(a | int_b).toEqual(int_a_pipe_int_b));
-                
-                test(`expect(${a} ^ int(${b})).toEqual(int(${a}) ^ int(${b}))`,
-                    () => expect(a ^ int_b).toEqual(int_a_hat_int_b));
-                
-                test(`expect(int(${a}) & ${b}).toEqual(int(${a}) & int(${b}))`,
-                    () => expect(int_a & b).toEqual(int_a_amp_int_b));
-                
-                test(`expect(int(${a}) | ${b}).toEqual(int(${a}) | int(${b}))`,
-                    () => expect(int_a | b).toEqual(int_a_pipe_int_b));
-                
-                test(`expect(int(${a}) ^ ${b}).toEqual(int(${a}) ^ int(${b}))`,
-                    () => expect(int_a ^ b).toEqual(int_a_hat_int_b))
+        });
+        describe(`${_suiteLineno()} for bool(false), bool(true) x2`, () => {
+            for (let a in [bool(false), bool(true)]) {
+                for (let b in [bool(false), bool(true)]) {
+                    let int_b = int(b);
+                    let int_a = int(a);
+                    let int_a_amp_int_b = int_a & int_b;
+                    let int_a_pipe_int_b = int_a | int_b;
+                    let int_a_hat_int_b = int_a ^ int_b;
+                    let bool_int_a_amp_int_b = bool(int_a_amp_int_b);
+                    let bool_int_a_pipe_int_b = bool(int_a_pipe_int_b);
+                    let bool_int_a_hat_int_b = bool(int_a_hat_int_b);
+                    
+                    test(`expect(${a} & ${b} = ${a & b}).toEqual(bool(int(${a}) & int(${b})) = ${bool_int_a_amp_int_b})`,
+                        () => expect(a & b).toEqual(bool_int_a_amp_int_b)); // Boolean and new Bool fail
+                    test(`expect(${a} & ${b} = ${a & b}).toBe(bool(int(${a}) & int(${b})) = ${bool_int_a_amp_int_b})`,
+                        () => expect(a & b).toBe(bool_int_a_amp_int_b)); // Boolean and new Bool fail
+                    
+                    test(`expect(${a} | ${b} = ${a | b}).toEqual(bool(int(${a}) | int(${b})) = ${bool_int_a_pipe_int_b})`,
+                        () => expect(a | b).toEqual(bool_int_a_pipe_int_b)); // Boolean and new Bool fail
+                    test(`expect(${a} | ${b} = ${a | b}).toBe(bool(int(${a}) | int(${b})) = ${bool_int_a_pipe_int_b})`,
+                        () => expect(a | b).toBe(bool_int_a_pipe_int_b)); // Boolean and new Bool fail
+                    
+                    test(`expect(${a} ^ ${b} = ${a ^ b}).toEqual(bool(int(${a}) ^ int(${b})) = ${bool_int_a_hat_int_b})`,
+                        () => expect(a ^ b).toEqual(bool_int_a_hat_int_b));  // Boolean and new Bool fail
+                    test(`expect(${a} ^ ${b} = ${a ^ b}).toBe(bool(int(${a}) ^ int(${b})) = ${bool_int_a_hat_int_b})`,
+                        () => expect(a ^ b).toBe(bool_int_a_hat_int_b));  // Boolean and new Bool fail
+                    
+                    test(`expect(${a} & int(${b})).toEqual(int(${a}) & int(${b}))`,
+                        () => expect(a & int_b).toEqual(int_a_amp_int_b));
+                    
+                    test(`expect(${a} & int(${b})).not.toBe(bool(int(${a}) & int(${b})))`,
+                        () => expect(a & int_b).not.toBe(bool_int_a_amp_int_b));
+                    
+                    test(`expect(${a} | int(${b})).not.toBe(bool(int(${a}) | int(${b})))`,
+                        () => expect(a | int_b).not.toBe(bool_int_a_pipe_int_b));
+                    
+                    test(`expect(${a} ^ int(${b})).not.toBe(bool(int(${a}) ^ int(${b})))`,
+                        () => expect(a ^ int_b).not.toBe(bool_int_a_hat_int_b));
+                    
+                    test(`expect(int(${a}) & ${b}).not.toBe(bool(int(${a}) & int(${b})))`,
+                        () => expect(int_a & b).not.toBe(bool_int_a_amp_int_b));
+                    
+                    test(`expect(int(${a}) | ${b}).not.toBe(bool(int(${a}) | int(${b})))`,
+                        () => expect(int_a | b).not.toBe(bool_int_a_pipe_int_b));
+                    
+                    test(`expect(int(${a}) ^ ${b}).not.toBe(bool(int(${a}) ^ int(${b})))`,
+                        () => expect(int_a ^ b).not.toBe(bool_int_a_hat_int_b));
+                    
+                    test(`expect(${a} | int(${b})).toEqual(int(${a}) | int(${b}))`,
+                        () => expect(a | int_b).toEqual(int_a_pipe_int_b));
+                    
+                    test(`expect(${a} ^ int(${b})).toEqual(int(${a}) ^ int(${b}))`,
+                        () => expect(a ^ int_b).toEqual(int_a_hat_int_b));
+                    
+                    test(`expect(int(${a}) & ${b}).toEqual(int(${a}) & int(${b}))`,
+                        () => expect(int_a & b).toEqual(int_a_amp_int_b));
+                    
+                    test(`expect(int(${a}) | ${b}).toEqual(int(${a}) | int(${b}))`,
+                        () => expect(int_a | b).toEqual(int_a_pipe_int_b));
+                    
+                    test(`expect(int(${a}) ^ ${b}).toEqual(int(${a}) ^ int(${b}))`,
+                        () => expect(int_a ^ b).toEqual(int_a_hat_int_b))
+                }
             }
-        }
-        const letest = test('LETEST', () => expect(1).toEqual(2));
+        });
         
         // line 129
-        toEqualAndBeVanillaAndBool(1 == 1, true, 'assertIs(1==1, True)');
-        toEqualAndBeVanillaAndBool(1 == 0, false, 'assertIs(1==0, False)');
-        toEqualAndBeVanillaAndBool(0 < 1, true, 'assertIs(0<1, True)');
-        toEqualAndBeVanillaAndBool(1 < 0, false, 'assertIs(1<0, False)');
-        toEqualAndBeVanillaAndBool(0 <= 0, true, 'assertIs(0<=0, True)');
-        toEqualAndBeVanillaAndBool(1 <= 0, false, 'assertIs(1<=0, False)');
-        toEqualAndBeVanillaAndBool(1 > 0, true, 'assertIs(1>0, True)');
-        toEqualAndBeVanillaAndBool(1 > 1, false, 'assertIs(1>1, False)');
-        toEqualAndBeVanillaAndBool(1 >= 1, true, 'assertIs(1>=1, True)');
-        toEqualAndBeVanillaAndBool(0 >= 1, false, 'assertIs(0>=1, False)');
-        toEqualAndBeVanillaAndBool(0 != 1, true, 'assertIs(0!=1, True)');
-        toEqualAndBeVanillaAndBool(0 != 0, false, 'assertIs(0!=0, False)');
+        describe(`${_suiteLineno()} line 129`, () => {
+            toEqualAndBeVanillaAndBool(1 == 1, true, '[0] assertIs(1==1, True)');
+            toEqualAndBeVanillaAndBool(1 == 0, false, '[1] assertIs(1==0, False)');
+            toEqualAndBeVanillaAndBool(0 < 1, true, '[2] assertIs(0<1, True)');
+            toEqualAndBeVanillaAndBool(1 < 0, false, '[3] assertIs(1<0, False)');
+            toEqualAndBeVanillaAndBool(0 <= 0, true, '[4] assertIs(0<=0, True)');
+            toEqualAndBeVanillaAndBool(1 <= 0, false, '[5] assertIs(1<=0, False)');
+            toEqualAndBeVanillaAndBool(1 > 0, true, '[6] assertIs(1>0, True)');
+            toEqualAndBeVanillaAndBool(1 > 1, false, '[7] assertIs(1>1, False)');
+            toEqualAndBeVanillaAndBool(1 >= 1, true, '[8] assertIs(1>=1, True)');
+            toEqualAndBeVanillaAndBool(0 >= 1, false, '[9] assertIs(0>=1, False)');
+            toEqualAndBeVanillaAndBool(0 != 1, true, '[10] assertIs(0!=1, True)');
+            toEqualAndBeVanillaAndBool(0 != 0, false, '[11] assertIs(0!=0, False)');
+        });
         
-        // line 142
         let list = [1];
-        toEqualAndBeVanillaAndBool(Object.is(list, list), true, 'assertIs(x is x, True)');
-        toEqualAndBeVanillaAndBool(!Object.is(list, list), false, 'assertIs(x is not x, False)');
-        
-        // line 146
-        toEqualAndBeVanillaAndBool(list.includes(1), true, 'assertIs(1 in x, True)');
-        toEqualAndBeVanillaAndBool(list.includes(0), false, 'assertIs(0 in x, False)');
-        toEqualAndBeVanillaAndBool(!list.includes(1), false, 'assertIs(1 not in x, False)');
-        toEqualAndBeVanillaAndBool(!list.includes(0), true, 'assertIs(0 not in list, True)');
-        
+        describe(`${_suiteLineno()} line 142`, () => {
+            toEqualAndBeVanillaAndBool(Object.is(list, list), true, '[0] assertIs(x is x, True)');
+            toEqualAndBeVanillaAndBool(!Object.is(list, list), false, '[1] assertIs(x is not x, False)');
+            
+        });
+        describe(`${_suiteLineno()} line 146`, () => {
+            
+            toEqualAndBeVanillaAndBool(list.includes(1), true, '[0] assertIs(1 in x, True)');
+            toEqualAndBeVanillaAndBool(list.includes(0), false, '[1] assertIs(0 in x, False)');
+            toEqualAndBeVanillaAndBool(!list.includes(1), false, '[2] assertIs(1 not in x, False)');
+            toEqualAndBeVanillaAndBool(!list.includes(0), true, '[3] assertIs(0 not in list, True)');
+            
+        });
         let obj = {1: 2};
         // TODO: obj === obj?
-        // line 152
-        toEqualAndBeVanillaAndBool(Object.is(obj, obj), true, 'assertIs(obj is obj, True)');
-        toEqualAndBeVanillaAndBool(!Object.is(obj, obj), false, 'assertIs(obj is not obj, False)');
-        
-        // line 155
-        toEqualAndBeVanillaAndBool((1 in obj), true, 'assertIs(1 in obj, True)');
-        toEqualAndBeVanillaAndBool((0 in obj), false, 'assertIs(0 in obj, False)');
-        toEqualAndBeVanillaAndBool(!(1 in obj), false, 'assertIs(1 not in obj, False)');
-        toEqualAndBeVanillaAndBool(!(0 in obj), true, 'assertIs(0 not in obj, True)');
-        
-        // line 160
-        toEqualAndBeVanillaAndBool(!bool(true), false, 'assertIs(not True, False)');
-        toEqualAndBeVanillaAndBool(!bool(false), true, 'assertIs(not False, True)');
+        describe(`${_suiteLineno()} line 152`, () => {
+            
+            toEqualAndBeVanillaAndBool(Object.is(obj, obj), true, '[0] assertIs(obj is obj, True)');
+            toEqualAndBeVanillaAndBool(!Object.is(obj, obj), false, '[1] assertIs(obj is not obj, False)');
+            
+        });
+        describe(`${_suiteLineno()} line 155`, () => {
+            toEqualAndBeVanillaAndBool((1 in obj), true, '[0] assertIs(1 in obj, True)');
+            toEqualAndBeVanillaAndBool((0 in obj), false, '[1] assertIs(0 in obj, False)');
+            toEqualAndBeVanillaAndBool(!(1 in obj), false, '[2] assertIs(1 not in obj, False)');
+            toEqualAndBeVanillaAndBool(!(0 in obj), true, '[3] assertIs(0 not in obj, True)');
+            
+        });
+        describe(`${_suiteLineno()} line 160`, () => {
+            toEqualAndBeVanillaAndBool(!bool(true), false, '[0] assertIs(not True, False)');
+            toEqualAndBeVanillaAndBool(!bool(false), true, '[1] assertIs(not False, True)');
+        });
         
         
     });
     describe(`test_convert`, () => {
         // (,,'assertRaises(TypeError, bool, 42, 42)');
         test('bool(42, 42) TypeError', () => expect(bool(42, 42)).toThrow(new TypeError(`bool() takes at most 1 argument (2 given)`)));
-        toEqualAndBeVanillaAndBool(bool(10), true, 'assertIs(bool(10), True)');
-        toEqualAndBeVanillaAndBool(bool(1), true, 'assertIs(bool(1), True)');
-        toEqualAndBeVanillaAndBool(bool(-1), true, 'assertIs(bool(-1), True)');
-        toEqualAndBeVanillaAndBool(bool(0), false, 'assertIs(bool(0), False)');
-        toEqualAndBeVanillaAndBool(bool("hello"), true, 'assertIs(bool("hello"), True)');
-        toEqualAndBeVanillaAndBool(bool(""), false, 'assertIs(bool(""), False)');
-        toEqualAndBeVanillaAndBool(bool(), false, 'assertIs(bool(), False)');
+        toEqualAndBeVanillaAndBool(bool(10), true, '[0] assertIs(bool(10), True)');
+        toEqualAndBeVanillaAndBool(bool(1), true, '[1] assertIs(bool(1), True)');
+        toEqualAndBeVanillaAndBool(bool(-1), true, '[2] assertIs(bool(-1), True)');
+        toEqualAndBeVanillaAndBool(bool(0), false, '[3] assertIs(bool(0), False)');
+        toEqualAndBeVanillaAndBool(bool("hello"), true, '[4] assertIs(bool("hello"), True)');
+        toEqualAndBeVanillaAndBool(bool(""), false, '[5] assertIs(bool(""), False)');
+        toEqualAndBeVanillaAndBool(bool(), false, '[6] assertIs(bool(), False)');
     });
     describe.skip(`test_format`, () => {
         // TODO: "%d" % False might not be possible, consider str("%d" something
@@ -353,8 +376,8 @@ describe(`CPython Tests`, () => {
     
     });
     describe(`test_contains`, () => {
-        toEqualAndBeVanillaAndBool(1 in {}, false, 'assertIs(1 in {}, False)');
-        toEqualAndBeVanillaAndBool(1 in {1: 1}, true, 'assertIs(1 in {1:1}, True)');
+        toEqualAndBeVanillaAndBool(1 in {}, false, '[0] assertIs(1 in {}, False)');
+        toEqualAndBeVanillaAndBool(1 in {1: 1}, true, '[1] assertIs(1 in {1:1}, True)');
     });
     describe(`test_string`, () => {
         toEqualAndBeVanillaAndBool("xyz".endsWith("z"), true, 'assertIs("xyz".endswith("z"), True)');
