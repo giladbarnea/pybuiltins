@@ -463,7 +463,7 @@ describe(`CPython Tests`, () => {
             toEqualAndBeVanillaAndBool(!bool(true), false, '[0] assertIs(not True, False)');
             // Boolean fail x4
             //  new Bool fail x4    WEIRD
-            let b = bool(false, {log: true});
+            let b = bool(false);
             let actual = !b;
             console.log(cc('blue', `b: ${b}, actual (!b): ${actual}`));
             toEqualAndBeVanillaAndBool(actual, true, '[1] assertIs(not False, True)');
@@ -534,8 +534,10 @@ describe(`CPython Tests`, () => {
     
     // line 233
     // TODO: Python => True [bitwise] True: boolean
-    // TODO: JS => True [bitwise] True: Number
+    //  JS => True [bitwise] True: Number
+    //  Possible solution: if Bool extended Int, than maybe native 1 IS new Bool(true)
     describe(`test_boolean`, () => {
+        Bool.operands = [];
         let True = bool(true);
         toEqualAndBeVanilla(True & 1, 1, 'assertEqual(True & 1, 1)');
         

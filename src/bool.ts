@@ -1,7 +1,10 @@
 import {cc} from "./util";
 import {Int} from "./int";
 
+
 export class Bool extends Boolean {
+    static operands = [];
+    
     constructor(val: any, options = {}) {
         const {log} = options;
         if (log) console.log(cc('black', 'constructor'), {val});
@@ -26,7 +29,16 @@ export class Bool extends Boolean {
         super(Object.keys(val).length !== 0);
         if (log) console.log(cc('bright magenta', `super(Object.keys(val).length !== 0). this: ${this}`));
     }
+    
+    valueOf(): boolean {
+        Bool.operands.push(this);
+        // console.log(Bool.operands.length);
+        return Boolean(this);
+    }
+    
+    
 }
+
 
 export function bool(val: any, options = {}): boolean {
     
@@ -44,8 +56,8 @@ export function bool(val: any, options = {}): boolean {
     const {log} = options;
     const newbool = new Bool(val, options);
     if (log) console.log(cc('bright magenta', `Returning newbool: ${this}`), newbool);
-    return newbool.valueOf();
-    // return newbool;
+    // return newbool.valueOf();
+    return newbool;
     const ret = Boolean(newbool);
     if (log) console.log(cc('bright magenta', `Returning Boolean(newbool): ${ret}`), ret);
     return ret;
